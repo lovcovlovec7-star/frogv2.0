@@ -280,7 +280,11 @@
   .shopTabs{display:flex;gap:8px;flex-wrap:wrap}
   .shopPane{display:none}
   .shopPane.active{display:block}
-  .shopGrid{display:grid;gap:10px;max-height:58vh;overflow:auto;padding-right:6px}
+  .shopModalLayout{display:grid;grid-template-columns:minmax(240px,300px) minmax(0,1fr);gap:12px;align-items:start}
+  .shopPreview{border:1px solid var(--stroke);border-radius:16px;padding:10px;background:#0a1220aa;position:sticky;top:0}
+  #shopPreview{width:100%;height:auto;display:block;border-radius:12px;border:1px solid #ffffff22;background:linear-gradient(160deg,#0a1324,#071a1f)}
+  @media (max-width:900px){.shopModalLayout{grid-template-columns:1fr}.shopPreview{position:static}}
+  .shopGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;max-height:58vh;overflow-y:auto;overflow-x:hidden;padding-right:6px}
   .legendPulse{animation:legendPulse 2.1s ease-in-out infinite}
   @keyframes legendPulse{0%,100%{box-shadow:0 0 0 1px #ffd16666,0 0 24px #ffd16633}50%{box-shadow:0 0 0 1px #ffd166aa,0 0 34px #ffd16680}}
 
@@ -290,6 +294,7 @@
   .newsNew{display:inline-block;padding:3px 8px;border-radius:999px;background:#35f0a3;color:#062014;font-size:11px;font-weight:900;margin-left:8px}
 
   .modalBack{position:fixed; inset:0; z-index:9998; display:none; place-items:center; background:#00000085; backdrop-filter:blur(4px)}
+  #caseOpenModal{z-index:10020}
   .modalBack.show{display:grid}
   .modal{width:min(680px,calc(100vw - 28px)); border-radius:20px; border:1px solid var(--stroke); background:linear-gradient(160deg,#0b1628,#0a1220); box-shadow:0 24px 70px #0000008a; padding:14px}
   .modalTop{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
@@ -307,7 +312,7 @@
   .topActions .btn{flex:1;min-width:140px}
   .sceneFx{position:absolute;inset:0;pointer-events:none;opacity:.55;mix-blend-mode:screen;transition:opacity .7s ease;background-size:220% 220%;animation:driftBg 12s linear infinite}
   @keyframes driftBg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-  .caseAnimCard{display:grid;place-items:center;min-height:160px;border:1px solid #ffffff2e;border-radius:16px;background:#0000002a;position:relative;overflow:hidden}
+  .caseAnimCard{display:grid;place-items:center;min-height:180px;border:1px solid #ffffff2e;border-radius:16px;background:#0000002a;position:relative;overflow:hidden}
   .caseAnimCard.shake{animation:caseShake .45s ease-in-out}
   .caseAnimCard.reveal{animation:caseReveal .5s ease}
   @keyframes caseShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
@@ -316,6 +321,10 @@
   .rarityBurst-rare{box-shadow:0 0 34px #5fb0ff88 inset}
   .rarityBurst-epic{box-shadow:0 0 38px #be87ff88 inset}
   .rarityBurst-legend{box-shadow:0 0 44px #ffd16699 inset}
+
+  .caseReel{display:flex;gap:10px;align-items:center;position:absolute;left:0;top:0;height:100%;padding:0 14px;will-change:transform}
+  .caseReelItem{min-width:120px;height:140px;border-radius:14px;border:1px solid #ffffff2f;background:#071426;display:grid;place-items:center;font-weight:900}
+  .caseReelItem.win{border-color:#ffd166;box-shadow:0 0 24px #ffd16666}
 
 </style>
 </head>
@@ -327,9 +336,9 @@
     <div class="top">
       <div class="brand">
         <h1>👤 Аккаунт</h1>
-        <p>Ник/аватар/статус + экспорт/импорт сейва. Всё хранится локально.</p>
+        <p>Ник, аватар и сохранение прогресса на устройстве.</p>
       </div>
-      <div class="pill"><span class="dot"></span> LOCAL</div>
+      <div class="pill"><span class="dot"></span> <span id="accountStateTag">Гость</span></div>
     </div>
 
     <div class="item">
@@ -347,6 +356,7 @@
       </div>
 
       <div class="btnRow" style="margin-top:10px">
+        <button class="btn" id="openAccountModalBtn">Аккаунт</button>
         <button class="btn primary" id="accSave">Сохранить профиль</button>
         <button class="btn" id="accClear">Удалить фото</button>
         <button class="btn danger" id="logoutBtn">Выйти</button>
@@ -450,9 +460,7 @@
   <div class="card panel">
     <div class="tabs">
       <button class="tabBtn active" data-tab="upg">Прокачка</button>
-      <button class="tabBtn" data-tab="shop">Магазин</button>
-      <button class="tabBtn" data-tab="games">Мини-игры</button>
-      <button class="tabBtn" data-tab="ach">Достижения</button>
+            <button class="tabBtn" data-tab="ach">Достижения</button>
       <button class="tabBtn" data-tab="ranks">Ранги</button>
       <button class="tabBtn" data-tab="leaders">Лидеры</button>
       <button class="tabBtn" data-tab="locations">Локации</button>
@@ -466,13 +474,13 @@
 
     <div class="tabPane active" id="tab-upg">
       <h2>Прокачка</h2>
-      <p>Много апгрейдов, чтобы клик не “сыпал” слишком много, а прогресс реально ощущался.</p>
+      <p>Улучшайте характеристики и ускоряйте прогресс.</p>
       <div id="upgradeList" style="display:grid;gap:10px"></div>
     </div>
 
     <div class="tabPane" id="tab-shop">
       <h2>Магазин</h2>
-      <p>Отдельные категории + кейсы за алмазы. Скролл внутри панели.</p>
+      <p>Косметика, кейсы и редкие предметы.</p>
       <div class="shopTop">
         <div class="shopTabs">
           <button class="tabBtn primary shopTabBtn active" data-shop="acc">Аксессуары</button>
@@ -495,7 +503,7 @@
 
     <div class="tabPane" id="tab-games">
       <h2>Мини-игры</h2>
-      <p>Вкладки внутри. Формат не “просто тапалка”.</p>
+      <p>Выберите мини-игру и получайте награды.</p>
 
       <div class="subTabs">
         <button class="tabBtn active" data-subgame="flies">🪰 Охота</button>
@@ -527,12 +535,13 @@
         <div class="gameBox">
           <div class="gameTop">
             <div>
-              <div style="font-weight:950">🌿 Болото-память (повтори последовательность)</div>
-              <div class="small">Сначала показывается маршрут, потом повторяешь. Ошибка — серия падает.</div>
+              <div style="font-weight:950">🧠 Память (найди пары)</div>
+              <div class="small">Открывай по две карты, ищи пары до конца времени.</div>
             </div>
             <div class="btnRow">
               <button class="btn primary" id="padsStart">Старт</button>
               <button class="btn" id="padsStop">Стоп</button>
+              <button class="btn" id="padsDiffBtn">Сложность: Нормально</button>
             </div>
           </div>
           <div class="gameCanvasWrap">
@@ -680,15 +689,15 @@
 
 
 <div class="modalBack" id="profileGateModal">
-  <div class="modal">
-    <div class="modalTop"><div><div class="t" style="font-weight:950">Профиль</div><div class="s small">Выберите режим входа</div></div></div>
-    <div class="btnRow" style="margin-bottom:10px"><button class="btn" id="gateGuestBtn">Гость</button></div>
-    <div class="item" style="margin-bottom:10px"><div class="t">Войти</div><input id="gateLoginName" placeholder="Логин"/><input id="gateLoginPass" type="password" placeholder="Пароль" style="margin-top:8px"/><div class="btnRow" style="margin-top:8px"><button class="btn primary" id="gateLoginBtn">Войти</button></div></div>
-    <div class="item"><div class="t">Создать аккаунт</div><input id="gateRegName" placeholder="Логин"/><input id="gateRegPass" type="password" placeholder="Пароль" style="margin-top:8px"/><div class="btnRow" style="margin-top:8px"><button class="btn warn" id="gateRegBtn">Создать аккаунт</button></div><div class="small" id="legacyImportWrap" style="display:none;margin-top:10px"><button class="btn" id="legacyImportBtn">Импортировать текущий прогресс в аккаунт</button></div></div>
+  <div class="modal" style="max-width:460px">
+    <div class="modalTop"><div><div class="t" style="font-weight:950">Войти в аккаунт</div></div><button class="btn" id="profileGateClose">X</button></div>
+    <div class="item" style="margin-bottom:10px"><input id="gateLoginName" placeholder="Логин"/><input id="gateLoginPass" type="password" placeholder="Пароль" style="margin-top:8px"/><div class="btnRow" style="margin-top:8px"><button class="btn primary" id="gateLoginBtn">Войти</button><button class="btn" id="gateRegBtn">Регистрация</button></div><div class="small" style="margin-top:8px">Нет аккаунта? Зарегистрироваться</div><button class="btn" id="gateGuestBtn" style="margin-top:8px">Продолжить как гость</button><div class="small" id="legacyImportWrap" style="display:none;margin-top:10px"><button class="btn" id="legacyImportBtn">Импортировать текущий прогресс в аккаунт</button></div></div>
+    <input id="gateRegName" placeholder="Логин" style="display:none"/>
+    <input id="gateRegPass" type="password" placeholder="Пароль" style="display:none"/>
   </div>
 </div>
 <div class="modalBack" id="caseOpenModal"><div class="modal"><div class="modalTop"><div class="t" style="font-weight:950">Открытие кейса</div><button class="btn" id="caseModalClose">Закрыть</button></div><div id="caseModalContent" class="caseAnimCard">🎁</div><div class="btnRow" style="margin-top:10px"><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn primary" id="caseOkBtn">Ок</button></div></div></div>
-<div class="modalBack" id="shopModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag" id="shopBal"></span><span class="tag" id="shopBalDiam"></span><span class="tag" id="shopBalDust"></span></div><div id="shopModalBody" style="margin-top:10px"></div></div></div>
+<div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag" id="shopBal"></span><span class="tag" id="shopBalDiam"></span><span class="tag" id="shopBalDust"></span></div><div class="shopModalLayout" style="margin-top:10px"><div class="shopPreview"><canvas id="shopPreview" width="420" height="420"></canvas></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
 <div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
 
 <div class="toasts" id="toasts"></div>
@@ -1177,7 +1186,7 @@ const upgrades = [
 
 function upgradePrice(u){
   const lvl = u.level();
-  const raw = Math.round(u.base * Math.pow(u.scale, lvl));
+  const raw = Math.round((u.base * 6) * Math.pow(u.scale, lvl));
   const discount = 1 - (state.shopDiscount||0);
   return Math.max(1, Math.round(raw * discount));
 }
@@ -1223,14 +1232,18 @@ const cosmeticItems = [
   { id:"ear_cuffs", kind:"acc", rarity:"rare", name:"Ушные кольца", desc:"Металлические каффы", price:570, toggle:"earCuffs" },
   { id:"whiskers_paint", kind:"acc", rarity:"common", name:"Боевой грим", desc:"Полосы на морде", price:350, toggle:"whiskersPaint" },
   { id:"rune_tattoo", kind:"acc", rarity:"epic", name:"Рунический узор", desc:"Светящиеся руны", price:1080, toggle:"runeTattoo" },
-  { id:"bubble_pipe", kind:"acc", rarity:"rare", name:"Трубка пузырей", desc:"Пузыри при дыхании", price:690, toggle:"bubblePipe" }
+  { id:"bubble_pipe", kind:"acc", rarity:"rare", name:"Трубка пузырей", desc:"Пузыри при дыхании", price:690, toggle:"bubblePipe" },
+  { id:"terror_mask", kind:"acc", rarity:"legend", name:"Маска (ужас)", desc:"Лимит · коллекционный предмет", price:2200000, toggle:"respirator", limited:true, stock:25 },
+  { id:"tactical_glasses", kind:"acc", rarity:"legend", name:"Тактические очки", desc:"Лимит · премиум серия", price:3400000, toggle:"cyberVisor", limited:true, stock:18 },
+  { id:"gold_mask", kind:"acc", rarity:"legend", name:"Золотая маска", desc:"Лимит · люкс аксессуар", price:5500000, toggle:"monocle", limited:true, stock:10 },
+  { id:"obsidian_horns", kind:"acc", rarity:"legend", name:"Обсидиановые рога", desc:"Лимит · только за алмазы", price:900, currency:"diamonds", toggle:"horns", limited:true, stock:12 }
 ];
 
 const caseTypes = [
-  { id:"case_common", name:"Обычный кейс", price:30, rarities:["common","common","rare"] },
-  { id:"case_rare", name:"Редкий кейс", price:90, rarities:["rare","rare","epic"] },
-  { id:"case_epic", name:"Эпический кейс", price:180, rarities:["rare","epic","epic","legend"] },
-  { id:"case_legend", name:"Легендарный кейс", price:360, rarities:["epic","legend","legend"] }
+  { id:"case_common", name:"Обычный кейс", price:140, rarities:["common","common","rare"] },
+  { id:"case_rare", name:"Редкий кейс", price:360, rarities:["rare","rare","epic"] },
+  { id:"case_epic", name:"Эпический кейс", price:780, rarities:["rare","epic","epic","legend"] },
+  { id:"case_legend", name:"Легендарный кейс", price:1400, rarities:["epic","legend","legend"] }
 ];
 
 function rarityLabel(r){
@@ -1264,12 +1277,11 @@ function useCosmetic(it){
 }
 function buyCosmetic(it){
   const price = Math.max(1, Math.round(it.price * (1 - (state.shopDiscount||0))));
+  const cur = it.currency || "points";
   if(!own(it.id)){
-    if(state.points < price){
-      toast("Не хватает очков", `Нужно ${price}`, "SHOP");
-      return;
-    }
-    state.points -= price;
+    if(cur==="diamonds" && state.diamonds < price){ toast("Не хватает алмазов", `Нужно ${price} 💎`, "SHOP"); return; }
+    if(cur!=="diamonds" && state.points < price){ toast("Не хватает очков", `Нужно ${price}`, "SHOP"); return; }
+    if(cur==="diamonds") state.diamonds -= price; else state.points -= price;
     state.owned[it.id]=true;
     if(price >= 1200) frogLife.happyUntil = Date.now()+1800;
     toastOnce("buy_"+it.id, "Куплено!", it.name, "SHOP", 1400, { forceImportant: price>=1800 });
@@ -1285,10 +1297,10 @@ function renderCosmeticCard(it){
   div.className=`item shopCard rarity-${it.rarity} ${active ? "active" : ""}`;
   div.innerHTML = `
     ${active ? '<div class="eqBadge">ЭКИП.</div>' : ""}
-    <div class="t">${it.name}</div>
-    <div class="s">${it.desc}</div>
+    <div class="t">${it.name}${it.limited?" · Лимит":""}</div>
+    <div class="s">${it.desc}${it.limited?` · Осталось: ${it.stock||"—"}`:""}</div>
     <div class="row">
-      <span class="shopPrice">${ownedFlag ? "Куплено" : ("Цена: "+price)}</span>
+      <span class="shopPrice">${ownedFlag ? "Куплено" : (`Цена: ${price}${it.currency==="diamonds"?" 💎":""}`)}</span>
       <button class="btn ${active ? "primary":""}">${ownedFlag ? (active ? "Снять" : "Применить") : "Купить"}</button>
     </div>`;
   div.querySelector("button").addEventListener("click", ()=>{ uiBeep(); buyCosmetic(it); div.classList.remove("pop"); void div.offsetWidth; div.classList.add("pop"); });
@@ -1342,10 +1354,17 @@ function renderShop(){
   skinsBox.innerHTML=""; accsBox.innerHTML="";
   const order = {common:0, rare:1, epic:2, legend:3};
   const sorted = [...cosmeticItems].sort((a,b)=> (order[a.rarity]-order[b.rarity]) || (a.price-b.price));
+  const limitedWrap = document.createElement("div");
+  limitedWrap.className = "item";
+  limitedWrap.innerHTML = `<div class="t">Лимит</div><div class="s">Редкие дорогие предметы поздней игры</div>`;
+  const limitedGrid = document.createElement("div"); limitedGrid.className="shopGrid"; limitedWrap.appendChild(limitedGrid);
   for(const it of sorted){
     const card = renderCosmeticCard(it);
-    (it.kind==="skin" ? skinsBox : accsBox).appendChild(card);
+    if(it.kind==="skin") skinsBox.appendChild(card);
+    else if(it.limited) limitedGrid.appendChild(card);
+    else accsBox.appendChild(card);
   }
+  if(limitedGrid.children.length) accsBox.appendChild(limitedWrap);
   renderCaseList();
 }
 
@@ -1563,7 +1582,7 @@ function clickLogic(mult = 1){
   if(state.energy >= cost){
     state.energy -= cost;
   }else{
-    energyFactor = 0.1;
+    energyFactor = 0.25;
     frogLife.angryUntil = now + 900;
   }
 
@@ -1599,9 +1618,13 @@ function clickLogic(mult = 1){
   save();
 }
 
+let lastEnergyTick = Date.now();
 setInterval(()=>{
-  if(Date.now() - state.comboLastHit > state.comboDecayMs) state.combo = 1;
-  state.energy = clamp(state.energy + (state.energyRegen||6)*0.25, 0, state.energyMax||100);
+  const now = Date.now();
+  if(now - state.comboLastHit > state.comboDecayMs) state.combo = 1;
+  const dt = Math.max(0, (now - lastEnergyTick) / 1000);
+  lastEnergyTick = now;
+  state.energy = clamp(state.energy + (state.energyRegen||6) * dt, 0, state.energyMax||100);
   updateUI(false);
 }, 250);
 
@@ -2030,7 +2053,10 @@ document.getElementById("leaderResetBtn")?.addEventListener("click", ()=>{
 ========================= */
 function updateProfileMeta(){
   const dt = new Date(state.meta.createdAt || Date.now());
-  profileMeta.textContent = `Профиль создан: ${dt.toLocaleDateString("ru-RU")} · Титул: ${state.meta.title}`;
+  const who = profileStore.activeUser || "Гость";
+  profileMeta.textContent = `Профиль: ${who} · Создан: ${dt.toLocaleDateString("ru-RU")} · Титул: ${state.meta.title}`;
+  const tag = document.getElementById("accountStateTag");
+  if(tag) tag.textContent = who;
 }
 
 function updateUI(full=true){
@@ -2792,161 +2818,116 @@ document.getElementById("fliesStop").addEventListener("click", ()=>{
 });
 
 /* =========================
-  MINI GAME 2: SWAMP MEMORY (pads)
+  MINI GAME 2: MEMORY CARDS (pads)
 ========================= */
 const padsC = document.getElementById("pads");
 const p2 = padsC.getContext("2d");
 const padsHud = document.getElementById("padsHud");
-let padsRun=false, padsStartT=0, padsScore=0, padsRound=0;
-let padsNodes=[], padsSeq=[], padsInput=[], padsPhase="idle", padsFlashIndex=0, padsNextFlash=0;
-
-function padsMakeNodes(){
-  padsNodes = [];
-  for(let i=0;i<6;i++){
-    padsNodes.push({ id:i, x: rand(140, 820), y: rand(120, 420), r: rand(40, 62) });
-  }
+const padsDiffBtn = document.getElementById("padsDiffBtn");
+let padsRun=false, padsStartT=0, padsScore=0;
+let padsDeck=[], padsFirst=null, padsLock=false, padsMoves=0, padsMatched=0;
+let padsDifficulty = "normal";
+const padsDiffs = {
+  easy: { pairs:6, time:70, mul:1.0, name:"Легко" },
+  normal: { pairs:8, time:60, mul:1.35, name:"Нормально" },
+  hard: { pairs:10, time:52, mul:1.75, name:"Сложно" }
+};
+function padsBuildDeck(){
+  const cfg=padsDiffs[padsDifficulty];
+  const arr=[];
+  for(let i=0;i<cfg.pairs;i++){ arr.push(i,i); }
+  for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  padsDeck = arr.map((v,idx)=>({ id:idx, val:v, open:false, done:false }));
 }
 function padsReset(){
-  padsScore=0; padsRound=0;
-  padsSeq=[]; padsInput=[];
-  padsPhase="show";
-  padsFlashIndex=0;
+  padsScore=0; padsMoves=0; padsMatched=0; padsFirst=null; padsLock=false;
   padsStartT = performance.now();
-  padsMakeNodes();
-  padsAddStep();
-  padsNextFlash = performance.now()+700;
-  padsHud.textContent = "Раунд: 1 · Очки: 0 · Время: 45";
-}
-function padsAddStep(){
-  const next = Math.floor(Math.random()*padsNodes.length);
-  padsSeq.push(next);
-  padsInput=[];
-  padsRound = padsSeq.length;
-  padsPhase="show";
-  padsFlashIndex=0;
-  padsNextFlash = performance.now()+700;
+  padsBuildDeck();
+  padsHud.textContent = `Пары: 0/${padsDiffs[padsDifficulty].pairs} · Ходы: 0 · Время: ${padsDiffs[padsDifficulty].time}`;
 }
 function padsEnd(win=false){
   padsRun=false;
-  const mul = (1 + (state.minigameBonus||0)) * eventMiniMultiplier();
-  const payout = Math.round(padsScore * mul);
+  const cfg = padsDiffs[padsDifficulty];
+  const base = Math.max(0, padsScore + (win ? 140*cfg.pairs : 0));
+  const mul = (1 + (state.minigameBonus||0)) * eventMiniMultiplier() * cfg.mul;
+  const payout = Math.round(base * mul);
   state.points += payout;
-  if(win) state.meta.padsWins = (state.meta.padsWins||0) + 1;
-  toast("Память завершена", `+${payout} очков (x${mul.toFixed(2)})`, "MINI GAME");
+  if(win && Math.random() < (padsDifficulty==='hard'?0.3:padsDifficulty==='normal'?0.18:0.1)) state.diamonds += 1;
+  toast("Память завершена", `+${payout} очков${win?' · шанс на алмаз выполнен':''}`, "MINI GAME");
   if(win) dailySetProg("padsWin", 1);
   save(); updateUI();
 }
+function padsGrid(){
+  const total = padsDeck.length;
+  const cols = total<=12 ? 4 : 5;
+  const rows = Math.ceil(total/cols);
+  const cardW = 150, cardH = 100, gap = 16;
+  const gridW = cols*cardW + (cols-1)*gap;
+  const gridH = rows*cardH + (rows-1)*gap;
+  const startX = (960-gridW)/2;
+  const startY = (540-gridH)/2;
+  return { cols, rows, cardW, cardH, gap, startX, startY };
+}
 function drawPads(){
   p2.clearRect(0,0,960,540);
-  const now = performance.now();
-  const secLeft = Math.max(0, 45 - Math.floor((now - padsStartT)/1000));
-
-  // bg
-  const g = p2.createLinearGradient(0,0,960,540);
-  g.addColorStop(0,"rgba(26,200,255,0.10)");
-  g.addColorStop(1,"rgba(53,240,163,0.06)");
-  p2.fillStyle=g; p2.fillRect(0,0,960,540);
-
-  // auto show sequence flashes
-  let flashId = -1;
-  if(padsPhase==="show"){
-    if(now > padsNextFlash){
-      padsNextFlash = now + 550;
-      padsFlashIndex++;
-      if(padsFlashIndex > padsSeq.length*2){
-        padsPhase="input";
-      }
-    }
-    const step = Math.floor(padsFlashIndex/2);
-    const on = padsFlashIndex%2===1;
-    if(step < padsSeq.length && on) flashId = padsSeq[step];
-  }
-
-  // nodes
-  for(const n of padsNodes){
-    const isFlash = (n.id===flashId);
-    const isInputLast = (padsInput.length>0 && padsInput[padsInput.length-1]===n.id);
-    const glow = isFlash ? 1 : (isInputLast ? 0.55 : 0);
-
-    // shadow
-    p2.save();
-    p2.translate(n.x, n.y+18);
-    p2.scale(1.15, 0.65);
-    const sh = p2.createRadialGradient(0,0, 10, 0,0, n.r*1.5);
-    sh.addColorStop(0,"rgba(0,0,0,0.22)");
-    sh.addColorStop(1,"rgba(0,0,0,0)");
-    p2.fillStyle=sh;
-    p2.beginPath(); p2.ellipse(0,0, n.r*1.2, n.r, 0,0,Math.PI*2); p2.fill();
-    p2.restore();
-
-    const pg = p2.createRadialGradient(n.x-n.r*0.3, n.y-n.r*0.3, 10, n.x, n.y, n.r*1.4);
-    pg.addColorStop(0, glow ? "rgba(255,209,102,0.35)" : "rgba(255,255,255,0.10)");
-    pg.addColorStop(0.3, "rgba(53,240,163,0.22)");
-    pg.addColorStop(1, "rgba(10,30,25,0.85)");
-    p2.fillStyle=pg;
-    p2.beginPath(); p2.ellipse(n.x,n.y, n.r*1.1, n.r, 0,0,Math.PI*2); p2.fill();
-
-    p2.strokeStyle = glow ? "rgba(255,209,102,0.95)" : "rgba(255,255,255,0.22)";
-    p2.lineWidth = glow ? 5 : 2;
-    p2.beginPath(); p2.ellipse(n.x,n.y, n.r*1.1, n.r, 0,0,Math.PI*2); p2.stroke();
-  }
-
-  padsHud.textContent = `Раунд: ${padsRound} · Очки: ${padsScore} · Фаза: ${padsPhase==="show"?"показ":"ввод"} · Время: ${secLeft}`;
-
+  const now=performance.now();
+  const cfg=padsDiffs[padsDifficulty];
+  const secLeft = Math.max(0, cfg.time - Math.floor((now-padsStartT)/1000));
+  const bg = p2.createLinearGradient(0,0,960,540);
+  bg.addColorStop(0,"rgba(26,200,255,0.10)"); bg.addColorStop(1,"rgba(53,240,163,0.06)");
+  p2.fillStyle=bg; p2.fillRect(0,0,960,540);
+  const g = padsGrid();
+  padsDeck.forEach((c,idx)=>{
+    const col = idx % g.cols;
+    const row = Math.floor(idx / g.cols);
+    const x = g.startX + col*(g.cardW+g.gap);
+    const y = g.startY + row*(g.cardH+g.gap);
+    c.x=x; c.y=y; c.w=g.cardW; c.h=g.cardH;
+    const opened = c.open || c.done;
+    p2.fillStyle = opened ? "#12344a" : "#0a1422";
+    p2.strokeStyle = c.done ? "#35f0a3" : "#ffffff2e";
+    p2.lineWidth = c.done ? 4 : 2;
+    p2.beginPath(); p2.roundRect(x,y,g.cardW,g.cardH,12); p2.fill(); p2.stroke();
+    p2.fillStyle = opened ? "#eaf2ff" : "#8ab5d1";
+    p2.font = "900 30px system-ui";
+    p2.textAlign="center"; p2.textBaseline="middle";
+    p2.fillText(opened ? String(c.val+1) : "?", x+g.cardW/2, y+g.cardH/2);
+  });
+  padsHud.textContent = `Пары: ${padsMatched}/${cfg.pairs} · Ходы: ${padsMoves} · Время: ${secLeft}`;
   if(secLeft<=0) padsEnd(false);
 }
 padsC.addEventListener("pointerdown",(e)=>{
-  if(!padsRun) return;
-  if(padsPhase!=="input") return;
-
+  if(!padsRun || padsLock) return;
   const rect = padsC.getBoundingClientRect();
   const x = (e.clientX-rect.left)/rect.width*960;
   const y = (e.clientY-rect.top)/rect.height*540;
-
-  let hit=null;
-  for(const n of padsNodes){
-    const d=Math.hypot(x-n.x, y-n.y);
-    if(d <= n.r*1.1){ hit=n; break; }
-  }
-  if(!hit) return;
-
-  padsInput.push(hit.id);
-  frogCroak(0.55);
-
-  // check correctness so far
-  const idx = padsInput.length-1;
-  if(padsSeq[idx] !== hit.id){
-    // mistake: lose points
-    padsScore = Math.max(0, padsScore - 40);
-    padsPhase="show";
-    padsFlashIndex=0;
-    padsNextFlash = performance.now()+800;
-    toastOnce("pads_miss_"+Math.floor(performance.now()/1000), "Ошибка", "Маршрут сброшен, попробуй снова", "GAME", 1200);
-    return;
-  }
-
-  // complete round
-  if(padsInput.length === padsSeq.length){
-    const gain = 80 + padsSeq.length*35;
-    padsScore += gain;
-    // next round, harder
-    if(padsSeq.length >= 10){
-      padsEnd(true);
-      return;
-    }
-    padsAddStep();
+  const card = padsDeck.find(c=> x>=c.x && x<=c.x+c.w && y>=c.y && y<=c.y+c.h && !c.done && !c.open);
+  if(!card) return;
+  card.open=true;
+  if(!padsFirst){ padsFirst=card; return; }
+  padsMoves++;
+  if(padsFirst.val===card.val){
+    padsFirst.done=true; card.done=true;
+    padsMatched++;
+    padsScore += 70;
+    padsFirst=null;
+    frogCroak(0.62);
+    if(padsMatched>=padsDiffs[padsDifficulty].pairs) padsEnd(true);
+  }else{
+    padsLock=true;
+    const first=padsFirst;
+    padsFirst=null;
+    setTimeout(()=>{ first.open=false; card.open=false; padsLock=false; }, 520);
   }
 });
-
-document.getElementById("padsStart").addEventListener("click", ()=>{
-  uiBeep();
-  padsRun=true; padsReset();
+document.getElementById("padsStart").addEventListener("click", ()=>{ uiBeep(); padsRun=true; padsReset(); });
+document.getElementById("padsStop").addEventListener("click", ()=>{ uiBeep(); padsRun=false; });
+padsDiffBtn?.addEventListener("click", ()=>{
+  const order=["easy","normal","hard"]; const i=(order.indexOf(padsDifficulty)+1)%order.length;
+  padsDifficulty=order[i];
+  padsDiffBtn.textContent = `Сложность: ${padsDiffs[padsDifficulty].name}`;
+  if(padsRun) padsReset();
 });
-document.getElementById("padsStop").addEventListener("click", ()=>{
-  uiBeep();
-  padsRun=false;
-});
-
 /* =========================
   MINI GAME 3: RAID RUNNER
 ========================= */
@@ -3164,9 +3145,11 @@ document.getElementById('caseOkBtn')?.addEventListener('click', closeCaseModal);
 document.getElementById('caseEquipBtn')?.addEventListener('click', ()=>{ if(pendingCaseEquip){ useCosmetic(pendingCaseEquip); } closeCaseModal(); });
 document.getElementById('gateGuestBtn')?.addEventListener('click', enterGuest);
 document.getElementById('gateLoginBtn')?.addEventListener('click', ()=> loginAccount(document.getElementById('gateLoginName').value.trim(), document.getElementById('gateLoginPass').value));
-document.getElementById('gateRegBtn')?.addEventListener('click', ()=> registerAccount(document.getElementById('gateRegName').value.trim(), document.getElementById('gateRegPass').value));
+document.getElementById('gateRegBtn')?.addEventListener('click', ()=>{ const name=document.getElementById('gateLoginName').value.trim(); const pass=document.getElementById('gateLoginPass').value; document.getElementById('gateRegName').value=name; document.getElementById('gateRegPass').value=pass; registerAccount(name, pass); });
 document.getElementById('legacyImportBtn')?.addEventListener('click', ()=> registerAccount(document.getElementById('gateRegName').value.trim(), document.getElementById('gateRegPass').value, true));
 document.getElementById('logoutBtn')?.addEventListener('click', logoutAccount);
+document.getElementById('openAccountModalBtn')?.addEventListener('click', ()=>{ uiBeep(); showProfileGate(); });
+document.getElementById('profileGateClose')?.addEventListener('click', hideProfileGate);
 document.getElementById('openShopModalBtn')?.addEventListener('click', openShopModal);
 document.getElementById('openGamesModalBtn')?.addEventListener('click', openGamesModal);
 document.getElementById('shopModalClose')?.addEventListener('click', closeShopModal);
@@ -3194,11 +3177,21 @@ setInterval(()=>{
   }
 }, 300);
 
+
+function updateShopPreview(){
+  const pc = document.getElementById("shopPreview");
+  if(!pc) return;
+  const ctx = pc.getContext("2d");
+  if(!ctx) return;
+  ctx.clearRect(0,0,pc.width,pc.height);
+  ctx.drawImage(frogCanvas, 0, 0, pc.width, pc.height);
+}
 /* =========================
   MAIN DRAW LOOP
 ========================= */
 function loop(){
   drawFrog();
+  updateShopPreview();
   requestAnimationFrame(loop);
 }
 
@@ -3214,13 +3207,29 @@ function updateSceneFx(){ const fxEl=document.getElementById('sceneFx'); if(fxEl
 function showCaseModal(drop,duplicate){
   const m=document.getElementById('caseOpenModal'), c=document.getElementById('caseModalContent');
   if(!m||!c) return;
-  c.className=`caseAnimCard shake rarityBurst-${drop.rarity}`;
-  c.textContent='🎁';
   m.classList.add('show');
-  setTimeout(()=>{
-    c.className=`caseAnimCard reveal rarityBurst-${drop.rarity}`;
-    c.innerHTML=`<div><div style="font-size:44px">${drop.kind==='skin'?'🧪':'✨'}</div><div class="t">${drop.name}</div><div class="s">${rarityLabel(drop.rarity)}${duplicate?' · дубликат (пыль)':''}</div></div>`;
-  },420);
+  const pool = cosmeticItems.filter(it=>it.kind===drop.kind);
+  const reelItems = [];
+  for(let i=0;i<20;i++) reelItems.push(pool[Math.floor(Math.random()*pool.length)]||drop);
+  reelItems.push(drop);
+  c.className=`caseAnimCard rarityBurst-${drop.rarity}`;
+  c.innerHTML = `<div class="caseReel" id="caseReel">${reelItems.map((it,idx)=>`<div class="caseReelItem ${idx===reelItems.length-1?'win':''}">${it.name}</div>`).join('')}</div>`;
+  const reel = document.getElementById('caseReel');
+  const total = 2400;
+  const itemW = 130;
+  const maxShift = (reelItems.length-1) * itemW;
+  const started = performance.now();
+  const animate = ()=>{
+    const t = Math.min(1, (performance.now()-started)/total);
+    const ease = 1 - Math.pow(1-t, 3);
+    reel.style.transform = `translateX(${-Math.round(maxShift*ease)}px)`;
+    if(t<1) requestAnimationFrame(animate);
+    else{
+      c.className=`caseAnimCard reveal rarityBurst-${drop.rarity}`;
+      c.innerHTML=`<div><div style="font-size:44px">${drop.kind==='skin'?'🧪':'✨'}</div><div class="t">${drop.name}</div><div class="s">${rarityLabel(drop.rarity)}${duplicate?' · дубликат (пыль)':''}</div></div>`;
+    }
+  };
+  requestAnimationFrame(animate);
   pendingCaseEquip = (!duplicate && drop) ? drop : null;
   const eq=document.getElementById('caseEquipBtn'); if(eq) eq.style.display = pendingCaseEquip?'inline-flex':'none';
   frogCroak(0.9);
@@ -3291,7 +3300,7 @@ window.addEventListener("pointerdown", startMusicOnInteraction, { once:true });
 window.addEventListener("keydown", startMusicOnInteraction, { once:true });
 
 // profile init
-if(!profileStore.activeUser && !window.__guestMode){ showProfileGate(); }
+if(!profileStore.activeUser){ window.__guestMode = true; }
 nickInput.value = state.account.nick || "";
 bioInput.value = state.account.bio || "";
 renderAvatar();
