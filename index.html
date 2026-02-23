@@ -360,9 +360,9 @@
   .bjControls{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
   .bjHand{display:grid;gap:8px;padding:12px;border-radius:14px;border:1px solid #ffffff24;background:#00000022}
 
-  body.modal-open{overflow:hidden;overscroll-behavior:contain}
+  html.modal-open,body.modal-open{overflow:hidden;overscroll-behavior:contain;height:100%}
 
-  .caseCard{overflow:hidden;position:relative;padding:12px;background:linear-gradient(165deg,#122038,#0b1425 58%,#091120)}
+  .caseCard{overflow:hidden;position:relative;padding:12px;background:linear-gradient(165deg,#122038,#0b1425 58%,#091120);display:grid;grid-template-rows:auto auto auto auto auto;gap:8px;min-height:262px}
   .caseCard:hover{transform:translateY(-6px) scale(1.01)}
   .caseCard:active{transform:translateY(-2px) scale(.99)}
   .caseChestIcon{height:84px;display:grid;place-items:center;filter:drop-shadow(0 8px 20px #00000080)}
@@ -371,6 +371,11 @@
   .caseOddsPopup{position:absolute;right:10px;top:10px;z-index:3;min-width:160px;background:#071325f5;border:1px solid #ffffff2a;border-radius:12px;padding:8px 10px;box-shadow:0 16px 28px #0000007d;display:none}
   .caseOddsPopup.show{display:block}
   .caseOddsPopup .small{display:flex;justify-content:space-between;margin:2px 0}
+  .caseCard .t{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;line-height:1.2;min-height:2.4em;word-break:break-word}
+  .caseCard .s{font-size:11px;color:#bcd4f4;line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:2.6em}
+  .caseMeta{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px}
+  .casePrice{font-weight:900;white-space:nowrap}
+  .caseMainBtn{margin-top:auto;width:100%;justify-content:center}
   .case-common{box-shadow:0 0 0 1px #9dc0ad77 inset,0 0 22px #9dc0ad24}
   .case-rare{box-shadow:0 0 0 1px #63a9ff80 inset,0 0 24px #63a9ff55}
   .case-epic{box-shadow:0 0 0 1px #b688ff85 inset,0 0 28px #b688ff62}
@@ -415,6 +420,22 @@
   .dupDust{font-size:12px;color:#ffd59f;display:flex;align-items:center;gap:6px}
   .dupDust::before{content:"✦";animation:dustPop .6s ease infinite alternate}
   @keyframes dustPop{from{transform:translateY(0);opacity:.5}to{transform:translateY(-3px);opacity:1}}
+
+  #tab-news{display:grid;gap:10px;max-height:calc(100vh - 150px);overflow:auto;padding-right:4px}
+  #newsList{display:grid;gap:10px;max-height:100%;overflow:auto;white-space:normal;word-break:break-word}
+  .newsEntry{max-height:220px;overflow:auto;border:1px solid #ffffff24;border-radius:14px;padding:10px;background:#0a1220aa}
+  .newsEntry ul{margin:8px 0 0 18px;padding:0;display:grid;gap:6px}
+  .newsEntry li{color:#c8d6ed;font-size:12px;line-height:1.35}
+  .modalScroll{max-height:78vh;overflow:auto;padding-right:4px}
+  .modalScroll::-webkit-scrollbar{width:8px}
+  .modalScroll::-webkit-scrollbar-thumb{background:#ffffff2f;border-radius:999px}
+  .caseModal .modalScroll{max-height:70vh}
+  .caseStartHint{text-align:center;color:#b7d6ff;font-size:12px}
+  .caseResultFrame{position:relative}
+  .caseRevealGlow{position:absolute;inset:8px;border-radius:14px;filter:blur(20px);opacity:.4;pointer-events:none}
+  .caseFxLayer{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .caseSpark{position:absolute;width:8px;height:8px;border-radius:50%;opacity:0;animation:caseSpark 850ms ease-out forwards}
+  @keyframes caseSpark{0%{transform:translateY(0) scale(.7);opacity:0}20%{opacity:1}100%{transform:translateY(-90px) scale(1.2);opacity:0}}
 
 </style>
 </head>
@@ -787,8 +808,8 @@
     <input id="gateRegPass" type="password" placeholder="Пароль" style="display:none"/>
   </div>
 </div>
-<div class="modalBack" id="caseOpenModal"><div class="modal caseModal"><div class="caseModalTop"><div><div class="t" style="font-weight:950">Открытие кейса</div><div class="s small" id="caseModalSub">Выберите кейс и нажмите «Открыть»</div></div><button class="btn caseSecondary" id="caseModalClose">Закрыть</button></div><div id="caseModalContent" class="caseAnimCard"></div><div class="caseActions" style="margin-top:10px"><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn" id="caseInventoryBtn" style="display:none">В инвентарь</button><button class="btn casePrimary" id="caseSpinBtn">Открыть</button><button class="btn caseSecondary" id="caseAgainBtn" style="display:none">Ещё раз</button></div></div></div>
-<div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout" style="margin-top:10px"><div class="shopPreview"><canvas id="shopPreview" width="420" height="420"></canvas></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
+<div class="modalBack" id="caseOpenModal"><div class="modal caseModal"><div class="caseModalTop"><div><div class="t" style="font-weight:950">Открытие кейса</div><div class="s small" id="caseModalSub">Выберите кейс и нажмите «Начать открытие»</div></div><button class="btn caseSecondary" id="caseModalClose">Закрыть</button></div><div class="modalScroll"><div id="caseModalContent" class="caseAnimCard"></div></div><div class="caseActions" style="margin-top:10px"><button class="btn casePrimary" id="caseSpinBtn">Начать открытие</button><button class="btn" id="caseEquipBtn" style="display:none">Надеть сейчас</button><button class="btn" id="caseInventoryBtn" style="display:none">В инвентарь</button><button class="btn caseSecondary" id="caseSellBtn" style="display:none">В пыль</button><button class="btn caseSecondary" id="caseCloseBtn" style="display:none">ОК</button></div></div></div>
+<div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout modalScroll" style="margin-top:10px"><div class="shopPreview"><canvas id="shopPreview" width="420" height="420"></canvas></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
 <div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
 
 <div id="gameResultOverlay" class="resultOverlay"><div id="gameResultTitle" class="t"></div><div id="gameResultText" class="s" style="margin-top:6px"></div></div>
@@ -862,6 +883,7 @@ const state = {
     runeTattoo:false, bubblePipe:false
   },
   owned: {},
+  caseInventory: {},
   _ach: {},
 
   settings: {
@@ -1210,7 +1232,7 @@ const uiThemes = [
 ];
 
 const versionNotes = [
-  { v:"3.2.0", date:"2026-03-02", points:["Cases 2.0: новые сундуки по редкостям и реалистичные свечения","Новый экран открытия: анимированный сундук, suspense-спин и улучшенные кнопки","Бесконечный reel без видимого конца и без раннего спойлера приза","Предметы в рулетке и результате получили SVG-иконки и rarity-рамки","Добавлены реальные drop-таблицы с разными шансами по стоимости кейса","Добавлены звуки открытия, прокрутки, reveal-хита и легендарного spark","Появилась кнопка «Шансы» на каждом кейсе с компактным popup"] },
+  { v:"3.2.0", date:"2026-03-02", points:["Cases 2.0 fixes: исправлен поток открытия кейса (спин → reveal → действия)","Починен макет News: новости рендерятся аккуратным списком внутри панели без layout bleed","На карточки кейсов возвращены кнопки Buy/Open + popup «Шансы» с точными вероятностями","Shop и Case Opening теперь используют внутренние скролл-контейнеры и корректный z-index","Добавлены действия после reveal: надеть сейчас, в инвентарь, конвертация дубликата в пыль","Синхронизированы отображаемые проценты и фактическая логика выбора награды"] },
   { v:"3.1.0", date:"2026-02-26", points:["Обновлён профиль: новый аккуратный layout аккаунта и рамка аватара","Исправлено сохранение профиля по аккаунтам: ник/био/аватар возвращаются после входа","Аксессуары и лимитные предметы выровнены по высоте, без «небоскрёбов»","Кейсы получили визуал сундуков, редкостные свечения и новые таблицы вероятностей","Экран открытия кейса: сундук, бесконечный reel с иконками и итоговая rarity-рамка","Система титулов переработана: условия, locked/unlocked и вывод в лидерборде","Горячие клавиши музыки: M / Ь (без срабатывания в полях ввода)","Мини-игры показывают большой WIN/LOSE overlay по центру","Полировка Blackjack: новые кнопки, карты и читабельная компоновка","Добавлен lock скролла: колесо прокручивает только верхнюю модалку"] },
   { v:"3.0.0", date:"2026-02-25", points:["Мульти-профили и гостевой вход","Ранги дают реальные бонусы и прогресс-бар","Анимированное открытие кейсов + пыль за дубликаты","Blackjack сбалансирован: алмазы сильно ограничены","Добавлены модальные окна магазина и мини-игр"] },
   { v:"3.0.1", date:"2026-02-25", points:["Лягушачьи эмодзи-частицы при клике","Отдельная громкость SFX и обновлённый клик-звук","Улучшены атмосферные фоны локаций и музыкальные переходы"] },
@@ -1461,10 +1483,10 @@ const frameItems = [
 ];
 
 const caseTypes = [
-  { id:"case_common", tier:"common", name:"Тростниковый ящик", price:120, art:"Базовый", dropTable:[{r:"common",w:75},{r:"rare",w:22},{r:"epic",w:2.8},{r:"legend",w:0.2}], chest:"reed" },
-  { id:"case_rare", tier:"rare", name:"Лунный контейнер", price:260, art:"Усиленный", dropTable:[{r:"common",w:45},{r:"rare",w:45},{r:"epic",w:9},{r:"legend",w:1}], chest:"moon" },
-  { id:"case_epic", tier:"epic", name:"Арканум-кейс", price:560, art:"Продвинутый", dropTable:[{r:"rare",w:30},{r:"epic",w:60},{r:"legend",w:9},{r:"limited",w:1}], chest:"arcane" },
-  { id:"case_legend", tier:"legend", name:"Реликварий Легенд", price:980, art:"Премиум", dropTable:[{r:"rare",w:9},{r:"epic",w:35},{r:"legend",w:55},{r:"limited",w:1}], chest:"relic" }
+  { id:"case_common", tier:"common", name:"Тростниковый ящик", price:220000, currency:"points", art:"Базовый", dropTable:[{r:"common",w:75},{r:"rare",w:22},{r:"epic",w:2.8},{r:"legend",w:0.2}], chest:"reed" },
+  { id:"case_rare", tier:"rare", name:"Лунный контейнер", price:260, currency:"diamonds", art:"Усиленный", dropTable:[{r:"common",w:45},{r:"rare",w:45},{r:"epic",w:9},{r:"legend",w:1}], chest:"moon" },
+  { id:"case_epic", tier:"epic", name:"Арканум-кейс", price:560, currency:"diamonds", art:"Продвинутый", dropTable:[{r:"rare",w:30},{r:"epic",w:60},{r:"legend",w:9},{r:"limited",w:1}], chest:"arcane" },
+  { id:"case_legend", tier:"legend", name:"Реликварий Легенд", price:140, currency:"dust", art:"Премиум", dropTable:[{r:"rare",w:9},{r:"epic",w:35},{r:"legend",w:55},{r:"limited",w:1}], chest:"relic" }
 ];
 
 function rarityLabel(r){
@@ -1557,6 +1579,30 @@ function caseChestSvg(caseType){
   const lid = caseType.chest==='relic' ? '<path d="M12 38h96l-8-18H20z" fill="#51361a" stroke="#ffd166" stroke-width="3"/>' : caseType.chest==='arcane' ? '<path d="M14 36h92l-6-16H20z" fill="#2b1b4c" stroke="#b688ff" stroke-width="3"/>' : caseType.chest==='moon' ? '<path d="M12 38h96l-8-16H20z" fill="#2d3f65" stroke="#63a9ff" stroke-width="3"/>' : '<path d="M12 38h96l-8-16H20z" fill="#4e3a24" stroke="#9dc0ad" stroke-width="3"/>';
   return `<svg viewBox="0 0 120 80" aria-hidden="true"><defs><filter id="cg"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="${c}" flood-opacity=".8"/></filter></defs>${lid}<rect x="10" y="36" width="100" height="34" rx="8" fill="#1a2439" stroke="${accent}" stroke-width="3" filter="url(#cg)"/><rect x="52" y="34" width="16" height="36" rx="4" fill="#ffe39e"/><circle cx="60" cy="52" r="4" fill="#8d5b16"/></svg>`;
 }
+function caseCurrencyIcon(currency){ return currency==='points'?'🪙':currency==='dust'?'✨':'💎'; }
+function caseCurrencyLabel(currency){ return currency==='points'?'монет':currency==='dust'?'пыли':'алмазов'; }
+function casePriceText(cs){ return `${cs.price.toLocaleString("ru-RU")} ${caseCurrencyIcon(cs.currency)}`; }
+function caseOwnedCount(caseId){ return Number(state.caseInventory?.[caseId]||0); }
+function canAffordCase(cs){
+  if(cs.currency==='points') return state.points>=cs.price;
+  if(cs.currency==='dust') return (state.dust||0)>=cs.price;
+  return state.diamonds>=cs.price;
+}
+function spendCaseCurrency(cs){
+  if(!canAffordCase(cs)) return false;
+  if(cs.currency==='points') state.points -= cs.price;
+  else if(cs.currency==='dust') state.dust = Math.max(0,(state.dust||0)-cs.price);
+  else state.diamonds -= cs.price;
+  return true;
+}
+function buyCase(cs){
+  if(!spendCaseCurrency(cs)){ toast('Кейсы', `Нужно больше ${caseCurrencyLabel(cs.currency)}`, 'CASE'); return false; }
+  state.caseInventory[cs.id] = caseOwnedCount(cs.id)+1;
+  toast('Кейсы', `${cs.name} куплен`, 'CASE');
+  save(); updateUI(false); renderShop();
+  return true;
+}
+
 function resolveCaseReward(cs){
   let rarity = weightedRarity(cs.dropTable);
   if(Math.random() < eventCaseLuck()) rarity = weightedRarity(cs.dropTable.filter(e=>e.r!=="common"));
@@ -1570,10 +1616,16 @@ function renderCaseList(){
   if(!box) return;
   box.innerHTML = "";
   caseTypes.forEach(cs=>{
+    const count = caseOwnedCount(cs.id);
+    const openReady = count > 0;
     const div = document.createElement("div");
     div.className = `item shopCard caseCard case-${cs.tier}`;
-    div.innerHTML = `<div class="caseOddsPopup" id="odds-${cs.id}">${cs.dropTable.map(e=>`<div class="small"><span>${rarityLabel(e.r)}</span><b>${Number(e.w).toFixed(e.w%1?1:0)}%</b></div>`).join('')}</div><div class="shopCardHeader"><div class="t">${cs.name}</div><div class="badgeStack"><button class="caseOddsBtn" data-odds="${cs.id}">Шансы</button><span class="tag">${cs.art}</span></div></div><div class="caseChestIcon">${caseChestSvg(cs)}</div><div class="s">${formatOdds(cs.dropTable)}</div><div class="row"><span class="shopPrice">${cs.price} 💎</span><button class="btn casePrimary" data-open="${cs.id}">Открыть кейс</button></div>`;
-    div.querySelector('[data-open]')?.addEventListener('click', ()=>{ uiBeep(); beginCaseOpening(cs.id); });
+    div.innerHTML = `<div class="caseOddsPopup" id="odds-${cs.id}">${cs.dropTable.map(e=>`<div class="small"><span>${rarityLabel(e.r)}</span><b>${Number(e.w).toFixed(e.w%1?1:0)}%</b></div>`).join('')}</div><div class="shopCardHeader"><div class="t">${cs.name}</div><div class="badgeStack"><button class="caseOddsBtn" data-odds="${cs.id}">Шансы</button><span class="tag">${rarityLabel(cs.tier)}</span></div></div><div class="caseChestIcon">${caseChestSvg(cs)}</div><div class="s">${formatOdds(cs.dropTable)}</div><div class="caseMeta"><span class="casePrice">${casePriceText(cs)}</span><span class="tag">В наличии: ${count}</span></div><button class="btn casePrimary caseMainBtn" data-main="${cs.id}">${openReady ? 'Open' : 'Buy'}</button>`;
+    div.querySelector('[data-main]')?.addEventListener('click', ()=>{
+      uiBeep();
+      if(caseOwnedCount(cs.id)>0) beginCaseOpening(cs.id);
+      else buyCase(cs);
+    });
     div.querySelector('[data-odds]')?.addEventListener('click',(ev)=>{
       ev.stopPropagation();
       document.querySelectorAll('.caseOddsPopup.show').forEach(el=>{ if(el.id!==`odds-${cs.id}`) el.classList.remove('show'); });
@@ -1750,9 +1802,10 @@ function renderNews(){
   if(!box) return;
   box.innerHTML='';
   versionNotes.forEach(n=>{
-    const div = document.createElement('div');
-    div.className='item';
-    div.innerHTML = `<div class="t">v${n.v} · ${n.date}</div><ul style="margin:8px 0 0 20px">${n.points.map(p=>`<li class="s">${p}</li>`).join('')}</ul>`;
+    const points = Array.isArray(n.points) ? n.points : [String(n.points||'')];
+    const div = document.createElement('article');
+    div.className='newsEntry';
+    div.innerHTML = `<div class="t">v${n.v} · ${n.date}</div><ul>${points.map(p=>`<li>${String(p)}</li>`).join('')}</ul>`;
     box.appendChild(div);
   });
   const badge = document.getElementById('newsBadge');
@@ -3453,9 +3506,10 @@ document.getElementById('bjHit')?.addEventListener('click', ()=>{ uiBeep(); bjHi
 document.getElementById('bjStand')?.addEventListener('click', ()=>{ uiBeep(); bjStand(); });
 document.getElementById('caseModalClose')?.addEventListener('click', closeCaseModal);
 document.getElementById('caseSpinBtn')?.addEventListener('click', ()=>{ uiBeep(); spinActiveCase(); });
-document.getElementById('caseAgainBtn')?.addEventListener('click', ()=>{ uiBeep(); spinActiveCase(); });
 document.getElementById('caseEquipBtn')?.addEventListener('click', ()=>{ if(pendingCaseEquip){ useCosmetic(pendingCaseEquip); } closeCaseModal(); });
 document.getElementById('caseInventoryBtn')?.addEventListener('click', closeCaseModal);
+document.getElementById('caseSellBtn')?.addEventListener('click', ()=>{ if(!pendingCaseResult) return; state.dust=Math.min(999999,(state.dust||0)+12); toast('Кейс', 'Предмет сконвертирован в пыль', 'CASE'); closeCaseModal(); save(); updateUI(false); });
+document.getElementById('caseCloseBtn')?.addEventListener('click', closeCaseModal);
 document.addEventListener('click', (ev)=>{ if(!(ev.target instanceof Element)) return; if(!ev.target.closest('.caseCard')) document.querySelectorAll('.caseOddsPopup.show').forEach(el=>el.classList.remove('show')); });
 document.getElementById('gateGuestBtn')?.addEventListener('click', enterGuest);
 document.getElementById('gateLoginBtn')?.addEventListener('click', ()=> loginAccount(document.getElementById('gateLoginName').value.trim(), document.getElementById('gateLoginPass').value));
@@ -3533,11 +3587,13 @@ function caseSfx(type){
   if(type==='open'){ o.type='triangle'; o.frequency.setValueAtTime(180,t); o.frequency.exponentialRampToValueAtTime(380,t+.08); g.gain.setValueAtTime(0.001,t); g.gain.exponentialRampToValueAtTime(0.26*vol,t+.02); g.gain.exponentialRampToValueAtTime(0.001,t+.2); }
   else if(type==='whoosh'){ o.type='sawtooth'; o.frequency.setValueAtTime(620,t); o.frequency.exponentialRampToValueAtTime(120,t+.55); g.gain.setValueAtTime(0.001,t); g.gain.exponentialRampToValueAtTime(0.16*vol,t+.04); g.gain.exponentialRampToValueAtTime(0.001,t+.55); }
   else if(type==='reveal'){ o.type='square'; o.frequency.setValueAtTime(240,t); o.frequency.exponentialRampToValueAtTime(520,t+.12); g.gain.setValueAtTime(0.001,t); g.gain.exponentialRampToValueAtTime(0.28*vol,t+.02); g.gain.exponentialRampToValueAtTime(0.001,t+.22); }
+  else if(type==='tick'){ o.type='square'; o.frequency.setValueAtTime(520,t); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.08*vol,t+.01); g.gain.exponentialRampToValueAtTime(0.0001,t+.05); }
   else { o.type='sine'; o.frequency.setValueAtTime(700,t); o.frequency.exponentialRampToValueAtTime(1100,t+.16); g.gain.setValueAtTime(0.001,t); g.gain.exponentialRampToValueAtTime(0.22*vol,t+.04); g.gain.exponentialRampToValueAtTime(0.001,t+.45); }
   o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t+.7);
 }
 function beginCaseOpening(caseId){
   const cs=caseTypes.find(c=>c.id===caseId); if(!cs) return;
+  if(caseOwnedCount(cs.id)<=0){ toast('Кейсы','Сначала купите кейс','CASE'); return; }
   activeCaseType = cs;
   pendingCaseResult = null;
   pendingCaseEquip = null;
@@ -3546,19 +3602,22 @@ function beginCaseOpening(caseId){
   syncModalLock();
   const c=document.getElementById('caseModalContent');
   const sub=document.getElementById('caseModalSub');
-  if(sub) sub.textContent = `${cs.name} · ${cs.price} 💎 · ${formatOdds(cs.dropTable)}`;
+  if(sub) sub.textContent = `${cs.name} · ${casePriceText(cs)} · ${formatOdds(cs.dropTable)}`;
   if(c) c.className=`caseAnimCard rarityBurst-${cs.tier}`;
-  if(c) c.innerHTML = `<div class="caseChestStage idle" id="caseChestStage"><div class="caseChestGlow ${cs.tier}"></div><div class="caseChestIcon">${caseChestSvg(cs)}</div></div><div class="caseReelViewport"><div class="caseReelWrap"><div class="caseReel" id="caseReel"></div></div><div class="caseCenterMark"></div></div><div class="small" style="text-align:center;color:#b7d6ff">Нажмите «Открыть», чтобы запустить рулетку.</div>`;
-  document.getElementById('caseSpinBtn').textContent='Открыть';
-  document.getElementById('caseAgainBtn').style.display='none';
+  if(c) c.innerHTML = `<div class="caseChestStage idle" id="caseChestStage"><div class="caseChestGlow ${cs.tier}"></div><div class="caseChestIcon">${caseChestSvg(cs)}</div></div><div class="caseReelViewport"><div class="caseReelWrap"><div class="caseReel" id="caseReel"></div></div><div class="caseCenterMark"></div></div><div class="caseStartHint">Нажмите «Начать открытие», чтобы запустить рулетку.</div>`;
+  document.getElementById('caseSpinBtn').style.display='inline-flex';
+  document.getElementById('caseSpinBtn').textContent='Начать открытие';
   document.getElementById('caseInventoryBtn').style.display='none';
   document.getElementById('caseEquipBtn').style.display='none';
+  document.getElementById('caseSellBtn').style.display='none';
+  document.getElementById('caseCloseBtn').style.display='none';
 }
 function spinActiveCase(){
   if(!activeCaseType) return;
-  if(state.diamonds < activeCaseType.price){ toast('Не хватает алмазов', `Нужно ${activeCaseType.price}`,'CASE'); return; }
   const cs=activeCaseType;
-  state.diamonds -= cs.price;
+  const owned = caseOwnedCount(cs.id);
+  if(owned<=0){ toast('Кейсы', 'Нет купленных кейсов', 'CASE'); return; }
+  state.caseInventory[cs.id] = owned-1;
   state.meta.casesOpened = (state.meta.casesOpened||0)+1;
   const drop = resolveCaseReward(cs);
   const wasOwned = own(drop.id);
@@ -3567,32 +3626,45 @@ function spinActiveCase(){
   const stage = document.getElementById('caseChestStage');
   const c=document.getElementById('caseModalContent');
   if(!reel||!c) return;
-  const pool = cosmeticItems.filter(it=>it.kind===drop.kind || it.rarity===drop.rarity);
-  const base=[]; for(let i=0;i<26;i++) base.push(pool[Math.floor(Math.random()*pool.length)]||drop);
-  const targetSlot = 13;
-  let cycles=0, x=0, speed=42;
-  const itemW=146;
-  const segments=5;
-  const seq = Array.from({length:segments},(_,n)=>base.map((it,idx)=> ({it,idx,n}))).flat();
-  seq[(Math.floor(segments/2))*base.length + targetSlot].it = drop;
-  reel.innerHTML = seq.map(({it})=>`<div class="caseReelItem rarity-${it.rarity}"><div class="gem" style="background:${rarityColor(it.rarity)}"></div>${itemGlyphSvg(it,false)}<div class="caseReelItemName">${it.name}</div></div>`).join('');
-  const centerOffset = (Math.floor(segments/2)*base.length + targetSlot) * itemW - 360;
+  const pool = cosmeticItems.filter(it=>it.rarity===drop.rarity || it.kind===drop.kind);
+  const seq = Array.from({length:140}, ()=> pool[Math.floor(Math.random()*pool.length)] || drop);
+  const stopIndex = 110;
+  seq[stopIndex]=drop;
+  reel.innerHTML = seq.map((it)=>`<div class="caseReelItem rarity-${it.rarity}"><div class="gem" style="background:${rarityColor(it.rarity)}"></div>${itemGlyphSvg(it,false)}<div class="caseReelItemName">${it.name}</div></div>`).join('');
   c.className=`caseAnimCard rarityBurst-${drop.rarity}`;
   stage?.classList.remove('idle'); stage?.classList.add('shake');
   caseSfx('open'); caseSfx('whoosh');
-  const start=performance.now(); const dur=2600 + Math.random()*500;
+  document.getElementById('caseSpinBtn').style.display='none';
+  const itemW=146;
+  const targetOffset = stopIndex*itemW - 340;
+  const start=performance.now(); const dur=3200 + Math.random()*1300;
+  let lastTick=0;
   function tick(now){
     const t=Math.min(1,(now-start)/dur);
-    const ease=1-Math.pow(1-t,3.4);
-    const noise=Math.sin(t*24)*8*(1-t);
-    x = centerOffset*ease + noise;
+    const ease=1-Math.pow(1-t,3.1);
+    const wobble=Math.sin(t*28)*(1-t)*10;
+    const x = targetOffset*ease + wobble;
     reel.style.transform=`translateX(${-x}px)`;
+    if(now-lastTick>120){ caseSfx('tick'); lastTick=now; }
     if(t<1) requestAnimationFrame(tick);
-    else{
-      revealCaseReward(drop, wasOwned, cs);
-    }
+    else revealCaseReward(drop, wasOwned, cs);
   }
   requestAnimationFrame(tick);
+}
+function emitCaseParticles(rarity){
+  const layer = document.createElement('div');
+  layer.className='caseFxLayer';
+  const count = rarity==='limited' ? 30 : rarity==='legend' ? 24 : 14;
+  for(let i=0;i<count;i++){
+    const p=document.createElement('span');
+    p.className='caseSpark';
+    p.style.left=`${10+Math.random()*80}%`;
+    p.style.bottom=`${8+Math.random()*24}%`;
+    p.style.background=rarityColor(rarity);
+    p.style.animationDelay=`${Math.random()*260}ms`;
+    layer.appendChild(p);
+  }
+  return layer;
 }
 function revealCaseReward(drop, duplicate, cs){
   const c=document.getElementById('caseModalContent');
@@ -3604,13 +3676,14 @@ function revealCaseReward(drop, duplicate, cs){
   pendingCaseResult = drop;
   const desc = duplicate ? `${rarityLabel(drop.rarity)} · Дубликат` : rarityLabel(drop.rarity);
   c.className=`caseAnimCard reveal rarityBurst-${drop.rarity}`;
-  c.innerHTML=`<div class="caseResultFrame rarity-${drop.rarity}">${itemGlyphSvg(drop,true)}<div class="t">${drop.name}</div><div class="s">${desc}</div>${duplicate?`<div class="dupDust">+${comp} 💎 · +${dustGain} пыль</div>`:''}</div>`;
+  c.innerHTML=`<div class="caseResultFrame rarity-${drop.rarity}"><div class="caseRevealGlow" style="background:${rarityColor(drop.rarity)}"></div>${itemGlyphSvg(drop,true)}<div class="t">${drop.name}</div><div class="s">${desc}</div>${duplicate?`<div class="dupDust">+${comp} 💎 · +${dustGain} пыль</div>`:''}</div>`;
+  c.appendChild(emitCaseParticles(drop.rarity));
   const caseResult=document.getElementById('caseResult');
   if(caseResult) caseResult.textContent = `Открыт: ${drop.name}${duplicate?` · дубликат (+${comp} алм., +${dustGain} пыль)`:''}`;
   document.getElementById('caseEquipBtn').style.display = pendingCaseEquip?'inline-flex':'none';
-  document.getElementById('caseInventoryBtn').style.display = duplicate?'inline-flex':'none';
-  document.getElementById('caseAgainBtn').style.display='inline-flex';
-  document.getElementById('caseSpinBtn').textContent='Ещё раз';
+  document.getElementById('caseInventoryBtn').style.display = 'inline-flex';
+  document.getElementById('caseSellBtn').style.display = duplicate?'inline-flex':'none';
+  document.getElementById('caseCloseBtn').style.display='inline-flex';
   caseSfx('reveal');
   if(drop.rarity==='legend' || drop.rarity==='limited') caseSfx('sparkle');
   const major = drop.rarity==='legend' || drop.rarity==='epic' || drop.rarity==='limited';
@@ -3618,7 +3691,7 @@ function revealCaseReward(drop, duplicate, cs){
   if(major) frogCroak(1.2);
   save(); updateUI(false); renderShop();
 }
-function closeCaseModal(){ document.getElementById('caseOpenModal')?.classList.remove('show'); syncModalLock(); activeCaseType=null; pendingCaseResult=null; }
+function closeCaseModal(){ document.getElementById('caseOpenModal')?.classList.remove('show'); syncModalLock(); activeCaseType=null; pendingCaseResult=null; pendingCaseEquip=null; }
 function showProfileGate(){ const m=document.getElementById('profileGateModal'); if(m) m.classList.add('show'); syncModalLock(); const w=document.getElementById('legacyImportWrap'); if(w) w.style.display = (!profileStore.legacyMigrated && hasLegacySave())?'block':'none'; }
 function hideProfileGate(){ document.getElementById('profileGateModal')?.classList.remove('show'); syncModalLock(); }
 async function registerAccount(name,pass,fromLegacy=false){
@@ -3673,11 +3746,11 @@ function topModal(){
   mods.sort((a,b)=> (Number(getComputedStyle(a).zIndex)||0) - (Number(getComputedStyle(b).zIndex)||0));
   return mods.at(-1);
 }
-function syncModalLock(){ document.body.classList.toggle('modal-open', visibleModals().length>0); }
+function syncModalLock(){ const locked=visibleModals().length>0; document.body.classList.toggle('modal-open', locked); document.documentElement.classList.toggle('modal-open', locked); }
 document.addEventListener('wheel',(e)=>{
   const m = topModal();
   if(!m) return;
-  const host = m.querySelector('#shopModalBody,.modal') || m;
+  const host = m.querySelector('.modalScroll,#shopModalBody,.modal') || m;
   if(!host.contains(e.target)){ host.scrollTop += e.deltaY; e.preventDefault(); }
 },{passive:false});
 
@@ -3777,5 +3850,5 @@ setInterval(()=>{
 document.addEventListener("touchmove", (e)=>{}, {passive:true});
 </script>
 </body>
-</html>  { v:"3.2.0", date:"2026-03-02", points:["Cases 2.0: новые сундуки по редкостям и реалистичные свечения","Новый экран открытия: анимированный сундук, suspense-спин и улучшенные кнопки","Бесконечный reel без видимого конца и без раннего спойлера приза","Предметы в рулетке и результате получили SVG-иконки и rarity-рамки","Добавлены реальные drop-таблицы с разными шансами по стоимости кейса","Добавлены звуки открытия, прокрутки, reveal-хита и легендарного spark","Появилась кнопка «Шансы» на каждом кейсе с компактным popup"] },
+</html>  { v:"3.2.0", date:"2026-03-02", points:["Cases 2.0 fixes: исправлен поток открытия кейса (спин → reveal → действия)","Починен макет News: новости рендерятся аккуратным списком внутри панели без layout bleed","На карточки кейсов возвращены кнопки Buy/Open + popup «Шансы» с точными вероятностями","Shop и Case Opening теперь используют внутренние скролл-контейнеры и корректный z-index","Добавлены действия после reveal: надеть сейчас, в инвентарь, конвертация дубликата в пыль","Синхронизированы отображаемые проценты и фактическая логика выбора награды"] },
 
