@@ -66,9 +66,6 @@
     user-select:none; cursor:pointer;
   }
   .avatar img{width:100%; height:100%; object-fit:cover; display:block;}
-  .avatar.premiumFrame{position:relative;overflow:visible;border:1px solid #ffffff2e;box-shadow:0 0 0 1px #ffffff24,0 0 24px #55d7ff3b;isolation:isolate}
-  .avatar.premiumFrame::before{content:"";position:absolute;inset:-3px;border-radius:20px;background:linear-gradient(135deg,#8bf7ff,#b49cff,#72ffd6,#ffd67a);z-index:-2;filter:saturate(1.1)}
-  .avatar.premiumFrame::after{content:"";position:absolute;inset:-1px;border-radius:18px;border:1px solid #ffffff40;background:linear-gradient(145deg,#ffffff12,#72dbff12 45%,#ffffff08);z-index:-1;pointer-events:none}
   .nickCol{flex:1; display:grid; gap:6px;}
   .nickCol label{font-size:12px; color:var(--muted);font-weight:900}
   .nickCol input, .nickCol textarea{
@@ -216,7 +213,7 @@
   #upgradeList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   @media (max-width: 1280px){ #upgradeList{grid-template-columns:1fr;} }
 
-  .shopCard{position:relative; transition:transform .22s ease, border-color .2s ease, box-shadow .25s ease;display:flex;flex-direction:column;height:100%;min-height:182px}
+  .shopCard{position:relative; transition:transform .22s ease, border-color .2s ease, box-shadow .25s ease;display:flex;flex-direction:column;height:100%;min-height:196px;max-height:196px}
   .shopCard:hover{transform:translateY(-3px)}
   .shopCard.active{border-color:#35f0a3aa; box-shadow:0 0 0 1px #35f0a355, 0 16px 36px #00000075;}
   .shopCard.pop{animation:shopPop .35s ease;}
@@ -227,12 +224,12 @@
   .rarity-epic{box-shadow:0 0 24px #b06bff33, inset 0 0 0 1px #c58bff4d}
   .rarity-legend{box-shadow:0 0 28px #ffcf5a42, inset 0 0 0 1px #ffd77f59}
   .shopCardHeader{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;min-width:0}
-  .shopCardHeader .t{min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .shopCardHeader .t{min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.2;min-height:2.4em}
   .badgeStack{display:flex;flex-direction:column;gap:4px;flex-shrink:0;align-items:flex-end}
   .eqBadge{position:static;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:900;background:#35f0a31c;border:1px solid #35f0a37a;color:#8effc6}
   .limitedBadge{padding:4px 9px;border-radius:999px;font-size:11px;font-weight:900;background:#ffd16624;border:1px solid #ffd16686;color:#ffe9b2}
-  .shopCard .s{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:34px}
-  .shopCard .row{margin-top:auto}
+  .shopCard .s{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em;max-height:2.6em;line-height:1.3}
+  .shopCard .row{margin-top:auto;align-items:flex-end}
 
   #leadersList{display:grid;gap:8px}
   .leaderRow{display:grid;grid-template-columns:30px 42px 1fr auto;gap:10px;align-items:center}
@@ -332,10 +329,11 @@
   #shopModalBody::-webkit-scrollbar-thumb{background:#ffffff30;border-radius:999px}
   #shopPreview{width:100%;height:auto;display:block;border-radius:12px;border:1px solid #ffffff22;background:linear-gradient(160deg,#0a1324,#071a1f)}
   @media (max-width:900px){.shopModalLayout{grid-template-columns:1fr}.shopPreview{position:static}}
-  .shopGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;max-height:none;overflow:visible;padding-right:6px;align-content:start}
+  .shopGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;max-height:none;overflow:visible;padding-right:6px;align-content:start;grid-auto-flow:row dense;align-items:stretch}
   .shopGrid>*{min-width:0}
-  .limitedBlock{margin-top:12px;border:1px solid #ffd16666;background:linear-gradient(145deg,#261f0b,#1a1424);box-shadow:0 0 22px #ffd1662f inset}
+  .limitedBlock{margin-top:12px;border:1px solid #ffd16666;background:linear-gradient(145deg,#261f0b,#1a1424);box-shadow:0 0 22px #ffd1662f inset;grid-column:1/-1}
   .limitedBlock .t{color:#ffe39c}
+  .shopCard.limitedCard{border-color:#ffd16666;background:linear-gradient(160deg,#211709,#1a1326)}
   .legendPulse{animation:legendPulse 2.1s ease-in-out infinite}
   @keyframes legendPulse{0%,100%{box-shadow:0 0 0 1px #ffd16666,0 0 24px #ffd16633}50%{box-shadow:0 0 0 1px #ffd166aa,0 0 34px #ffd16680}}
 
@@ -414,7 +412,7 @@
     <div class="item">
       <div class="accountLayout">
         <div class="avatarWrap">
-          <div class="avatar premiumFrame" id="avatarBox" title="Нажми, чтобы загрузить фото">
+          <div class="avatar" id="avatarBox" title="Нажми, чтобы загрузить фото">
             <span style="font-weight:950;color:#eaf2ffcc">+</span>
           </div>
           <button class="btn mini" id="accClear">Удалить фото</button>
@@ -797,8 +795,8 @@
 const KEY = "frog_clicker_pro_save_v5";
 const LEGACY_SAVE_KEYS = ["frog_clicker_pro_save_v4", "frog_clicker_pro_save_v3"];
 const LEADERBOARD_KEY = "frog_clicker_leaderboard_v1";
-const PROFILES_KEY = "frog_clicker_profiles_v1";
-let profileStore = { profiles:{}, activeUser:null, legacyMigrated:false };
+const PROFILES_KEY = "frog_clicker_profiles_v2";
+let profileStore = { accounts:{}, activeUser:null, legacyMigrated:false };
 let pendingCaseEquip = null;
 
 const state = {
@@ -893,24 +891,99 @@ async function hashPassword(input){
   let h=2166136261; for(const b of enc){ h ^= b; h += (h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24); }
   return (h>>>0).toString(16);
 }
+function buildAccountRecord(passwordHash="", saveData=null){
+  const snap = JSON.parse(JSON.stringify(saveData||initialStateSnapshot));
+  return {
+    password: passwordHash,
+    nickname: snap.account?.nick || "",
+    bio: snap.account?.bio || "",
+    avatar: snap.account?.avatarDataUrl || "",
+    builtInAvatar: snap.account?.builtInAvatar || "",
+    frame: snap.account?.frame || "",
+    titles: JSON.parse(JSON.stringify(snap.meta?.title ? [snap.meta.title] : [])),
+    currency: {
+      points: Number(snap.points)||0,
+      diamonds: Number(snap.diamonds)||0,
+      dust: Number(snap.dust)||0
+    },
+    stats: JSON.parse(JSON.stringify(snap.stats||{})),
+    saveData: snap
+  };
+}
+function normalizeAccountRecord(acc){
+  const fallback = buildAccountRecord("", initialStateSnapshot);
+  const merged = Object.assign({}, fallback, acc||{});
+  merged.currency = Object.assign({}, fallback.currency, merged.currency||{});
+  merged.stats = Object.assign({}, fallback.stats, merged.stats||{});
+  merged.titles = Array.isArray(merged.titles) ? merged.titles : [];
+  merged.saveData = JSON.parse(JSON.stringify(merged.saveData||initialStateSnapshot));
+  merged.password ||= "";
+  return merged;
+}
+function syncAccountFromState(name){
+  const acc = profileStore.accounts[name];
+  if(!acc) return;
+  acc.nickname = state.account.nick || "";
+  acc.bio = state.account.bio || "";
+  acc.avatar = state.account.avatarDataUrl || "";
+  acc.builtInAvatar = state.account.builtInAvatar || "";
+  acc.frame = state.account.frame || "";
+  acc.titles = state.meta?.title ? [state.meta.title] : [];
+  acc.currency = { points:Number(state.points)||0, diamonds:Number(state.diamonds)||0, dust:Number(state.dust)||0 };
+  acc.stats = JSON.parse(JSON.stringify(state.stats||{}));
+  acc.saveData = JSON.parse(JSON.stringify(state));
+}
+function applyAccountToState(name){
+  const acc = profileStore.accounts[name];
+  if(!acc) return;
+  const snap = JSON.parse(JSON.stringify(acc.saveData||initialStateSnapshot));
+  snap.account ||= {};
+  snap.account.nick = acc.nickname || "";
+  snap.account.bio = acc.bio || "";
+  snap.account.avatarDataUrl = acc.avatar || "";
+  snap.account.builtInAvatar = acc.builtInAvatar || "";
+  snap.account.frame = acc.frame || "";
+  snap.points = Number(acc.currency?.points) || Number(snap.points) || 0;
+  snap.diamonds = Number(acc.currency?.diamonds) || Number(snap.diamonds) || 0;
+  snap.dust = Number(acc.currency?.dust) || Number(snap.dust) || 0;
+  snap.stats = Object.assign({}, snap.stats||{}, acc.stats||{});
+  if(acc.titles?.length){ snap.meta ||= {}; snap.meta.title = acc.titles[0]; }
+  resetToFreshState();
+  deepMerge(state, snap);
+}
 function loadProfiles(){
-  try{ profileStore = JSON.parse(localStorage.getItem(PROFILES_KEY)||'{"profiles":{},"activeUser":null,"legacyMigrated":false}'); }catch{}
-  profileStore.profiles ||= {};
-  profileStore.profiles.ilya13 ||= { passwordHash:"", saveData:null };
+  try{ profileStore = JSON.parse(localStorage.getItem(PROFILES_KEY)||'{"accounts":{},"activeUser":null,"legacyMigrated":false}'); }catch{}
+  profileStore.accounts ||= {};
+  if(!Object.keys(profileStore.accounts).length && localStorage.getItem("frog_clicker_profiles_v1")){
+    try{
+      const old = JSON.parse(localStorage.getItem("frog_clicker_profiles_v1")||"{}");
+      for(const [name, rec] of Object.entries(old.profiles||{})){
+        profileStore.accounts[name] = buildAccountRecord(rec.passwordHash||"", rec.saveData||initialStateSnapshot);
+      }
+      profileStore.activeUser = old.activeUser || null;
+      profileStore.legacyMigrated = !!old.legacyMigrated;
+    }catch{}
+  }
+  for(const [name, acc] of Object.entries(profileStore.accounts)) profileStore.accounts[name] = normalizeAccountRecord(acc);
+  profileStore.accounts.ilya13 ||= buildAccountRecord("", initialStateSnapshot);
 }
 function ensureDevAccount(){
-  if(!profileStore.profiles.ilya13?.passwordHash){
-    profileStore.profiles.ilya13={ passwordHash:"96cae35ce8a9b0244178bf28e4966c2ce1b8385723a96a6b838858cdd6ca0a1e", saveData:Object.assign(JSON.parse(JSON.stringify(initialStateSnapshot)), { points:999999999, diamonds:10000000, dust:5000000, account:{ nick:"ilya13", bio:"dev test profile", avatarDataUrl:"", builtInAvatar:"frog5" } })};
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(profileStore));
+  if(!profileStore.accounts.ilya13?.password){
+    profileStore.accounts.ilya13 = buildAccountRecord("96cae35ce8a9b0244178bf28e4966c2ce1b8385723a96a6b838858cdd6ca0a1e", Object.assign(JSON.parse(JSON.stringify(initialStateSnapshot)), { points:999999999, diamonds:10000000, dust:5000000, account:{ nick:"ilya13", bio:"dev test profile", avatarDataUrl:"", builtInAvatar:"frog5", frame:"" } }));
   }
 }
 function applyDevAccountBalances(){
-  const dev = profileStore.profiles.ilya13;
+  const dev = profileStore.accounts.ilya13;
   if(!dev) return;
+  dev.currency ||= {};
+  dev.currency.points = 999999999;
+  dev.currency.diamonds = 10000000;
+  dev.currency.dust = 5000000;
   dev.saveData ||= JSON.parse(JSON.stringify(initialStateSnapshot));
-  dev.saveData.points = 999999999;
-  dev.saveData.diamonds = 10000000;
-  dev.saveData.dust = 5000000;
+  dev.saveData.points = dev.currency.points;
+  dev.saveData.diamonds = dev.currency.diamonds;
+  dev.saveData.dust = dev.currency.dust;
+  dev.nickname ||= "ilya13";
 }
 function saveProfiles(){ applyDevAccountBalances(); localStorage.setItem(PROFILES_KEY, JSON.stringify(profileStore)); }
 function resetToFreshState(){
@@ -920,7 +993,7 @@ function resetToFreshState(){
   state.settings = Object.assign(state.settings||{}, keep);
 }
 function hasLegacySave(){ return !!localStorage.getItem(KEY); }
-function syncProfileSave(){ if(profileStore.activeUser && profileStore.profiles[profileStore.activeUser]){ profileStore.profiles[profileStore.activeUser].saveData = JSON.parse(JSON.stringify(state)); saveProfiles(); } }
+function syncProfileSave(){ if(profileStore.activeUser && profileStore.accounts[profileStore.activeUser]){ syncAccountFromState(profileStore.activeUser); saveProfiles(); } }
 
 function save(){
   if(profileStore.activeUser){
@@ -932,9 +1005,10 @@ function save(){
 }
 function load(){
   loadProfiles();
+  ensureDevAccount();
   applyDevAccountBalances();
-  if(profileStore.activeUser && profileStore.profiles[profileStore.activeUser]?.saveData){
-    try{ deepMerge(state, profileStore.profiles[profileStore.activeUser].saveData); }catch{}
+  if(profileStore.activeUser && profileStore.accounts[profileStore.activeUser]){
+    try{ applyAccountToState(profileStore.activeUser); }catch{}
   }else{
     const raw = localStorage.getItem(KEY);
     if(raw){
@@ -1494,17 +1568,24 @@ function renderShop(){
   skinsBox.innerHTML=""; accsBox.innerHTML=""; framesBox.innerHTML="";
   const order = {common:0, rare:1, epic:2, legend:3};
   const sorted = [...cosmeticItems].sort((a,b)=> (order[a.rarity]-order[b.rarity]) || (a.price-b.price));
-  const limitedWrap = document.createElement("div");
-  limitedWrap.className = "limitedBlock";
-  limitedWrap.innerHTML = `<div class="item" style="margin-bottom:10px"><div class="t">Лимит</div><div class="s">Редкие дорогие предметы поздней игры</div></div>`;
-  const limitedGrid = document.createElement("div"); limitedGrid.className="shopGrid"; limitedWrap.appendChild(limitedGrid);
+  const normalAccCards = [];
+  const limitedAccCards = [];
   for(const it of sorted){
     const card = renderCosmeticCard(it);
     if(it.kind==="skin") skinsBox.appendChild(card);
-    else if(it.limited) limitedGrid.appendChild(card);
-    else accsBox.appendChild(card);
+    else if(it.limited){
+      card.classList.add("limitedCard");
+      limitedAccCards.push(card);
+    }else normalAccCards.push(card);
   }
-  if(limitedGrid.children.length) accsBox.appendChild(limitedWrap);
+  normalAccCards.forEach(c=>accsBox.appendChild(c));
+  if(limitedAccCards.length){
+    const limitedHead = document.createElement("div");
+    limitedHead.className = "item limitedBlock";
+    limitedHead.innerHTML = `<div class="t">Лимит</div><div class="s">Редкие дорогие предметы поздней игры</div>`;
+    accsBox.appendChild(limitedHead);
+    limitedAccCards.forEach(c=>accsBox.appendChild(c));
+  }
   frameItems.forEach(it=> framesBox.appendChild(renderCosmeticCard(it)));
   renderCaseList();
 }
@@ -3451,28 +3532,37 @@ function showProfileGate(){ const m=document.getElementById('profileGateModal');
 function hideProfileGate(){ document.getElementById('profileGateModal')?.classList.remove('show'); syncModalLock(); }
 async function registerAccount(name,pass,fromLegacy=false){
   if(!name||!pass) return toast('Профиль','Введите логин и пароль','ACCOUNT');
-  if(profileStore.profiles[name]) return toast('Профиль','Логин занят','ACCOUNT');
+  if(profileStore.accounts[name]) return toast('Профиль','Логин занят','ACCOUNT');
   const hash=await hashPassword(pass);
   let saveData = JSON.parse(JSON.stringify(state));
   if(fromLegacy && localStorage.getItem(KEY)){
     try{ saveData = JSON.parse(localStorage.getItem(KEY)); }catch{}
     profileStore.legacyMigrated=true;
   }
-  profileStore.profiles[name]={ passwordHash:hash, saveData };
+  profileStore.accounts[name] = buildAccountRecord(hash, saveData);
   profileStore.activeUser=name;
+  window.__guestMode=false;
   saveProfiles();
-  resetToFreshState();
-  deepMerge(state, saveData);
+  applyAccountToState(name);
+  nickInput.value = state.account.nick || "";
+  bioInput.value = state.account.bio || "";
   hideProfileGate();
-  save(); updateUI(true);
+  save(); updateUI(true); renderAvatar();
 }
 async function loginAccount(name,pass){
-  const p=profileStore.profiles[name]; if(!p) return toast('Профиль','Аккаунт не найден','ACCOUNT');
-  const hash=await hashPassword(pass); if(hash!==p.passwordHash) return toast('Профиль','Неверный пароль','ACCOUNT');
-  profileStore.activeUser=name; saveProfiles(); resetToFreshState(); deepMerge(state, p.saveData||{}); window.__guestMode=false; hideProfileGate(); save(); updateUI(true); renderAvatar();
+  const p=profileStore.accounts[name]; if(!p) return toast('Профиль','Аккаунт не найден','ACCOUNT');
+  const hash=await hashPassword(pass); if(hash!==p.password) return toast('Профиль','Неверный пароль','ACCOUNT');
+  profileStore.activeUser=name;
+  window.__guestMode=false;
+  applyAccountToState(name);
+  saveProfiles();
+  nickInput.value = state.account.nick || "";
+  bioInput.value = state.account.bio || "";
+  hideProfileGate();
+  save(); updateUI(true); renderAvatar();
 }
-function enterGuest(){ profileStore.activeUser=null; window.__guestMode=true; saveProfiles(); resetToFreshState(); hideProfileGate(); updateUI(true); renderAvatar(); }
-function logoutAccount(){ profileStore.activeUser=null; window.__guestMode=true; saveProfiles(); resetToFreshState(); nickInput.value=""; bioInput.value=""; renderAvatar(); updateUI(true); }
+function enterGuest(){ profileStore.activeUser=null; window.__guestMode=true; saveProfiles(); resetToFreshState(); nickInput.value=""; bioInput.value=""; hideProfileGate(); updateUI(true); renderAvatar(); }
+function logoutAccount(){ if(profileStore.activeUser){ syncAccountFromState(profileStore.activeUser); } profileStore.activeUser=null; window.__guestMode=true; saveProfiles(); resetToFreshState(); nickInput.value=""; bioInput.value=""; state.account.avatarDataUrl=""; state.account.builtInAvatar=""; state.account.frame=""; renderAvatar(); updateUI(true); }
 function initModalPortals(){
   const shopBody=document.getElementById('shopModalBody'); const gamesBody=document.getElementById('gamesModalBody');
   const shopPane=document.getElementById('tab-shop'); const gamesPane=document.getElementById('tab-games');
