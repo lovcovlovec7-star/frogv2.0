@@ -812,7 +812,7 @@
     <input id="gateRegPass" type="password" placeholder="Пароль" style="display:none"/>
   </div>
 </div>
-<div class="modalBack" id="caseOpenModal"><div class="modal caseModal"><div class="caseModalTop"><div><div class="t" style="font-weight:950">Открытие кейса</div><div class="s small" id="caseModalSub">Выберите кейс и нажмите «Начать открытие»</div></div><button class="btn caseSecondary" id="caseModalClose">Закрыть</button></div><div class="modalScroll"><div id="caseModalContent" class="caseAnimCard"></div></div><div class="caseActions" style="margin-top:10px"><button class="btn casePrimary" id="caseSpinBtn">Начать открытие</button><button class="btn" id="caseEquipBtn" style="display:none">Надеть сейчас</button><button class="btn" id="caseInventoryBtn" style="display:none">В инвентарь</button><button class="btn caseSecondary" id="caseSellBtn" style="display:none">В пыль</button><button class="btn caseSecondary" id="caseCloseBtn" style="display:none">ОК</button></div></div></div>
+<div class="modalBack" id="caseOpenModal"><div class="modal caseModal"><div class="caseModalTop"><div><div class="t" style="font-weight:950">Открытие кейса</div><div class="s small" id="caseModalSub">Выберите кейс и нажмите «Начать открытие»</div></div><button class="btn caseSecondary" id="caseModalClose">Закрыть</button></div><div class="modalScroll"><div id="caseModalContent" class="caseAnimCard"></div></div><div class="caseActions" style="margin-top:10px"><button class="btn casePrimary" id="caseSpinBtn">Начать открытие</button><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn" id="caseInventoryBtn" style="display:none">В инвентарь</button><button class="btn caseSecondary" id="caseSellBtn" style="display:none">В пыль</button><button class="btn caseSecondary" id="caseCloseBtn" style="display:none">Ок</button></div></div></div>
 <div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout modalScroll" style="margin-top:10px"><div class="shopPreview"><canvas id="shopPreview" width="420" height="420"></canvas></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
 <div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
 
@@ -1581,7 +1581,15 @@ function itemGlyphSvg(it,big=false){
 function caseChestSvg(caseType){
   const c=rarityColor(caseType.tier); const accent= caseType.tier==='limited'?'#ffb26b':c;
   const lid = caseType.chest==='relic' ? '<path d="M12 38h96l-8-18H20z" fill="#51361a" stroke="#ffd166" stroke-width="3"/>' : caseType.chest==='arcane' ? '<path d="M14 36h92l-6-16H20z" fill="#2b1b4c" stroke="#b688ff" stroke-width="3"/>' : caseType.chest==='moon' ? '<path d="M12 38h96l-8-16H20z" fill="#2d3f65" stroke="#63a9ff" stroke-width="3"/>' : '<path d="M12 38h96l-8-16H20z" fill="#4e3a24" stroke="#9dc0ad" stroke-width="3"/>';
-  return `<svg viewBox="0 0 120 80" aria-hidden="true"><defs><filter id="cg"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="${c}" flood-opacity=".8"/></filter></defs>${lid}<rect x="10" y="36" width="100" height="34" rx="8" fill="#1a2439" stroke="${accent}" stroke-width="3" filter="url(#cg)"/><rect x="52" y="34" width="16" height="36" rx="4" fill="#ffe39e"/><circle cx="60" cy="52" r="4" fill="#8d5b16"/></svg>`;
+  const frontTone = ({
+    common:['#7ca493','#516a61'],
+    rare:['#68b8ff','#34588f'],
+    epic:['#be98ff','#5f4691'],
+    legend:['#ffd487','#9f6f1e'],
+    limited:['#ffad74','#a9572f']
+  })[caseType.tier] || ['#7ca493','#516a61'];
+  const chestId = `cg-${caseType.id||caseType.tier}`;
+  return `<svg viewBox="0 0 120 80" aria-hidden="true"><defs><filter id="${chestId}"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="${c}" flood-opacity=".8"/></filter><linearGradient id="front-${chestId}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${frontTone[0]}"/><stop offset="1" stop-color="${frontTone[1]}"/></linearGradient><linearGradient id="shine-${chestId}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff55"/><stop offset="1" stop-color="#ffffff05"/></linearGradient></defs>${lid}<rect x="10" y="36" width="100" height="34" rx="8" fill="url(#front-${chestId})" stroke="${accent}" stroke-width="3" filter="url(#${chestId})"/><rect x="12" y="38" width="96" height="30" rx="7" fill="url(#shine-${chestId})" stroke="rgba(255,255,255,.15)" stroke-width="1"/><rect x="52" y="34" width="16" height="36" rx="4" fill="#ffe39e"/><circle cx="60" cy="52" r="4" fill="#8d5b16"/></svg>`;
 }
 function caseCurrencyIcon(currency){ return currency==='points'?'🪙':currency==='dust'?'✨':'💎'; }
 function caseCurrencyLabel(currency){ return currency==='points'?'монет':currency==='dust'?'пыли':'алмазов'; }
@@ -3636,46 +3644,64 @@ function spinActiveCase(){
   const reel = document.getElementById('caseReel');
   const stage = document.getElementById('caseChestStage');
   const c=document.getElementById('caseModalContent');
-  if(!reel||!c) return;
-  const pool = cosmeticItems.filter(it=>it.rarity===drop.rarity || it.kind===drop.kind);
-  const basePool = pool.length ? pool : cosmeticItems;
-  const seq = Array.from({length:220}, (_,i)=> basePool[(Math.floor(Math.random()*basePool.length)+i)%basePool.length] || drop);
-  const stopIndex = 180;
-  seq[stopIndex]=drop;
-  reel.innerHTML = seq.map((it)=>`<div class="caseReelItem rarity-${it.rarity}"><div class="gem" style="background:${rarityColor(it.rarity)}"></div>${itemGlyphSvg(it,false)}<div class="caseReelItemName">${it.name}</div></div>`).join('');
+  const viewport=document.querySelector('.caseReelViewport');
+  if(!reel||!c||!viewport){ toast('Ошибка кейса','Не удалось запустить рулетку','CASE'); return; }
+
+  const minItems = 100;
+  const maxItems = 132;
+  const totalItems = minItems + Math.floor(Math.random()*(maxItems-minItems+1));
+  const winIndex = totalItems - (9 + Math.floor(Math.random()*3));
+  const weighted = [];
+  for(let i=0;i<totalItems;i++) weighted.push(resolveCaseReward(cs));
+  weighted[winIndex] = drop;
+  reel.innerHTML = weighted.map((it)=>`<div class="caseReelItem rarity-${it.rarity}"><div class="gem" style="background:${rarityColor(it.rarity)}"></div>${itemGlyphSvg(it,false)}<div class="caseReelItemName">${it.name}</div></div>`).join('');
   c.className=`caseAnimCard rarityBurst-${drop.rarity}`;
   stage?.classList.remove('idle');
   stage?.classList.add('shake');
   caseSfx('open');
+  console.log('CASE OPEN START');
+
+  const cards = reel.querySelectorAll('.caseReelItem');
+  const winningCard = cards[winIndex];
+  if(!winningCard){ toast('Ошибка кейса','Выигрышная карта не найдена','CASE'); return; }
+  const viewportRect = viewport.getBoundingClientRect();
+  const cardRect = winningCard.getBoundingClientRect();
+  const viewportCenter = viewportRect.left + viewportRect.width/2;
+  const cardCenter = cardRect.left + cardRect.width/2;
+  let finalX = viewportCenter - cardCenter;
+  const startX = 0;
+  let distancePx = Math.abs(finalX - startX);
+  const firstCard = cards[0];
+  const secondCard = cards[1];
+  const itemStep = (firstCard && secondCard) ? (secondCard.offsetLeft - firstCard.offsetLeft) : 146;
+  if(distancePx < 3000){
+    const extraSteps = Math.ceil((3000-distancePx)/Math.max(itemStep,1));
+    finalX -= extraSteps*Math.max(itemStep,1);
+    distancePx = Math.abs(finalX - startX);
+  }
+
+  const duration = 3200 + Math.random()*1600;
   let lastTick=0;
-  const launchSpin=()=>{
-    caseSfx('whoosh');
-    const first = reel.querySelector('.caseReelItem');
-    const itemW = first ? first.getBoundingClientRect().width + 12 : 146;
-    const centerOffset = ((document.querySelector('.caseReelViewport')?.clientWidth || 700) - itemW) / 2;
-    const targetOffset = stopIndex*itemW - centerOffset;
-    const extraSpins = itemW*basePool.length*3;
-    const endOffset = targetOffset + extraSpins;
-    const start=performance.now();
-    const dur=3300 + Math.random()*1000;
-    reel.style.transform='translateX(0px)';
-    reel.getBoundingClientRect();
-    function tick(now){
-      const t=Math.min(1,(now-start)/dur);
-      const ease=1-Math.pow(1-t,3.2);
-      const wobble=Math.sin(t*26)*(1-t)*8;
-      const x = endOffset*ease + wobble;
-      reel.style.transform=`translateX(${-x}px)`;
-      if(now-lastTick>115){ caseSfx('tick'); lastTick=now; }
-      if(t<1) requestAnimationFrame(tick);
-      else{
-        reel.style.transform=`translateX(${-targetOffset}px)`;
-        revealCaseReward(drop, wasOwned, cs);
-      }
+  reel.style.transform='translateX(0px)';
+  caseSfx('whoosh');
+  const startTime = performance.now();
+  function tick(now){
+    const elapsed = now - startTime;
+    const progress = Math.min(1, elapsed / duration);
+    const eased = 1 - Math.pow(1-progress, 3.35);
+    const wobble = Math.sin(progress*22) * (1-progress) * 10;
+    const currentX = startX + (finalX - startX) * eased + wobble;
+    reel.style.transform=`translateX(${currentX}px)`;
+    if(now-lastTick>115){ caseSfx('tick'); lastTick=now; }
+    if(progress===1 || progress===0 || Math.floor(progress*100)%12===0) console.log('SPIN running', progress.toFixed(3));
+    if(progress<1) requestAnimationFrame(tick);
+    else{
+      reel.style.transform=`translateX(${finalX}px)`;
+      console.log('SPIN END', drop);
+      revealCaseReward(drop, wasOwned, cs);
     }
-    requestAnimationFrame(tick);
-  };
-  setTimeout(launchSpin, 460);
+  }
+  requestAnimationFrame(tick);
   if(spinBtn) spinBtn.style.display='none';
 }
 function emitCaseParticles(rarity){
@@ -3708,8 +3734,8 @@ function revealCaseReward(drop, duplicate, cs){
   const caseResult=document.getElementById('caseResult');
   if(caseResult) caseResult.textContent = `Открыт: ${drop.name}${duplicate?` · дубликат (+${comp} алм., +${dustGain} пыль)`:''}`;
   document.getElementById('caseEquipBtn').style.display = pendingCaseEquip?'inline-flex':'none';
-  document.getElementById('caseInventoryBtn').style.display = 'inline-flex';
-  document.getElementById('caseSellBtn').style.display = duplicate?'inline-flex':'none';
+  document.getElementById('caseInventoryBtn').style.display = 'none';
+  document.getElementById('caseSellBtn').style.display = 'none';
   document.getElementById('caseCloseBtn').style.display='inline-flex';
   caseSfx('reveal');
   if(drop.rarity==='legend' || drop.rarity==='limited') caseSfx('sparkle');
