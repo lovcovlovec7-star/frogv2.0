@@ -303,6 +303,20 @@
   .bjCard{padding:8px 10px;border-radius:10px;border:1px solid #ffffff2c;background:#0000002f;font-weight:900}
   @media (max-width:430px){.locationGrid{grid-template-columns:1fr}}
 
+  .topActions{display:flex;gap:10px;margin:0 0 10px 0;flex-wrap:wrap}
+  .topActions .btn{flex:1;min-width:140px}
+  .sceneFx{position:absolute;inset:0;pointer-events:none;opacity:.55;mix-blend-mode:screen;transition:opacity .7s ease;background-size:220% 220%;animation:driftBg 12s linear infinite}
+  @keyframes driftBg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  .caseAnimCard{display:grid;place-items:center;min-height:160px;border:1px solid #ffffff2e;border-radius:16px;background:#0000002a;position:relative;overflow:hidden}
+  .caseAnimCard.shake{animation:caseShake .45s ease-in-out}
+  .caseAnimCard.reveal{animation:caseReveal .5s ease}
+  @keyframes caseShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+  @keyframes caseReveal{0%{transform:scale(.92) rotateY(0deg);opacity:.4}100%{transform:scale(1) rotateY(360deg);opacity:1}}
+  .rarityBurst-common{box-shadow:0 0 26px #ffffff2b inset}
+  .rarityBurst-rare{box-shadow:0 0 34px #5fb0ff88 inset}
+  .rarityBurst-epic{box-shadow:0 0 38px #be87ff88 inset}
+  .rarityBurst-legend{box-shadow:0 0 44px #ffd16699 inset}
+
 </style>
 </head>
 
@@ -335,6 +349,7 @@
       <div class="btnRow" style="margin-top:10px">
         <button class="btn primary" id="accSave">Сохранить профиль</button>
         <button class="btn" id="accClear">Удалить фото</button>
+        <button class="btn danger" id="logoutBtn">Выйти</button>
       </div>
 
       <input id="avatarFile" type="file" accept="image/*" style="display:none"/>
@@ -382,6 +397,10 @@
 
   <!-- CENTER: FROG -->
   <div class="card">
+    <div class="topActions">
+      <button class="btn primary" id="openShopModalBtn">🛒 Магазин</button>
+      <button class="btn" id="openGamesModalBtn">🎮 Мини-игры</button>
+    </div>
     <div class="top">
       <div class="brand">
         <h1>🐸 Frog Clicker — PRO</h1>
@@ -392,6 +411,7 @@
 
     <div class="arena" id="arena">
       <div id="frogWrap">
+        <div class="sceneFx" id="sceneFx"></div>
         <canvas id="frog" width="900" height="900"></canvas>
         <div class="hintChip">Клик = очки · Двойной клик = “суперква” · Нажми один раз, чтобы включить звук</div>
       </div>
@@ -658,6 +678,19 @@
   </div>
 </div>
 
+
+<div class="modalBack" id="profileGateModal">
+  <div class="modal">
+    <div class="modalTop"><div><div class="t" style="font-weight:950">Профиль</div><div class="s small">Выберите режим входа</div></div></div>
+    <div class="btnRow" style="margin-bottom:10px"><button class="btn" id="gateGuestBtn">Гость</button></div>
+    <div class="item" style="margin-bottom:10px"><div class="t">Войти</div><input id="gateLoginName" placeholder="Логин"/><input id="gateLoginPass" type="password" placeholder="Пароль" style="margin-top:8px"/><div class="btnRow" style="margin-top:8px"><button class="btn primary" id="gateLoginBtn">Войти</button></div></div>
+    <div class="item"><div class="t">Создать аккаунт</div><input id="gateRegName" placeholder="Логин"/><input id="gateRegPass" type="password" placeholder="Пароль" style="margin-top:8px"/><div class="btnRow" style="margin-top:8px"><button class="btn warn" id="gateRegBtn">Создать аккаунт</button></div><div class="small" id="legacyImportWrap" style="display:none;margin-top:10px"><button class="btn" id="legacyImportBtn">Импортировать текущий прогресс в аккаунт</button></div></div>
+  </div>
+</div>
+<div class="modalBack" id="caseOpenModal"><div class="modal"><div class="modalTop"><div class="t" style="font-weight:950">Открытие кейса</div><button class="btn" id="caseModalClose">Закрыть</button></div><div id="caseModalContent" class="caseAnimCard">🎁</div><div class="btnRow" style="margin-top:10px"><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn primary" id="caseOkBtn">Ок</button></div></div></div>
+<div class="modalBack" id="shopModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag" id="shopBal"></span><span class="tag" id="shopBalDiam"></span><span class="tag" id="shopBalDust"></span></div><div id="shopModalBody" style="margin-top:10px"></div></div></div>
+<div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
+
 <div class="toasts" id="toasts"></div>
 <div class="modalBack" id="avatarModal">
   <div class="modal">
@@ -683,6 +716,9 @@
 const KEY = "frog_clicker_pro_save_v5";
 const LEGACY_SAVE_KEYS = ["frog_clicker_pro_save_v4", "frog_clicker_pro_save_v3"];
 const LEADERBOARD_KEY = "frog_clicker_leaderboard_v1";
+const PROFILES_KEY = "frog_clicker_profiles_v1";
+let profileStore = { profiles:{}, activeUser:null, legacyMigrated:false };
+let pendingCaseEquip = null;
 
 const state = {
   points: 0,
@@ -753,6 +789,7 @@ const state = {
   event: { id:"none", until:0 },
   newsSeenVersion: ""
 };
+const initialStateSnapshot = JSON.parse(JSON.stringify(state));
 
 function deepMerge(target, src){
   for(const k in src){
@@ -765,30 +802,50 @@ function deepMerge(target, src){
   }
 }
 
-function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-function load(){
-  let raw = localStorage.getItem(KEY);
-  if(!raw){
-    for(const legacyKey of LEGACY_SAVE_KEYS){
-      raw = localStorage.getItem(legacyKey);
-      if(raw) break;
-    }
+
+async function hashPassword(input){
+  const enc = new TextEncoder().encode(String(input));
+  if(window.crypto?.subtle){
+    const digest = await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
   }
-  if(!raw) return;
-  try{
-    const d = JSON.parse(raw);
-    deepMerge(state, d);
-    state.energyMax = Math.max(40, Number(state.energyMax)||100);
-    state.energy = clamp(Number(state.energy)||state.energyMax, 0, state.energyMax);
-    state.energyRegen = Math.max(1, Number(state.energyRegen)||6);
-    state.clickEnergyCost = clamp(Number(state.clickEnergyCost)||1, 0.2, 3);
-    state.diamonds = Math.max(0, Math.floor(Number(state.diamonds)||0));
-    state.bestPointsAllTime = Math.max(Number(state.bestPointsAllTime)||0, Number(state.points)||0);
-    state.activeLocation ||= "swamp";
-    state.activeTheme ||= "emerald";
-    localStorage.setItem(KEY, JSON.stringify(state));
-  }catch{}
+  let h=2166136261; for(const b of enc){ h ^= b; h += (h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24); }
+  return (h>>>0).toString(16);
 }
+function loadProfiles(){
+  try{ profileStore = JSON.parse(localStorage.getItem(PROFILES_KEY)||'{"profiles":{},"activeUser":null,"legacyMigrated":false}'); }catch{}
+  profileStore.profiles ||= {};
+}
+function saveProfiles(){ localStorage.setItem(PROFILES_KEY, JSON.stringify(profileStore)); }
+function resetToFreshState(){
+  const keep = JSON.parse(JSON.stringify(state.settings||{}));
+  Object.keys(state).forEach(k=>delete state[k]);
+  deepMerge(state, JSON.parse(JSON.stringify(initialStateSnapshot)));
+  state.settings = Object.assign(state.settings||{}, keep);
+}
+function hasLegacySave(){ return !!localStorage.getItem(KEY); }
+function syncProfileSave(){ if(profileStore.activeUser && profileStore.profiles[profileStore.activeUser]){ profileStore.profiles[profileStore.activeUser].saveData = JSON.parse(JSON.stringify(state)); saveProfiles(); } }
+
+function save(){ if(profileStore.activeUser){ localStorage.setItem(KEY, JSON.stringify(state)); syncProfileSave(); } }
+function load(){
+  loadProfiles();
+  if(profileStore.activeUser && profileStore.profiles[profileStore.activeUser]?.saveData){
+    try{ deepMerge(state, profileStore.profiles[profileStore.activeUser].saveData); }catch{}
+  }
+  const raw = localStorage.getItem(KEY);
+  if(profileStore.activeUser && raw){
+    try{ deepMerge(state, JSON.parse(raw)); }catch{}
+  }
+  state.energyMax = Math.max(40, Number(state.energyMax)||100);
+  state.energy = clamp(Number(state.energy)||state.energyMax, 0, state.energyMax);
+  state.energyRegen = Math.max(1, Number(state.energyRegen)||6);
+  state.clickEnergyCost = clamp(Number(state.clickEnergyCost)||1, 0.2, 3);
+  state.diamonds = Math.max(0, Math.floor(Number(state.diamonds)||0));
+  state.bestPointsAllTime = Math.max(Number(state.bestPointsAllTime)||0, Number(state.points)||0);
+  state.activeLocation ||= "swamp";
+  state.activeTheme ||= "emerald";
+}
+
 
 /* =========================
   UTIL
@@ -935,6 +992,8 @@ const uiThemes = [
 ];
 
 const versionNotes = [
+  { v:"3.0.0", date:"2026-02-25", points:["Мульти-профили и гостевой вход","Ранги дают реальные бонусы и прогресс-бар","Анимированное открытие кейсов + пыль за дубликаты","Blackjack сбалансирован: алмазы сильно ограничены","Добавлены модальные окна магазина и мини-игр"] },
+  { v:"3.0.1", date:"2026-02-25", points:["Лягушачьи эмодзи-частицы при клике","Отдельная громкость SFX и обновлённый клик-звук","Улучшены атмосферные фоны локаций и музыкальные переходы"] },
   { v:"2.0.0", date:"2026-02-23", points:["Живая лягушка: моргание, взгляд за курсором, эмоции","Добавлена энергия и анти-спам кликов","Магазин разбит на вкладки + добавлены кейсы за алмазы","Появились локации с атмосферой и музыкой","Добавлены Blackjack и улучшенный раннер"] },
   { v:"2.1.0", date:"2026-02-24", points:["Автообновляемый лидерборд с рекордом за всё время","Новости/версии с отметкой new","Тихий режим оставлен только для важных событий"] }
 ];
@@ -994,6 +1053,17 @@ function refreshMusic(){
 /* =========================
   RANKS / TITLES
 ========================= */
+const rankPerks = [
+  { lvl:1, passive:0, click:0, caseTier:0 },
+  { lvl:3, passive:0.08, click:0.04, caseTier:1 },
+  { lvl:6, passive:0.15, click:0.10, caseTier:2 },
+  { lvl:10, passive:0.25, click:0.16, caseTier:3 },
+  { lvl:15, passive:0.38, click:0.22, caseTier:3 },
+  { lvl:22, passive:0.50, click:0.30, caseTier:3 },
+  { lvl:30, passive:0.65, click:0.40, caseTier:3 },
+  { lvl:40, passive:0.85, click:0.55, caseTier:3 }
+];
+
 const ranks = [
   { lvl:1,  name:"Tadpole" },
   { lvl:3,  name:"Froglet" },
@@ -1013,6 +1083,8 @@ const titles = [
   { id:"Рейдер болота", req:()=>state.meta?.raidBest>=1200 },
   { id:"Легенда", req:()=>state.level>=25 }
 ];
+
+function currentPerk(){ let p=rankPerks[0]; for(const it of rankPerks) if(state.level>=it.lvl) p=it; return p; }
 
 function currentRank(){
   let r=ranks[0];
@@ -1230,15 +1302,19 @@ function openCase(caseId){
   const pool = cosmeticItems.filter(it=> cs.rarities.includes(it.rarity));
   const drop = pool[Math.floor(Math.random()*pool.length)] || cosmeticItems[0];
   const caseResult = document.getElementById("caseResult");
+  const wasOwned = own(drop.id);
   let rewardText = `${drop.name}`;
-  if(own(drop.id)){
-    const comp = Math.max(5, Math.round(cs.price*0.45));
-    state.diamonds += comp;
-    rewardText += ` · дубликат (+${comp} алм.)`;
+  if(wasOwned){
+    const comp = Math.max(1, Math.round(cs.price*0.12));
+    const dustGain = Math.max(2, Math.round(cs.price*0.25));
+    state.diamonds = Math.min(999999, state.diamonds + comp);
+    state.dust = Math.min(999999, (state.dust||0) + dustGain);
+    rewardText += ` · дубликат (+${comp} алм., +${dustGain} пыль)`;
   }else{
     state.owned[drop.id] = true;
   }
-  if(caseResult){ caseResult.textContent = `Дроп: ${rewardText}`; }
+  if(caseResult){ caseResult.textContent = `Открыт: ${rewardText}`; }
+  showCaseModal(drop, wasOwned);
   const major = drop.rarity==="legend" || drop.rarity==="epic";
   toast("Кейс открыт", rewardText, "CASE", { forceImportant: major });
   if(major) frogCroak(1.2);
@@ -1257,6 +1333,9 @@ function renderCaseList(){
   });
 }
 function renderShop(){
+  const sb=document.getElementById("shopBal"); if(sb) sb.textContent=`Очки: ${Math.floor(state.points).toLocaleString("ru-RU")}`;
+  const sd=document.getElementById("shopBalDiam"); if(sd) sd.textContent=`Алмазы: ${Math.floor(state.diamonds).toLocaleString("ru-RU")}`;
+  const sdu=document.getElementById("shopBalDust"); if(sdu) sdu.textContent=`Пыль: ${Math.floor(state.dust||0).toLocaleString("ru-RU")}`;
   const skinsBox = document.getElementById("skinShopSkins");
   const accsBox = document.getElementById("skinShopAccs");
   if(!skinsBox || !accsBox) return;
@@ -1311,16 +1390,24 @@ function renderRanks(){
   const box = document.getElementById("rankList");
   if(!box) return;
   box.innerHTML="";
-  for(const r of ranks){
+  const perk = currentPerk();
+  const cur = currentRank();
+  const next = ranks.find(r=>state.level < r.lvl);
+  const prevLvl = cur.lvl || 1;
+  const prog = next ? clamp(((state.level-prevLvl)/Math.max(1,next.lvl-prevLvl))*100,0,100) : 100;
+  const head = document.createElement("div");
+  head.className = "item";
+  head.innerHTML = `<div class="t">Текущий ранг: ${cur.name}</div><div class="s">Активные бонусы: +${Math.round(perk.click*100)}% к кликам · +${Math.round(perk.passive*100)}% к пассиву</div><div class="bar"><div style="width:${prog}%"></div></div><div class="s">${next ? `До ${next.name}: уровень ${next.lvl}` : 'Максимальный ранг достигнут'}</div>`;
+  box.appendChild(head);
+  ranks.forEach((r, i)=>{
+    const rkPerk = rankPerks[i] || rankPerks[0];
     const on = state.level >= r.lvl;
     const div = document.createElement("div");
-    div.className="item";
-    div.innerHTML = `
-      <div class="t">${on ? "🟩" : "⬛"} ${r.name}</div>
-      <div class="s">Открывается с уровня ${r.lvl}</div>
-      <div class="row"><span class="tag">${on ? "Открыто" : "Закрыто"}</span></div>`;
+    div.className = "item";
+    if(on) div.style.borderColor = "#35f0a36a";
+    div.innerHTML = `<div class="t">${r.name}</div><div class="s">Ур. ${r.lvl}: +${Math.round(rkPerk.click*100)}% click / +${Math.round(rkPerk.passive*100)}% passive</div>`;
     box.appendChild(div);
-  }
+  });
 }
 
 function loadLeaderboard(){
@@ -1373,7 +1460,7 @@ function renderLocations(){
     const div = document.createElement('div');
     div.className = `item locCard ${unlocked?'':'locked'} ${active?'active':''}`;
     div.innerHTML = `<div class="t">${loc.name}</div><div class="s">${unlocked?'Открыта':'Нужно больше прогресса'}</div><div class="row"><button class="btn ${active?'primary':''}" ${unlocked?'':'disabled'}>${active?'Активна':'Выбрать'}</button></div>`;
-    div.querySelector('button').addEventListener('click', ()=>{ if(!unlocked) return; uiBeep(); state.activeLocation=loc.id; updateLocationTheme(); refreshMusic(); updateUI(false); save(); });
+    div.querySelector('button').addEventListener('click', ()=>{ if(!unlocked) return; uiBeep(); state.activeLocation=loc.id; updateLocationTheme(); updateSceneFx(); refreshMusic(); updateUI(false); save(); });
     box.appendChild(div);
   });
 }
@@ -1486,6 +1573,7 @@ function clickLogic(mult = 1){
 
   // event effects
   gain *= eventClickMultiplier();
+  gain *= (1 + (currentPerk().click||0));
 
   state.points += Math.round(gain);
   state.bestPointsAllTime = Math.max(state.bestPointsAllTime||0, state.points);
@@ -1523,7 +1611,7 @@ setInterval(()=>{
 setInterval(()=>{
   if(state.autoClickers>0){
     // passive clicks: no croak, no fx
-    const gain = Math.max(1, Math.round(state.autoClickers * (state.ppc*0.18)));
+    const gain = Math.max(1, Math.round(state.autoClickers * (state.ppc*0.18) * (1 + (currentPerk().passive||0))));
     state.points += Math.round(gain * eventClickMultiplier());
     addXP(0.35);
     dailyTick("auto", gain);
@@ -1750,6 +1838,7 @@ function openTab(tab){
   document.querySelector(`.tabBtn[data-tab="${tab}"]`)?.classList.add("active");
   document.querySelectorAll(".tabPane").forEach(p=>p.classList.remove("active"));
   document.getElementById("tab-"+tab)?.classList.add("active");
+  if(tab==="account" && !profileStore.activeUser && !window.__guestMode){ showProfileGate(); return; }
   if(tab==="news"){
     state.newsSeenVersion = CURRENT_VERSION;
     const badge = document.getElementById('newsBadge');
@@ -1850,6 +1939,7 @@ avatarFile.addEventListener("change", ()=>{
 
 document.getElementById("accSave").addEventListener("click", ()=>{
   uiBeep();
+  if(!profileStore.activeUser && !window.__guestMode){ showProfileGate(); return; }
   state.account.nick = nickInput.value.trim().slice(0,24);
   state.account.bio  = bioInput.value.trim().slice(0,140);
   save();
@@ -2006,6 +2096,7 @@ function addClickFX(px,py, strong=false){
   for(let i=0;i<n;i++){
     const ang = rand(0, Math.PI*2);
     const sp = strong ? rand(120,240) : rand(80,170);
+    if(fx.particles.length>120) fx.particles.shift();
     fx.particles.push({
       x:px*W, y:py*H, vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp,
       r: strong ? rand(2.4,4.4) : rand(1.8,3.6),
@@ -2513,11 +2604,8 @@ function drawFX(){
     const y = p.y + p.vy*age*0.01 + 0.12*age*age*80;
     fctx.save();
     fctx.globalAlpha = a;
-    const col = state.cosmetics.demon ? "rgba(255,60,90,0.95)" : "rgba(53,240,163,0.95)";
-    fctx.fillStyle = col;
-    fctx.beginPath();
-    fctx.arc(x, y, lerp(p.r, 0.2, age), 0, Math.PI*2);
-    fctx.fill();
+    fctx.font = `${Math.round(lerp(20,12,age))}px system-ui`;
+    fctx.fillText("🐸", x, y);
     fctx.restore();
   }
 
@@ -3044,7 +3132,7 @@ function bjRender(hideDealer=false){
 function bjEnd(result){
   bjRound=false;
   let msg='';
-  if(result==='win'){ const reward=Math.round(bjBetVal*1.8); state.points += reward; state.diamonds += Math.max(0,Math.floor(bjBetVal/700)); msg=`Победа! +${reward}`; }
+  if(result==='win'){ const reward=Math.round(Math.min(9e12,bjBetVal*1.8)); state.points += reward; const tinyDia=Math.random()<0.2?Math.floor(Math.random()*4):0; state.diamonds=Math.min(999999, state.diamonds + tinyDia); msg=`Победа! +${reward}${tinyDia?` и +${tinyDia}💎`:''}`; }
   else if(result==='push'){ state.points += bjBetVal; msg='Ничья, ставка возвращена'; }
   else msg='Проигрыш';
   document.getElementById('bjState').textContent = msg;
@@ -3071,6 +3159,18 @@ function bjStand(){
 document.getElementById('bjDeal')?.addEventListener('click', ()=>{ uiBeep(); bjDeal(); });
 document.getElementById('bjHit')?.addEventListener('click', ()=>{ uiBeep(); bjHit(); });
 document.getElementById('bjStand')?.addEventListener('click', ()=>{ uiBeep(); bjStand(); });
+document.getElementById('caseModalClose')?.addEventListener('click', closeCaseModal);
+document.getElementById('caseOkBtn')?.addEventListener('click', closeCaseModal);
+document.getElementById('caseEquipBtn')?.addEventListener('click', ()=>{ if(pendingCaseEquip){ useCosmetic(pendingCaseEquip); } closeCaseModal(); });
+document.getElementById('gateGuestBtn')?.addEventListener('click', enterGuest);
+document.getElementById('gateLoginBtn')?.addEventListener('click', ()=> loginAccount(document.getElementById('gateLoginName').value.trim(), document.getElementById('gateLoginPass').value));
+document.getElementById('gateRegBtn')?.addEventListener('click', ()=> registerAccount(document.getElementById('gateRegName').value.trim(), document.getElementById('gateRegPass').value));
+document.getElementById('legacyImportBtn')?.addEventListener('click', ()=> registerAccount(document.getElementById('gateRegName').value.trim(), document.getElementById('gateRegPass').value, true));
+document.getElementById('logoutBtn')?.addEventListener('click', logoutAccount);
+document.getElementById('openShopModalBtn')?.addEventListener('click', openShopModal);
+document.getElementById('openGamesModalBtn')?.addEventListener('click', openGamesModal);
+document.getElementById('shopModalClose')?.addEventListener('click', closeShopModal);
+document.getElementById('gamesModalClose')?.addEventListener('click', closeGamesModal);
 
 /* =========================
   MINI GAME LOOP
@@ -3102,6 +3202,67 @@ function loop(){
   requestAnimationFrame(loop);
 }
 
+
+function getLocationFx(locId){
+  if(locId==='space') return 'radial-gradient(circle at 20% 30%,#fff8 1px,transparent 2px),radial-gradient(circle at 70% 60%,#9cf8 1px,transparent 2px),linear-gradient(120deg,#0b133d,#1f2f6c)';
+  if(locId==='hell') return 'radial-gradient(circle at 20% 80%,#ff7a3a55 2px,transparent 3px),linear-gradient(120deg,#401212,#7a2415)';
+  if(locId==='heaven') return 'radial-gradient(circle at 40% 20%,#ffffff55 2px,transparent 3px),linear-gradient(120deg,#8fd9ff,#d8f8ff)';
+  if(locId==='dirty') return 'radial-gradient(circle at 30% 70%,#7a5b3c66 2px,transparent 3px),linear-gradient(120deg,#2f2a1d,#4e412a)';
+  return 'radial-gradient(circle at 15% 25%,#9cffcc44 2px,transparent 3px),linear-gradient(120deg,#153a2d,#1d5a46)';
+}
+function updateSceneFx(){ const fxEl=document.getElementById('sceneFx'); if(fxEl) fxEl.style.background=getLocationFx(state.activeLocation); }
+function showCaseModal(drop,duplicate){
+  const m=document.getElementById('caseOpenModal'), c=document.getElementById('caseModalContent');
+  if(!m||!c) return;
+  c.className=`caseAnimCard shake rarityBurst-${drop.rarity}`;
+  c.textContent='🎁';
+  m.classList.add('show');
+  setTimeout(()=>{
+    c.className=`caseAnimCard reveal rarityBurst-${drop.rarity}`;
+    c.innerHTML=`<div><div style="font-size:44px">${drop.kind==='skin'?'🧪':'✨'}</div><div class="t">${drop.name}</div><div class="s">${rarityLabel(drop.rarity)}${duplicate?' · дубликат (пыль)':''}</div></div>`;
+  },420);
+  pendingCaseEquip = (!duplicate && drop) ? drop : null;
+  const eq=document.getElementById('caseEquipBtn'); if(eq) eq.style.display = pendingCaseEquip?'inline-flex':'none';
+  frogCroak(0.9);
+}
+function closeCaseModal(){ document.getElementById('caseOpenModal')?.classList.remove('show'); }
+function showProfileGate(){ const m=document.getElementById('profileGateModal'); if(m) m.classList.add('show'); const w=document.getElementById('legacyImportWrap'); if(w) w.style.display = (!profileStore.legacyMigrated && hasLegacySave())?'block':'none'; }
+function hideProfileGate(){ document.getElementById('profileGateModal')?.classList.remove('show'); }
+async function registerAccount(name,pass,fromLegacy=false){
+  if(!name||!pass) return toast('Профиль','Введите логин и пароль','ACCOUNT');
+  if(profileStore.profiles[name]) return toast('Профиль','Логин занят','ACCOUNT');
+  const hash=await hashPassword(pass);
+  let saveData = JSON.parse(JSON.stringify(state));
+  if(fromLegacy && localStorage.getItem(KEY)){
+    try{ saveData = JSON.parse(localStorage.getItem(KEY)); }catch{}
+    profileStore.legacyMigrated=true;
+  }
+  profileStore.profiles[name]={ passwordHash:hash, saveData };
+  profileStore.activeUser=name;
+  saveProfiles();
+  resetToFreshState();
+  deepMerge(state, saveData);
+  hideProfileGate();
+  save(); updateUI(true);
+}
+async function loginAccount(name,pass){
+  const p=profileStore.profiles[name]; if(!p) return toast('Профиль','Аккаунт не найден','ACCOUNT');
+  const hash=await hashPassword(pass); if(hash!==p.passwordHash) return toast('Профиль','Неверный пароль','ACCOUNT');
+  profileStore.activeUser=name; saveProfiles(); resetToFreshState(); deepMerge(state, p.saveData||{}); hideProfileGate(); save(); updateUI(true);
+}
+function enterGuest(){ profileStore.activeUser=null; window.__guestMode=true; saveProfiles(); resetToFreshState(); hideProfileGate(); updateUI(true); }
+function logoutAccount(){ profileStore.activeUser=null; window.__guestMode=false; saveProfiles(); resetToFreshState(); updateUI(true); }
+function initModalPortals(){
+  const shopBody=document.getElementById('shopModalBody'); const gamesBody=document.getElementById('gamesModalBody');
+  const shopPane=document.getElementById('tab-shop'); const gamesPane=document.getElementById('tab-games');
+  if(shopBody && shopPane && !shopBody.contains(shopPane)) shopBody.appendChild(shopPane);
+  if(gamesBody && gamesPane && !gamesBody.contains(gamesPane)) gamesBody.appendChild(gamesPane);
+}
+function openShopModal(){ document.getElementById('shopModal')?.classList.add('show'); openTab('shop'); }
+function closeShopModal(){ document.getElementById('shopModal')?.classList.remove('show'); openTab('upg'); }
+function openGamesModal(){ document.getElementById('gamesModal')?.classList.add('show'); openTab('games'); }
+function closeGamesModal(){ document.getElementById('gamesModal')?.classList.remove('show'); openTab('upg'); }
+
 /* =========================
   INIT
 ========================= */
@@ -3117,6 +3278,7 @@ window.rollCrit = function(){
 
 applyTheme();
 updateLocationTheme();
+updateSceneFx();
 
 const startMusicOnInteraction = ()=>{
   if(musicStarted) return;
@@ -3129,6 +3291,7 @@ window.addEventListener("pointerdown", startMusicOnInteraction, { once:true });
 window.addEventListener("keydown", startMusicOnInteraction, { once:true });
 
 // profile init
+if(!profileStore.activeUser && !window.__guestMode){ showProfileGate(); }
 nickInput.value = state.account.nick || "";
 bioInput.value = state.account.bio || "";
 renderAvatar();
@@ -3147,6 +3310,7 @@ updateEventUI();
 
 // settings init
 initSettingsUI();
+initModalPortals();
 restartAutosave();
 
 // unlock titles
