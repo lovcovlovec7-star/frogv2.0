@@ -223,6 +223,7 @@
   .rarity-rare{box-shadow:0 0 22px #39a0ff33, inset 0 0 0 1px #5ea8ff4a}
   .rarity-epic{box-shadow:0 0 24px #b06bff33, inset 0 0 0 1px #c58bff4d}
   .rarity-legend{box-shadow:0 0 28px #ffcf5a42, inset 0 0 0 1px #ffd77f59}
+  .rarity-limited{box-shadow:0 0 30px #ff7c4d52, inset 0 0 0 1px #ff9d745e}
   .shopCardHeader{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;min-width:0}
   .shopCardHeader .t{min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.2;min-height:2.4em}
   .badgeStack{display:flex;flex-direction:column;gap:4px;flex-shrink:0;align-items:flex-end}
@@ -361,38 +362,59 @@
 
   body.modal-open{overflow:hidden;overscroll-behavior:contain}
 
-  .caseCard{overflow:hidden;position:relative}
-  .caseArt{font-size:44px;filter:drop-shadow(0 0 16px #ffffff44)}
-  .case-common{box-shadow:0 0 0 1px #9dc0ad66 inset}
-  .case-rare{box-shadow:0 0 0 1px #63a9ff66 inset,0 0 24px #63a9ff2f}
-  .case-epic{box-shadow:0 0 0 1px #b688ff66 inset,0 0 26px #b688ff30}
-  .case-legend{box-shadow:0 0 0 1px #ffd16688 inset,0 0 30px #ffd16645}
-  .caseOpenChest{font-size:54px;margin-bottom:8px;filter:drop-shadow(0 0 18px #ffffff55)}
-  .caseReelItem{display:grid;gap:6px;place-items:center;padding:10px;text-align:center}
-  .caseReelItemIcon{font-size:30px}
-  .caseResultFrame{padding:12px;border-radius:14px;border:1px solid #ffffff3a;background:#050d18c4;box-shadow:inset 0 0 18px #ffffff14}
-  .caseActions{display:flex;justify-content:center;gap:10px}
-  .caseActions .btn{min-width:150px}
+  .caseCard{overflow:hidden;position:relative;padding:12px;background:linear-gradient(165deg,#122038,#0b1425 58%,#091120)}
+  .caseCard:hover{transform:translateY(-6px) scale(1.01)}
+  .caseCard:active{transform:translateY(-2px) scale(.99)}
+  .caseChestIcon{height:84px;display:grid;place-items:center;filter:drop-shadow(0 8px 20px #00000080)}
+  .caseChestIcon svg{width:122px;height:78px}
+  .caseOddsBtn{border:none;background:none;color:#9edfff;text-decoration:underline;font-size:12px;font-weight:800;cursor:pointer;padding:0}
+  .caseOddsPopup{position:absolute;right:10px;top:10px;z-index:3;min-width:160px;background:#071325f5;border:1px solid #ffffff2a;border-radius:12px;padding:8px 10px;box-shadow:0 16px 28px #0000007d;display:none}
+  .caseOddsPopup.show{display:block}
+  .caseOddsPopup .small{display:flex;justify-content:space-between;margin:2px 0}
+  .case-common{box-shadow:0 0 0 1px #9dc0ad77 inset,0 0 22px #9dc0ad24}
+  .case-rare{box-shadow:0 0 0 1px #63a9ff80 inset,0 0 24px #63a9ff55}
+  .case-epic{box-shadow:0 0 0 1px #b688ff85 inset,0 0 28px #b688ff62}
+  .case-legend{box-shadow:0 0 0 1px #ffd1668f inset,0 0 30px #ffd16670}
+  .case-limited{box-shadow:0 0 0 1px #ff8a4f90 inset,0 0 36px #ff6d3f80}
   @media (max-width:430px){.locationGrid{grid-template-columns:1fr}}
 
   .topActions{display:flex;gap:10px;margin:0 0 10px 0;flex-wrap:wrap}
   .topActions .btn{flex:1;min-width:140px}
   .sceneFx{position:absolute;inset:0;pointer-events:none;opacity:.55;mix-blend-mode:screen;transition:opacity .7s ease;background-size:220% 220%;animation:driftBg 12s linear infinite}
   @keyframes driftBg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-  .caseAnimCard{display:grid;place-items:center;min-height:180px;border:1px solid #ffffff2e;border-radius:16px;background:radial-gradient(circle at 50% 15%,#1f2f52,#0a1120 65%);position:relative;overflow:hidden}
-  .caseAnimCard.shake{animation:caseShake .45s ease-in-out}
-  .caseAnimCard.reveal{animation:caseReveal .5s ease}
-  @keyframes caseShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-  @keyframes caseReveal{0%{transform:scale(.92) rotateY(0deg);opacity:.4}100%{transform:scale(1) rotateY(360deg);opacity:1}}
+  .caseModal{width:min(980px,calc(100vw - 24px));border-radius:24px;padding:16px;background:linear-gradient(170deg,#09172f,#081120 55%,#050b16);border:1px solid #ffffff30;box-shadow:0 28px 80px #000000a0}
+  .caseModalTop{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .caseAnimCard{display:grid;grid-template-rows:auto auto auto;gap:12px;min-height:420px;border:1px solid #ffffff24;border-radius:18px;background:radial-gradient(circle at 50% 14%,#1e3558,#091225 70%);position:relative;overflow:hidden;padding:14px}
+  .caseChestStage{display:grid;place-items:center;position:relative;min-height:140px}
+  .caseChestStage.idle{animation:caseIdle 2.4s ease-in-out infinite}
+  .caseChestStage.shake{animation:caseShake .48s ease-in-out}
+  .caseChestGlow{position:absolute;inset:20% 30%;filter:blur(18px);opacity:.42}
+  .caseChestGlow.common{background:#9dc0ad}.caseChestGlow.rare{background:#63a9ff}.caseChestGlow.epic{background:#b688ff}.caseChestGlow.legend{background:#ffd166}.caseChestGlow.limited{background:#ff8242}
+  @keyframes caseIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @keyframes caseShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-1deg)}40%{transform:translateX(8px) rotate(1deg)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  .caseReelViewport{position:relative;height:152px;border-radius:16px;border:1px solid #ffffff30;background:linear-gradient(180deg,#071227,#0a1830);overflow:hidden}
+  .caseReelWrap{position:absolute;inset:0;overflow:hidden;display:flex;align-items:center}
+  .caseReel{display:flex;gap:12px;align-items:center;position:absolute;left:0;top:10px;height:132px;padding:0 16px;will-change:transform}
+  .caseReelItem{min-width:134px;height:132px;border-radius:14px;border:1px solid #ffffff3b;background:linear-gradient(165deg,#102746,#0a1528);display:grid;grid-template-rows:auto 1fr auto;align-items:center;justify-items:center;padding:8px 8px 6px;font-weight:900;box-shadow:inset 0 0 18px #ffffff10}
+  .caseReelItem .gem{width:16px;height:16px;border-radius:50%;border:2px solid #fff7;justify-self:end}
+  .caseReelItemName{font-size:11px;line-height:1.2;color:#dce9ff;text-align:center}
+  .caseCenterMark{position:absolute;left:50%;top:0;bottom:0;transform:translateX(-50%);width:3px;background:linear-gradient(180deg,transparent,#8de4ff,#8de4ff,transparent);box-shadow:0 0 12px #78d9ff}
+  .caseCenterMark::before,.caseCenterMark::after{content:"";position:absolute;left:50%;transform:translateX(-50%);border-left:9px solid transparent;border-right:9px solid transparent}
+  .caseCenterMark::before{top:0;border-top:12px solid #8de4ff}.caseCenterMark::after{bottom:0;border-bottom:12px solid #8de4ff}
+  .caseResultFrame{padding:14px;border-radius:16px;border:1px solid #ffffff42;background:#050d18db;box-shadow:inset 0 0 18px #ffffff12;display:grid;gap:10px;justify-items:center;animation:resultPop .45s ease}
+  @keyframes resultPop{0%{transform:scale(.88);opacity:.4}100%{transform:scale(1);opacity:1}}
+  .caseActions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+  .caseActions .btn{min-width:132px}
+  .btn.casePrimary{background:linear-gradient(90deg,#47ffd0,#4cc3ff);color:#052232;border:none}
+  .btn.caseSecondary{background:#111f35;border-color:#ffffff2f}
   .rarityBurst-common{box-shadow:0 0 26px #ffffff2b inset}
   .rarityBurst-rare{box-shadow:0 0 34px #5fb0ff88 inset}
   .rarityBurst-epic{box-shadow:0 0 38px #be87ff88 inset}
   .rarityBurst-legend{box-shadow:0 0 44px #ffd16699 inset}
-
-  .caseReelWrap{position:absolute;inset:0;overflow:hidden;padding:0 16px;display:flex;align-items:center}
-  .caseReel{display:flex;gap:12px;align-items:center;position:absolute;left:0;top:0;height:100%;padding:0 14px;will-change:transform}
-  .caseReelItem{min-width:130px;height:130px;border-radius:14px;border:1px solid #ffffff3f;background:linear-gradient(160deg,#0f2440,#0a162b);display:grid;place-items:center;font-weight:900;box-shadow:inset 0 0 18px #ffffff12}
-  .casePointer{position:absolute;left:50%;top:12px;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:14px solid #8de4ff;filter:drop-shadow(0 0 8px #7fdcff)}
+  .rarityBurst-limited{box-shadow:0 0 46px #ff7f4dbf inset}
+  .dupDust{font-size:12px;color:#ffd59f;display:flex;align-items:center;gap:6px}
+  .dupDust::before{content:"✦";animation:dustPop .6s ease infinite alternate}
+  @keyframes dustPop{from{transform:translateY(0);opacity:.5}to{transform:translateY(-3px);opacity:1}}
 
 </style>
 </head>
@@ -765,7 +787,7 @@
     <input id="gateRegPass" type="password" placeholder="Пароль" style="display:none"/>
   </div>
 </div>
-<div class="modalBack" id="caseOpenModal"><div class="modal"><div class="modalTop"><div class="t" style="font-weight:950">Открытие кейса</div><button class="btn" id="caseModalClose">Закрыть</button></div><div id="caseModalContent" class="caseAnimCard">🎁</div><div class="caseActions" style="margin-top:10px"><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn primary" id="caseOkBtn">Ок</button></div></div></div>
+<div class="modalBack" id="caseOpenModal"><div class="modal caseModal"><div class="caseModalTop"><div><div class="t" style="font-weight:950">Открытие кейса</div><div class="s small" id="caseModalSub">Выберите кейс и нажмите «Открыть»</div></div><button class="btn caseSecondary" id="caseModalClose">Закрыть</button></div><div id="caseModalContent" class="caseAnimCard"></div><div class="caseActions" style="margin-top:10px"><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn" id="caseInventoryBtn" style="display:none">В инвентарь</button><button class="btn casePrimary" id="caseSpinBtn">Открыть</button><button class="btn caseSecondary" id="caseAgainBtn" style="display:none">Ещё раз</button></div></div></div>
 <div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout" style="margin-top:10px"><div class="shopPreview"><canvas id="shopPreview" width="420" height="420"></canvas></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
 <div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
 
@@ -1188,6 +1210,7 @@ const uiThemes = [
 ];
 
 const versionNotes = [
+  { v:"3.2.0", date:"2026-03-02", points:["Cases 2.0: новые сундуки по редкостям и реалистичные свечения","Новый экран открытия: анимированный сундук, suspense-спин и улучшенные кнопки","Бесконечный reel без видимого конца и без раннего спойлера приза","Предметы в рулетке и результате получили SVG-иконки и rarity-рамки","Добавлены реальные drop-таблицы с разными шансами по стоимости кейса","Добавлены звуки открытия, прокрутки, reveal-хита и легендарного spark","Появилась кнопка «Шансы» на каждом кейсе с компактным popup"] },
   { v:"3.1.0", date:"2026-02-26", points:["Обновлён профиль: новый аккуратный layout аккаунта и рамка аватара","Исправлено сохранение профиля по аккаунтам: ник/био/аватар возвращаются после входа","Аксессуары и лимитные предметы выровнены по высоте, без «небоскрёбов»","Кейсы получили визуал сундуков, редкостные свечения и новые таблицы вероятностей","Экран открытия кейса: сундук, бесконечный reel с иконками и итоговая rarity-рамка","Система титулов переработана: условия, locked/unlocked и вывод в лидерборде","Горячие клавиши музыки: M / Ь (без срабатывания в полях ввода)","Мини-игры показывают большой WIN/LOSE overlay по центру","Полировка Blackjack: новые кнопки, карты и читабельная компоновка","Добавлен lock скролла: колесо прокручивает только верхнюю модалку"] },
   { v:"3.0.0", date:"2026-02-25", points:["Мульти-профили и гостевой вход","Ранги дают реальные бонусы и прогресс-бар","Анимированное открытие кейсов + пыль за дубликаты","Blackjack сбалансирован: алмазы сильно ограничены","Добавлены модальные окна магазина и мини-игр"] },
   { v:"3.0.1", date:"2026-02-25", points:["Лягушачьи эмодзи-частицы при клике","Отдельная громкость SFX и обновлённый клик-звук","Улучшены атмосферные фоны локаций и музыкальные переходы"] },
@@ -1438,13 +1461,14 @@ const frameItems = [
 ];
 
 const caseTypes = [
-  { id:"case_common", tier:"common", name:"Тростниковый ящик", price:95, icon:"📦", art:"Деревянный", dropTable:[{r:"common",w:72},{r:"rare",w:23},{r:"epic",w:4},{r:"legend",w:1}] },
-  { id:"case_rare", tier:"rare", name:"Лунный контейнер", price:240, icon:"🧰", art:"Хром", dropTable:[{r:"common",w:35},{r:"rare",w:45},{r:"epic",w:16},{r:"legend",w:4}] },
-  { id:"case_epic", tier:"epic", name:"Арканум-кейс", price:520, icon:"🧪", art:"Техно", dropTable:[{r:"common",w:14},{r:"rare",w:36},{r:"epic",w:38},{r:"legend",w:12}] },
-  { id:"case_legend", tier:"legend", name:"Реликварий Легенд", price:980, icon:"👑", art:"Легендарный", dropTable:[{r:"common",w:4},{r:"rare",w:20},{r:"epic",w:44},{r:"legend",w:32}] }
+  { id:"case_common", tier:"common", name:"Тростниковый ящик", price:120, art:"Базовый", dropTable:[{r:"common",w:75},{r:"rare",w:22},{r:"epic",w:2.8},{r:"legend",w:0.2}], chest:"reed" },
+  { id:"case_rare", tier:"rare", name:"Лунный контейнер", price:260, art:"Усиленный", dropTable:[{r:"common",w:45},{r:"rare",w:45},{r:"epic",w:9},{r:"legend",w:1}], chest:"moon" },
+  { id:"case_epic", tier:"epic", name:"Арканум-кейс", price:560, art:"Продвинутый", dropTable:[{r:"rare",w:30},{r:"epic",w:60},{r:"legend",w:9},{r:"limited",w:1}], chest:"arcane" },
+  { id:"case_legend", tier:"legend", name:"Реликварий Легенд", price:980, art:"Премиум", dropTable:[{r:"rare",w:9},{r:"epic",w:35},{r:"legend",w:55},{r:"limited",w:1}], chest:"relic" }
 ];
 
 function rarityLabel(r){
+  if (r==="limited") return "Лимит";
   if (r==="legend") return "Легендарный";
   if (r==="epic") return "Эпик";
   if (r==="rare") return "Редкий";
@@ -1514,36 +1538,32 @@ function weightedRarity(table){
   for(const e of table){ r-=e.w; if(r<=0) return e.r; }
   return table[table.length-1].r;
 }
-function openCase(caseId){
-  const cs = caseTypes.find(c=>c.id===caseId);
-  if(!cs) return;
-  if(state.diamonds < cs.price){ toast("Не хватает алмазов", `Нужно ${cs.price}`, "CASE"); return; }
-  state.diamonds -= cs.price;
-  state.meta.casesOpened = (state.meta.casesOpened||0)+1;
+let activeCaseType = null;
+let pendingCaseResult = null;
+function rarityColor(r){ return ({common:'#9dc0ad',rare:'#63a9ff',epic:'#b688ff',legend:'#ffd166',limited:'#ff8242'})[r] || '#9dc0ad'; }
+function formatOdds(table){ return table.map(e=>`${rarityLabel(e.r)} ${Number(e.w).toFixed(e.w%1?1:0)}%`).join(' · '); }
+function caseItemPoolByRarity(rarity){
+  if(rarity==='limited') return cosmeticItems.filter(it=>it.limited);
+  return cosmeticItems.filter(it=>it.rarity===rarity);
+}
+function itemGlyphSvg(it,big=false){
+  const size = big?70:42;
+  const c = rarityColor(it.rarity);
+  const kind = it.kind==='skin' ? '<circle cx="50" cy="50" r="25" fill="#6fe5ff" opacity=".8"/><path d="M26 58c8-16 40-16 48 0" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>' : it.kind==='frame' ? '<rect x="22" y="22" width="56" height="56" rx="12" fill="none" stroke="#fff" stroke-width="6"/><circle cx="50" cy="50" r="4" fill="#fff"/>' : '<path d="M26 58c0-14 10-20 24-20s24 6 24 20" stroke="#fff" stroke-width="6" fill="none"/><circle cx="50" cy="34" r="9" fill="#fff"/>';
+  return `<svg viewBox="0 0 100 100" width="${size}" height="${size}" aria-hidden="true"><defs><filter id="f${big?1:2}"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="${c}" flood-opacity=".85"/></filter></defs><circle cx="50" cy="50" r="44" fill="#10233f" stroke="${c}" stroke-width="4" filter="url(#f${big?1:2})"/>${kind}</svg>`;
+}
+function caseChestSvg(caseType){
+  const c=rarityColor(caseType.tier); const accent= caseType.tier==='limited'?'#ffb26b':c;
+  const lid = caseType.chest==='relic' ? '<path d="M12 38h96l-8-18H20z" fill="#51361a" stroke="#ffd166" stroke-width="3"/>' : caseType.chest==='arcane' ? '<path d="M14 36h92l-6-16H20z" fill="#2b1b4c" stroke="#b688ff" stroke-width="3"/>' : caseType.chest==='moon' ? '<path d="M12 38h96l-8-16H20z" fill="#2d3f65" stroke="#63a9ff" stroke-width="3"/>' : '<path d="M12 38h96l-8-16H20z" fill="#4e3a24" stroke="#9dc0ad" stroke-width="3"/>';
+  return `<svg viewBox="0 0 120 80" aria-hidden="true"><defs><filter id="cg"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="${c}" flood-opacity=".8"/></filter></defs>${lid}<rect x="10" y="36" width="100" height="34" rx="8" fill="#1a2439" stroke="${accent}" stroke-width="3" filter="url(#cg)"/><rect x="52" y="34" width="16" height="36" rx="4" fill="#ffe39e"/><circle cx="60" cy="52" r="4" fill="#8d5b16"/></svg>`;
+}
+function resolveCaseReward(cs){
   let rarity = weightedRarity(cs.dropTable);
   if(Math.random() < eventCaseLuck()) rarity = weightedRarity(cs.dropTable.filter(e=>e.r!=="common"));
-  let pool = cosmeticItems.filter(it=> it.rarity===rarity);
+  let pool = caseItemPoolByRarity(rarity);
+  if(!pool.length) pool = cosmeticItems.filter(it=>it.rarity===rarity || (rarity==='limited'&&it.rarity==='legend'));
   if(!pool.length) pool = cosmeticItems;
-  const drop = pool[Math.floor(Math.random()*pool.length)] || cosmeticItems[0];
-  if(drop.rarity==="legend") state.meta.legendDrop = true;
-  const caseResult = document.getElementById("caseResult");
-  const wasOwned = own(drop.id);
-  let rewardText = `${drop.name}`;
-  if(wasOwned){
-    const comp = Math.max(1, Math.round(cs.price*0.12));
-    const dustGain = Math.max(2, Math.round(cs.price*0.25));
-    state.diamonds = Math.min(999999, state.diamonds + comp);
-    state.dust = Math.min(999999, (state.dust||0) + dustGain);
-    rewardText += ` · дубликат (+${comp} алм., +${dustGain} пыль)`;
-  }else{
-    state.owned[drop.id] = true;
-  }
-  if(caseResult){ caseResult.textContent = `Открыт: ${rewardText}`; }
-  showCaseModal(drop, wasOwned);
-  const major = drop.rarity==="legend" || drop.rarity==="epic";
-  toast("Кейс открыт", rewardText, "CASE", { forceImportant: major });
-  if(major) frogCroak(1.2);
-  save(); updateUI(false); renderShop();
+  return pool[Math.floor(Math.random()*pool.length)] || cosmeticItems[0];
 }
 function renderCaseList(){
   const box = document.getElementById("caseList");
@@ -1551,9 +1571,14 @@ function renderCaseList(){
   box.innerHTML = "";
   caseTypes.forEach(cs=>{
     const div = document.createElement("div");
-    div.className = `item shopCard caseCard case-${cs.tier} ${cs.id.includes("legend")?"legendPulse":""}`;
-    div.innerHTML = `<div class="shopCardHeader"><div class="t">${cs.name}</div><div class="badgeStack"><span class="tag">${cs.art}</span></div></div><div class="caseArt">${cs.icon}</div><div class="s">Шансы: C ${cs.dropTable[0].w}% · R ${cs.dropTable[1].w}% · E ${cs.dropTable[2].w}% · L ${cs.dropTable[3].w}%</div><div class="row"><span class="shopPrice">${cs.price} 💎</span><button class="btn primary">Открыть</button></div>`;
-    div.querySelector('button').addEventListener('click', ()=>{ uiBeep(); openCase(cs.id); });
+    div.className = `item shopCard caseCard case-${cs.tier}`;
+    div.innerHTML = `<div class="caseOddsPopup" id="odds-${cs.id}">${cs.dropTable.map(e=>`<div class="small"><span>${rarityLabel(e.r)}</span><b>${Number(e.w).toFixed(e.w%1?1:0)}%</b></div>`).join('')}</div><div class="shopCardHeader"><div class="t">${cs.name}</div><div class="badgeStack"><button class="caseOddsBtn" data-odds="${cs.id}">Шансы</button><span class="tag">${cs.art}</span></div></div><div class="caseChestIcon">${caseChestSvg(cs)}</div><div class="s">${formatOdds(cs.dropTable)}</div><div class="row"><span class="shopPrice">${cs.price} 💎</span><button class="btn casePrimary" data-open="${cs.id}">Открыть кейс</button></div>`;
+    div.querySelector('[data-open]')?.addEventListener('click', ()=>{ uiBeep(); beginCaseOpening(cs.id); });
+    div.querySelector('[data-odds]')?.addEventListener('click',(ev)=>{
+      ev.stopPropagation();
+      document.querySelectorAll('.caseOddsPopup.show').forEach(el=>{ if(el.id!==`odds-${cs.id}`) el.classList.remove('show'); });
+      div.querySelector('.caseOddsPopup')?.classList.toggle('show');
+    });
     box.appendChild(div);
   });
 }
@@ -3427,8 +3452,11 @@ document.getElementById('bjDeal')?.addEventListener('click', ()=>{ uiBeep(); bjD
 document.getElementById('bjHit')?.addEventListener('click', ()=>{ uiBeep(); bjHit(); });
 document.getElementById('bjStand')?.addEventListener('click', ()=>{ uiBeep(); bjStand(); });
 document.getElementById('caseModalClose')?.addEventListener('click', closeCaseModal);
-document.getElementById('caseOkBtn')?.addEventListener('click', closeCaseModal);
+document.getElementById('caseSpinBtn')?.addEventListener('click', ()=>{ uiBeep(); spinActiveCase(); });
+document.getElementById('caseAgainBtn')?.addEventListener('click', ()=>{ uiBeep(); spinActiveCase(); });
 document.getElementById('caseEquipBtn')?.addEventListener('click', ()=>{ if(pendingCaseEquip){ useCosmetic(pendingCaseEquip); } closeCaseModal(); });
+document.getElementById('caseInventoryBtn')?.addEventListener('click', closeCaseModal);
+document.addEventListener('click', (ev)=>{ if(!(ev.target instanceof Element)) return; if(!ev.target.closest('.caseCard')) document.querySelectorAll('.caseOddsPopup.show').forEach(el=>el.classList.remove('show')); });
 document.getElementById('gateGuestBtn')?.addEventListener('click', enterGuest);
 document.getElementById('gateLoginBtn')?.addEventListener('click', ()=> loginAccount(document.getElementById('gateLoginName').value.trim(), document.getElementById('gateLoginPass').value));
 document.getElementById('gateRegBtn')?.addEventListener('click', ()=>{ const name=document.getElementById('gateLoginName').value.trim(); const pass=document.getElementById('gateLoginPass').value; document.getElementById('gateRegName').value=name; document.getElementById('gateRegPass').value=pass; registerAccount(name, pass); });
@@ -3495,39 +3523,102 @@ function getLocationFx(locId){
   return 'radial-gradient(circle at 15% 25%,#9cffcc44 2px,transparent 3px),linear-gradient(120deg,#153a2d,#1d5a46)';
 }
 function updateSceneFx(){ const fxEl=document.getElementById('sceneFx'); if(fxEl) fxEl.style.background=getLocationFx(state.activeLocation); }
-function showCaseModal(drop,duplicate){
-  const m=document.getElementById('caseOpenModal'), c=document.getElementById('caseModalContent');
-  if(!m||!c) return;
-  m.classList.add('show');
-  syncModalLock();
-  const pool = cosmeticItems.filter(it=>it.kind===drop.kind);
-  const reelItems = [];
-  for(let i=0;i<90;i++) reelItems.push(pool[Math.floor(Math.random()*pool.length)]||drop);
-  const targetIndex = 55 + Math.floor(Math.random()*6);
-  reelItems[targetIndex] = drop;
-  c.className=`caseAnimCard rarityBurst-${drop.rarity}`;
-  c.innerHTML = `<div class="caseOpenChest">${({common:"📦",rare:"🧰",epic:"🧪",legend:"👑"})[drop.rarity]||"🎁"}</div><div class="casePointer"></div><div class="caseReelWrap"><div class="caseReel" id="caseReel">${reelItems.map((it)=>`<div class="caseReelItem rarity-${it.rarity}"><div class="caseReelItemIcon">${it.kind==='skin'?'🧪':'✨'}</div><div class="small">${it.name}</div></div>`).join('')}</div></div>`;
-  const reel = document.getElementById('caseReel');
-  const total = 3000;
-  const itemW = 142;
-  const maxShift = Math.max(0, targetIndex * itemW - 220);
-  const started = performance.now();
-  const animate = ()=>{
-    const t = Math.min(1, (performance.now()-started)/total);
-    const ease = 1 - Math.pow(1-t, 3);
-    reel.style.transform = `translateX(${-Math.round(maxShift*ease)}px)`;
-    if(t<1) requestAnimationFrame(animate);
-    else{
-      c.className=`caseAnimCard reveal rarityBurst-${drop.rarity}`;
-      c.innerHTML=`<div class="caseResultFrame rarity-${drop.rarity}"><div style="font-size:44px">${drop.kind==='skin'?'🧪':'✨'}</div><div class="t">${drop.name}</div><div class="s">${rarityLabel(drop.rarity)}${duplicate?' · дубликат (пыль)':''}</div></div>`;
-    }
-  };
-  requestAnimationFrame(animate);
-  pendingCaseEquip = (!duplicate && drop) ? drop : null;
-  const eq=document.getElementById('caseEquipBtn'); if(eq) eq.style.display = pendingCaseEquip?'inline-flex':'none';
-  frogCroak(0.9);
+function caseSfx(type){
+  ensureAudioContext();
+  if(!audioCtx) return;
+  const t=audioCtx.currentTime;
+  const vol=(state.settings.volumeMaster||1)*(state.settings.volumeUi||1);
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  if(type==='open'){ o.type='triangle'; o.frequency.setValueAtTime(180,t); o.frequency.exponentialRampToValueAtTime(380,t+.08); g.gain.setValueAtTime(0.001,t); g.gain.exponentialRampToValueAtTime(0.26*vol,t+.02); g.gain.exponentialRampToValueAtTime(0.001,t+.2); }
+  else if(type==='whoosh'){ o.type='sawtooth'; o.frequency.setValueAtTime(620,t); o.frequency.exponentialRampToValueAtTime(120,t+.55); g.gain.setValueAtTime(0.001,t); g.gain.exponentialRampToValueAtTime(0.16*vol,t+.04); g.gain.exponentialRampToValueAtTime(0.001,t+.55); }
+  else if(type==='reveal'){ o.type='square'; o.frequency.setValueAtTime(240,t); o.frequency.exponentialRampToValueAtTime(520,t+.12); g.gain.setValueAtTime(0.001,t); g.gain.exponentialRampToValueAtTime(0.28*vol,t+.02); g.gain.exponentialRampToValueAtTime(0.001,t+.22); }
+  else { o.type='sine'; o.frequency.setValueAtTime(700,t); o.frequency.exponentialRampToValueAtTime(1100,t+.16); g.gain.setValueAtTime(0.001,t); g.gain.exponentialRampToValueAtTime(0.22*vol,t+.04); g.gain.exponentialRampToValueAtTime(0.001,t+.45); }
+  o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t+.7);
 }
-function closeCaseModal(){ document.getElementById('caseOpenModal')?.classList.remove('show'); syncModalLock(); }
+function beginCaseOpening(caseId){
+  const cs=caseTypes.find(c=>c.id===caseId); if(!cs) return;
+  activeCaseType = cs;
+  pendingCaseResult = null;
+  pendingCaseEquip = null;
+  const m=document.getElementById('caseOpenModal');
+  m?.classList.add('show');
+  syncModalLock();
+  const c=document.getElementById('caseModalContent');
+  const sub=document.getElementById('caseModalSub');
+  if(sub) sub.textContent = `${cs.name} · ${cs.price} 💎 · ${formatOdds(cs.dropTable)}`;
+  if(c) c.className=`caseAnimCard rarityBurst-${cs.tier}`;
+  if(c) c.innerHTML = `<div class="caseChestStage idle" id="caseChestStage"><div class="caseChestGlow ${cs.tier}"></div><div class="caseChestIcon">${caseChestSvg(cs)}</div></div><div class="caseReelViewport"><div class="caseReelWrap"><div class="caseReel" id="caseReel"></div></div><div class="caseCenterMark"></div></div><div class="small" style="text-align:center;color:#b7d6ff">Нажмите «Открыть», чтобы запустить рулетку.</div>`;
+  document.getElementById('caseSpinBtn').textContent='Открыть';
+  document.getElementById('caseAgainBtn').style.display='none';
+  document.getElementById('caseInventoryBtn').style.display='none';
+  document.getElementById('caseEquipBtn').style.display='none';
+}
+function spinActiveCase(){
+  if(!activeCaseType) return;
+  if(state.diamonds < activeCaseType.price){ toast('Не хватает алмазов', `Нужно ${activeCaseType.price}`,'CASE'); return; }
+  const cs=activeCaseType;
+  state.diamonds -= cs.price;
+  state.meta.casesOpened = (state.meta.casesOpened||0)+1;
+  const drop = resolveCaseReward(cs);
+  const wasOwned = own(drop.id);
+  if(drop.rarity==='legend' || drop.rarity==='limited') state.meta.legendDrop = true;
+  const reel = document.getElementById('caseReel');
+  const stage = document.getElementById('caseChestStage');
+  const c=document.getElementById('caseModalContent');
+  if(!reel||!c) return;
+  const pool = cosmeticItems.filter(it=>it.kind===drop.kind || it.rarity===drop.rarity);
+  const base=[]; for(let i=0;i<26;i++) base.push(pool[Math.floor(Math.random()*pool.length)]||drop);
+  const targetSlot = 13;
+  let cycles=0, x=0, speed=42;
+  const itemW=146;
+  const segments=5;
+  const seq = Array.from({length:segments},(_,n)=>base.map((it,idx)=> ({it,idx,n}))).flat();
+  seq[(Math.floor(segments/2))*base.length + targetSlot].it = drop;
+  reel.innerHTML = seq.map(({it})=>`<div class="caseReelItem rarity-${it.rarity}"><div class="gem" style="background:${rarityColor(it.rarity)}"></div>${itemGlyphSvg(it,false)}<div class="caseReelItemName">${it.name}</div></div>`).join('');
+  const centerOffset = (Math.floor(segments/2)*base.length + targetSlot) * itemW - 360;
+  c.className=`caseAnimCard rarityBurst-${drop.rarity}`;
+  stage?.classList.remove('idle'); stage?.classList.add('shake');
+  caseSfx('open'); caseSfx('whoosh');
+  const start=performance.now(); const dur=2600 + Math.random()*500;
+  function tick(now){
+    const t=Math.min(1,(now-start)/dur);
+    const ease=1-Math.pow(1-t,3.4);
+    const noise=Math.sin(t*24)*8*(1-t);
+    x = centerOffset*ease + noise;
+    reel.style.transform=`translateX(${-x}px)`;
+    if(t<1) requestAnimationFrame(tick);
+    else{
+      revealCaseReward(drop, wasOwned, cs);
+    }
+  }
+  requestAnimationFrame(tick);
+}
+function revealCaseReward(drop, duplicate, cs){
+  const c=document.getElementById('caseModalContent');
+  if(!c) return;
+  let comp=0,dustGain=0;
+  if(duplicate){ comp=Math.max(2, Math.round(cs.price*0.12)); dustGain=Math.max(3, Math.round(cs.price*0.22)); state.diamonds=Math.min(999999,state.diamonds+comp); state.dust=Math.min(999999,(state.dust||0)+dustGain); }
+  else state.owned[drop.id]=true;
+  pendingCaseEquip = (!duplicate && drop) ? drop : null;
+  pendingCaseResult = drop;
+  const desc = duplicate ? `${rarityLabel(drop.rarity)} · Дубликат` : rarityLabel(drop.rarity);
+  c.className=`caseAnimCard reveal rarityBurst-${drop.rarity}`;
+  c.innerHTML=`<div class="caseResultFrame rarity-${drop.rarity}">${itemGlyphSvg(drop,true)}<div class="t">${drop.name}</div><div class="s">${desc}</div>${duplicate?`<div class="dupDust">+${comp} 💎 · +${dustGain} пыль</div>`:''}</div>`;
+  const caseResult=document.getElementById('caseResult');
+  if(caseResult) caseResult.textContent = `Открыт: ${drop.name}${duplicate?` · дубликат (+${comp} алм., +${dustGain} пыль)`:''}`;
+  document.getElementById('caseEquipBtn').style.display = pendingCaseEquip?'inline-flex':'none';
+  document.getElementById('caseInventoryBtn').style.display = duplicate?'inline-flex':'none';
+  document.getElementById('caseAgainBtn').style.display='inline-flex';
+  document.getElementById('caseSpinBtn').textContent='Ещё раз';
+  caseSfx('reveal');
+  if(drop.rarity==='legend' || drop.rarity==='limited') caseSfx('sparkle');
+  const major = drop.rarity==='legend' || drop.rarity==='epic' || drop.rarity==='limited';
+  toast('Кейс открыт', `${drop.name}${duplicate?' · дубликат':''}`, 'CASE', { forceImportant: major });
+  if(major) frogCroak(1.2);
+  save(); updateUI(false); renderShop();
+}
+function closeCaseModal(){ document.getElementById('caseOpenModal')?.classList.remove('show'); syncModalLock(); activeCaseType=null; pendingCaseResult=null; }
 function showProfileGate(){ const m=document.getElementById('profileGateModal'); if(m) m.classList.add('show'); syncModalLock(); const w=document.getElementById('legacyImportWrap'); if(w) w.style.display = (!profileStore.legacyMigrated && hasLegacySave())?'block':'none'; }
 function hideProfileGate(){ document.getElementById('profileGateModal')?.classList.remove('show'); syncModalLock(); }
 async function registerAccount(name,pass,fromLegacy=false){
@@ -3686,4 +3777,5 @@ setInterval(()=>{
 document.addEventListener("touchmove", (e)=>{}, {passive:true});
 </script>
 </body>
-</html>
+</html>  { v:"3.2.0", date:"2026-03-02", points:["Cases 2.0: новые сундуки по редкостям и реалистичные свечения","Новый экран открытия: анимированный сундук, suspense-спин и улучшенные кнопки","Бесконечный reel без видимого конца и без раннего спойлера приза","Предметы в рулетке и результате получили SVG-иконки и rarity-рамки","Добавлены реальные drop-таблицы с разными шансами по стоимости кейса","Добавлены звуки открытия, прокрутки, reveal-хита и легендарного spark","Появилась кнопка «Шансы» на каждом кейсе с компактным popup"] },
+
