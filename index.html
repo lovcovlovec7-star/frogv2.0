@@ -82,6 +82,22 @@
   .shopCard.unowned{opacity:.55;filter:grayscale(.5) saturate(.75);}
   .shopCard.owned{opacity:1;filter:none;}
   .frame-legendary{box-shadow:0 0 0 2px #ffd166,0 0 22px #ffd16688, inset 0 0 14px #fff2c266;}
+  .btn.mini{padding:6px 10px;font-size:11px;border-radius:10px;align-self:flex-start;}
+  .accordion{overflow:hidden;}
+  .accordion summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:900;}
+  .accordion summary::-webkit-details-marker{display:none}
+  .accordion summary::after{content:"▾";color:var(--muted);transition:transform .2s ease}
+  .accordion:not([open]) summary::after{transform:rotate(-90deg)}
+  .clickFloat{position:absolute;left:0;top:0;pointer-events:none;font-weight:950;font-size:20px;color:#d7fff1;text-shadow:0 0 10px #58ffd0,0 0 20px #1ac8ff88;animation:floatGain 1s ease-out forwards;z-index:8}
+  .clickFloat.crit{color:#ffeaa6;text-shadow:0 0 12px #ffd166,0 0 24px #ffad4d88}
+  @keyframes floatGain{0%{opacity:0;transform:translate(-50%,-16px) scale(.85)}10%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--driftX,0px)),calc(-110px + var(--driftY,0px))) scale(1.05)}}
+  .resultOverlay{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:10040;min-width:260px;max-width:min(90vw,420px);display:none;padding:14px;border-radius:16px;border:1px solid #ffffff30;background:#081224f2;box-shadow:0 18px 40px #00000080}
+  .resultOverlay.show{display:block;animation:toastIn .2s ease}
+  .resultOverlay.win{border-color:#35f0a388}
+  .resultOverlay.lose{border-color:#ff4d6d88}
+  .avatar.frame-common{border-color:#8db79a;box-shadow:0 0 0 2px #8db79a55}
+  .avatar.frame-rare{border-color:#62a7ff;box-shadow:0 0 0 2px #62a7ff66,0 0 18px #62a7ff55}
+  .avatar.frame-epic{border-color:#c78aff;box-shadow:0 0 0 2px #c78aff77,0 0 20px #b38cff66}
   .btn{
     cursor:pointer; border:1px solid var(--stroke);
     background:#0a1220aa; color:var(--text);
@@ -288,11 +304,16 @@
   .shopTabs{display:flex;gap:8px;flex-wrap:wrap}
   .shopPane{display:none}
   .shopPane.active{display:block}
-  .shopModalLayout{display:grid;grid-template-columns:minmax(240px,300px) minmax(0,1fr);gap:12px;align-items:start}
+  .shopModalLayout{display:grid;grid-template-columns:minmax(240px,300px) minmax(0,1fr);gap:12px;align-items:start;max-height:72vh}
   .shopPreview{border:1px solid var(--stroke);border-radius:16px;padding:10px;background:#0a1220aa;position:sticky;top:0}
+  #shopModalBody{max-height:70vh;overflow:auto;padding-right:6px}
+  #shopModalBody::-webkit-scrollbar{width:8px}
+  #shopModalBody::-webkit-scrollbar-thumb{background:#ffffff30;border-radius:999px}
   #shopPreview{width:100%;height:auto;display:block;border-radius:12px;border:1px solid #ffffff22;background:linear-gradient(160deg,#0a1324,#071a1f)}
   @media (max-width:900px){.shopModalLayout{grid-template-columns:1fr}.shopPreview{position:static}}
-  .shopGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;max-height:52vh;overflow-y:auto;overflow-x:hidden;padding-right:6px;align-content:start}
+  .shopGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;max-height:none;overflow:visible;padding-right:6px;align-content:start}
+  .limitedBlock{margin-top:12px;border:1px solid #ffd16666;background:linear-gradient(145deg,#261f0b,#1a1424);box-shadow:0 0 22px #ffd1662f inset}
+  .limitedBlock .t{color:#ffe39c}
   .legendPulse{animation:legendPulse 2.1s ease-in-out infinite}
   @keyframes legendPulse{0%,100%{box-shadow:0 0 0 1px #ffd16666,0 0 24px #ffd16633}50%{box-shadow:0 0 0 1px #ffd166aa,0 0 34px #ffd16680}}
 
@@ -320,7 +341,7 @@
   .topActions .btn{flex:1;min-width:140px}
   .sceneFx{position:absolute;inset:0;pointer-events:none;opacity:.55;mix-blend-mode:screen;transition:opacity .7s ease;background-size:220% 220%;animation:driftBg 12s linear infinite}
   @keyframes driftBg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-  .caseAnimCard{display:grid;place-items:center;min-height:180px;border:1px solid #ffffff2e;border-radius:16px;background:#0000002a;position:relative;overflow:hidden}
+  .caseAnimCard{display:grid;place-items:center;min-height:180px;border:1px solid #ffffff2e;border-radius:16px;background:radial-gradient(circle at 50% 15%,#1f2f52,#0a1120 65%);position:relative;overflow:hidden}
   .caseAnimCard.shake{animation:caseShake .45s ease-in-out}
   .caseAnimCard.reveal{animation:caseReveal .5s ease}
   @keyframes caseShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
@@ -330,9 +351,10 @@
   .rarityBurst-epic{box-shadow:0 0 38px #be87ff88 inset}
   .rarityBurst-legend{box-shadow:0 0 44px #ffd16699 inset}
 
-  .caseReel{display:flex;gap:10px;align-items:center;position:absolute;left:0;top:0;height:100%;padding:0 14px;will-change:transform}
-  .caseReelItem{min-width:120px;height:140px;border-radius:14px;border:1px solid #ffffff2f;background:#071426;display:grid;place-items:center;font-weight:900}
-  .caseReelItem.win{border-color:#ffd166;box-shadow:0 0 24px #ffd16666}
+  .caseReelWrap{position:absolute;inset:0;overflow:hidden;padding:0 16px;display:flex;align-items:center}
+  .caseReel{display:flex;gap:12px;align-items:center;position:absolute;left:0;top:0;height:100%;padding:0 14px;will-change:transform}
+  .caseReelItem{min-width:130px;height:130px;border-radius:14px;border:1px solid #ffffff3f;background:linear-gradient(160deg,#0f2440,#0a162b);display:grid;place-items:center;font-weight:900;box-shadow:inset 0 0 18px #ffffff12}
+  .casePointer{position:absolute;left:50%;top:12px;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:14px solid #8de4ff;filter:drop-shadow(0 0 8px #7fdcff)}
 
 </style>
 </head>
@@ -351,8 +373,11 @@
 
     <div class="item">
       <div class="row" style="align-items:flex-start">
-        <div class="avatar" id="avatarBox" title="Нажми, чтобы загрузить фото">
-          <span style="font-weight:950;color:#eaf2ffcc">+</span>
+        <div style="display:grid;gap:8px;justify-items:center">
+          <div class="avatar" id="avatarBox" title="Нажми, чтобы загрузить фото">
+            <span style="font-weight:950;color:#eaf2ffcc">+</span>
+          </div>
+          <button class="btn mini" id="accClear">Удалить фото</button>
         </div>
         <div class="nickCol">
           <label>Никнейм</label>
@@ -368,24 +393,23 @@
         <button class="btn danger" id="logoutBtn">Выйти</button>
       </div>
       <div class="btnRow" style="margin-top:10px">
-        <button class="btn primary" id="accSave">Сохранить профиль (ник/аватар)</button>
-        <button class="btn" id="accClear">Удалить фото</button>
-      </div>
+        <button class="btn primary" id="accSave">Сохранить</button>
+        </div>
 
       <input id="avatarFile" type="file" accept="image/*" style="display:none"/>
     </div>
 
-    <div class="item">
-      <div class="t">Титулы</div>
+    <details class="item accordion">
+      <summary class="t">Титулы</summary>
       <div class="s">Открываются по прогрессу. Можно выбрать активный.</div>
       <div class="row">
         <select id="titleSelect"></select>
         <span class="tag" id="activeTitleTag">—</span>
       </div>
-    </div>
+    </details>
 
-    <div class="item">
-      <div class="t">Сейв</div>
+    <details class="item accordion">
+      <summary class="t">Сейв</summary>
       <div class="s">Экспорт/импорт JSON. Удобно для заказчика или переноса.</div>
       <div class="btnRow">
         <button class="btn warn" id="exportSave">Экспорт</button>
@@ -394,25 +418,25 @@
       </div>
       <input id="importFile" type="file" accept="application/json" style="display:none"/>
       <div class="small">Импорт перезапишет прогресс в браузере.</div>
-    </div>
+    </details>
 
-    <div class="item">
-      <div class="t">Ежедневные задания</div>
+    <details class="item accordion">
+      <summary class="t">Ежедневные задания</summary>
       <div class="s" id="dailyText">—</div>
       <div class="row">
         <span class="tag" id="dailyProg">0 / 0</span>
         <button class="btn" id="claimDaily" disabled>Забрать награду</button>
       </div>
-    </div>
+    </details>
 
-    <div class="item">
-      <div class="t">Событие</div>
+    <details class="item accordion">
+      <summary class="t">Событие</summary>
       <div class="s" id="eventText">Сегодня тихо.</div>
       <div class="row">
         <span class="tag" id="eventTag">EVENT</span>
         <button class="btn" id="rerollEvent">Сменить</button>
       </div>
-    </div>
+    </details>
   </div>
 
   <!-- CENTER: FROG -->
@@ -433,7 +457,6 @@
       <div id="frogWrap">
         <div class="sceneFx" id="sceneFx"></div>
         <canvas id="frog" width="900" height="900"></canvas>
-        <div class="hintChip">Клик = очки · Двойной клик = “суперква” · Нажми один раз, чтобы включить звук</div>
       </div>
     </div>
 
@@ -456,11 +479,6 @@
         <div class="bar"><div id="xpBar"></div></div>
         <div class="hint"><span id="xpText">0 / 20 XP</span></div>
       </div>
-    </div>
-
-    <div class="hint">
-      <b>Реальный звук “ква”:</b> файл <b>frog-croak.mp3</b> рядом с HTML включает натуральный аудиосэмпл.
-      Если файла нет — используется встроенный синтез.
     </div>
 
     <audio id="croakAudio" src="./frog-croak.mp3" preload="auto"></audio>
@@ -712,6 +730,7 @@
 <div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout" style="margin-top:10px"><div class="shopPreview"><canvas id="shopPreview" width="420" height="420"></canvas></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
 <div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
 
+<div id="gameResultOverlay" class="resultOverlay"><div id="gameResultTitle" class="t"></div><div id="gameResultText" class="s" style="margin-top:6px"></div><div class="btnRow" style="margin-top:10px"><button class="btn" id="gameResultOk">OK</button></div></div>
 <div class="toasts" id="toasts"></div>
 <div class="modalBack" id="avatarModal">
   <div class="modal">
@@ -890,6 +909,18 @@ function nowDayKey(){
   TOASTS (one-time)
 ========================= */
 const toasts = document.getElementById("toasts");
+const gameResultOverlay = document.getElementById("gameResultOverlay");
+let gameResultTimer = null;
+function showGameResult(win, points, title){
+  if(!gameResultOverlay) return;
+  clearTimeout(gameResultTimer);
+  gameResultOverlay.classList.remove("win","lose");
+  gameResultOverlay.classList.add("show", win?"win":"lose");
+  document.getElementById("gameResultTitle").textContent = `${title}: ${win?"WIN":"LOSE"}`;
+  document.getElementById("gameResultText").textContent = `+${Math.max(0,Math.round(points)).toLocaleString("ru-RU")} очков`;
+  gameResultTimer = setTimeout(()=>gameResultOverlay.classList.remove("show"), 2200);
+}
+document.getElementById("gameResultOk")?.addEventListener("click", ()=>gameResultOverlay?.classList.remove("show"));
 const toastLocks = new Set();
 function shouldShowToast(opts={}){
   const mode = state.settings?.toastMode || "all";
@@ -1223,58 +1254,58 @@ const cosmeticItems = [
   { id:"skin_default", kind:"skin", rarity:"common", name:"Болотная классика", desc:"Мягкая зелёная палитра", price:0, apply:()=> state.cosmetics.skin="default" },
   { id:"skin_moss", kind:"skin", rarity:"rare", name:"Мшистая", desc:"Насыщенные мшистые пятна", price:450, apply:()=> state.cosmetics.skin="moss" },
   { id:"skin_poison", kind:"skin", rarity:"epic", name:"Ядовитый неон", desc:"Кислотные отблески и свечение", price:900, apply:()=> state.cosmetics.skin="poison" },
-  { id:"skin_obsidian", kind:"skin", rarity:"legend", name:"Обсидиан", desc:"Тёмный глянец с холодным светом", price:920000, apply:()=> state.cosmetics.skin="obsidian" },
-  { id:"skin_ice", kind:"skin", rarity:"epic", name:"Лёд", desc:"Холодный градиент и матовые края", price:860000, apply:()=> state.cosmetics.skin="ice" },
+  { id:"skin_obsidian", kind:"skin", rarity:"legend", name:"Обсидиан", desc:"Тёмный глянец с холодным светом", price:880000, apply:()=> state.cosmetics.skin="obsidian" },
+  { id:"skin_ice", kind:"skin", rarity:"epic", name:"Лёд", desc:"Холодный градиент и матовые края", price:420000, apply:()=> state.cosmetics.skin="ice" },
   { id:"skin_amber", kind:"skin", rarity:"rare", name:"Янтарная", desc:"Тёплый золотой тон", price:620, apply:()=> state.cosmetics.skin="amber" },
   { id:"skin_lotus", kind:"skin", rarity:"rare", name:"Лотос", desc:"Розово-фиолетовые переходы", price:700, apply:()=> state.cosmetics.skin="lotus" },
   { id:"skin_ash", kind:"skin", rarity:"common", name:"Пепельная", desc:"Сдержанная серая фактура", price:380, apply:()=> state.cosmetics.skin="ash" },
-  { id:"skin_jungle", kind:"skin", rarity:"epic", name:"Джунгли", desc:"Полосы и глубокая тень", price:1120, apply:()=> state.cosmetics.skin="jungle" },
-  { id:"skin_moon", kind:"skin", rarity:"legend", name:"Лунная роса", desc:"Серебристое неоновое сияние", price:1600, apply:()=> state.cosmetics.skin="moon" },
-  { id:"skin_ruby", kind:"skin", rarity:"epic", name:"Рубиновая", desc:"Красные переливы и лак", price:1180, apply:()=> state.cosmetics.skin="ruby" },
+  { id:"skin_jungle", kind:"skin", rarity:"epic", name:"Джунгли", desc:"Полосы и глубокая тень", price:220000, apply:()=> state.cosmetics.skin="jungle" },
+  { id:"skin_moon", kind:"skin", rarity:"legend", name:"Лунная роса", desc:"Серебристое неоновое сияние", price:760000, apply:()=> state.cosmetics.skin="moon" },
+  { id:"skin_ruby", kind:"skin", rarity:"epic", name:"Рубиновая", desc:"Красные переливы и лак", price:350000, apply:()=> state.cosmetics.skin="ruby" },
   { id:"skin_sand", kind:"skin", rarity:"common", name:"Песчаная", desc:"Тёплый матовый камуфляж", price:330, apply:()=> state.cosmetics.skin="sand" },
-  { id:"skin_celestial", kind:"skin", rarity:"legend", name:"Небесный поток", desc:"Градиент с точками-звёздами", price:1750, apply:()=> state.cosmetics.skin="celestial" },
+  { id:"skin_celestial", kind:"skin", rarity:"legend", name:"Небесный поток", desc:"Градиент с точками-звёздами", price:920000, apply:()=> state.cosmetics.skin="celestial" },
 
   // Accessories
   { id:"chain_gold", kind:"acc", rarity:"rare", name:"Золотая цепь", desc:"Толстая цепь и кулон", price:540000, toggle:"chainGold" },
   { id:"glasses_cyber", kind:"acc", rarity:"epic", name:"Кибер-визор", desc:"Неоновая маска на глаза", price:760000, toggle:"cyberVisor" },
   { id:"crown", kind:"acc", rarity:"legend", name:"Корона болота", desc:"Королевский силуэт", price:980000, toggle:"crown" },
   { id:"monocle", kind:"acc", rarity:"rare", name:"Монокль", desc:"Классический акцент", price:510000, toggle:"monocle" },
-  { id:"spikes", kind:"acc", rarity:"epic", name:"Шипы", desc:"Агрессивный воротник", price:780000, toggle:"spikes" },
+  { id:"spikes", kind:"acc", rarity:"epic", name:"Шипы", desc:"Агрессивный воротник", price:620000, toggle:"spikes" },
   { id:"scar", kind:"acc", rarity:"common", name:"Боевой шрам", desc:"Опытный вид", price:420000, toggle:"scar" },
   { id:"halo", kind:"acc", rarity:"epic", name:"Нимб", desc:"Светлая дуга", price:860000, toggle:"halo" },
   { id:"horns", kind:"acc", rarity:"epic", name:"Рога", desc:"Тёмная форма", price:860000, toggle:"horns" },
   { id:"auraAngel", kind:"acc", rarity:"legend", name:"Ангельская аура", desc:"Сияющий ореол", price:920000, toggle:"angel" },
-  { id:"auraDemon", kind:"acc", rarity:"legend", name:"Демоническая аура", desc:"Пульсирующее пламя", price:920000, toggle:"demon" },
-  { id:"bow_tie", kind:"acc", rarity:"common", name:"Бабочка", desc:"Яркий шейный бант", price:360000, toggle:"bowTie" },
-  { id:"leaf_hat", kind:"acc", rarity:"rare", name:"Шляпа-лист", desc:"Большой лист кувшинки", price:620000, toggle:"leafHat" },
-  { id:"respirator", kind:"acc", rarity:"rare", name:"Респиратор", desc:"Тактическая маска", price:680000, toggle:"respirator" },
-  { id:"pearl_necklace", kind:"acc", rarity:"rare", name:"Жемчужное ожерелье", desc:"Кольцо из жемчужин", price:700000, toggle:"pearlNecklace" },
-  { id:"captain_cap", kind:"acc", rarity:"epic", name:"Капитанская фуражка", desc:"Морской стиль", price:890000, toggle:"captainCap" },
-  { id:"flower_crown", kind:"acc", rarity:"epic", name:"Цветочный венок", desc:"Венок из болотных цветов", price:840000, toggle:"flowerCrown" },
-  { id:"neon_ring", kind:"acc", rarity:"legend", name:"Неон-кольцо", desc:"Плавающее кольцо света", price:995000, toggle:"neonRing" },
-  { id:"bandana", kind:"acc", rarity:"common", name:"Бандана", desc:"Контрастная повязка", price:390000, toggle:"bandana" },
-  { id:"ear_cuffs", kind:"acc", rarity:"rare", name:"Ушные кольца", desc:"Металлические каффы", price:560000, toggle:"earCuffs" },
-  { id:"whiskers_paint", kind:"acc", rarity:"common", name:"Боевой грим", desc:"Полосы на морде", price:430000, toggle:"whiskersPaint" },
-  { id:"rune_tattoo", kind:"acc", rarity:"epic", name:"Рунический узор", desc:"Светящиеся руны", price:880000, toggle:"runeTattoo" },
-  { id:"bubble_pipe", kind:"acc", rarity:"rare", name:"Трубка пузырей", desc:"Пузыри при дыхании", price:640000, toggle:"bubblePipe" },
-  { id:"terror_mask", kind:"acc", rarity:"legend", name:"Маска (ужас)", desc:"Лимит · коллекционный предмет", price:2200000, toggle:"respirator", limited:true, stock:25 },
-  { id:"tactical_glasses", kind:"acc", rarity:"legend", name:"Тактические очки", desc:"Лимит · премиум серия", price:3400000, toggle:"cyberVisor", limited:true, stock:18 },
-  { id:"gold_mask", kind:"acc", rarity:"legend", name:"Золотая маска", desc:"Лимит · люкс аксессуар", price:5500000, toggle:"monocle", limited:true, stock:10 },
+  { id:"auraDemon", kind:"acc", rarity:"legend", name:"Демоническая аура", desc:"Пульсирующее пламя", price:690000, toggle:"demon" },
+  { id:"bow_tie", kind:"acc", rarity:"common", name:"Бабочка", desc:"Яркий шейный бант", price:62000, toggle:"bowTie" },
+  { id:"leaf_hat", kind:"acc", rarity:"rare", name:"Шляпа-лист", desc:"Большой лист кувшинки", price:118000, toggle:"leafHat" },
+  { id:"respirator", kind:"acc", rarity:"rare", name:"Респиратор", desc:"Тактическая маска", price:126000, toggle:"respirator" },
+  { id:"pearl_necklace", kind:"acc", rarity:"rare", name:"Жемчужное ожерелье", desc:"Кольцо из жемчужин", price:138000, toggle:"pearlNecklace" },
+  { id:"captain_cap", kind:"acc", rarity:"epic", name:"Капитанская фуражка", desc:"Морской стиль", price:480000, toggle:"captainCap" },
+  { id:"flower_crown", kind:"acc", rarity:"epic", name:"Цветочный венок", desc:"Венок из болотных цветов", price:420000, toggle:"flowerCrown" },
+  { id:"neon_ring", kind:"acc", rarity:"legend", name:"Неон-кольцо", desc:"Плавающее кольцо света", price:620000, toggle:"neonRing" },
+  { id:"bandana", kind:"acc", rarity:"common", name:"Бандана", desc:"Контрастная повязка", price:54000, toggle:"bandana" },
+  { id:"ear_cuffs", kind:"acc", rarity:"rare", name:"Ушные кольца", desc:"Металлические каффы", price:102000, toggle:"earCuffs" },
+  { id:"whiskers_paint", kind:"acc", rarity:"common", name:"Боевой грим", desc:"Полосы на морде", price:59000, toggle:"whiskersPaint" },
+  { id:"rune_tattoo", kind:"acc", rarity:"epic", name:"Рунический узор", desc:"Светящиеся руны", price:510000, toggle:"runeTattoo" },
+  { id:"bubble_pipe", kind:"acc", rarity:"rare", name:"Трубка пузырей", desc:"Пузыри при дыхании", price:116000, toggle:"bubblePipe" },
+  { id:"terror_mask", kind:"acc", rarity:"legend", name:"Маска (ужас)", desc:"Лимит · коллекционный предмет", price:3000000, toggle:"respirator", limited:true, stock:25 },
+  { id:"tactical_glasses", kind:"acc", rarity:"legend", name:"Тактические очки", desc:"Лимит · премиум серия", price:4200000, toggle:"cyberVisor", limited:true, stock:18 },
+  { id:"gold_mask", kind:"acc", rarity:"legend", name:"Золотая маска", desc:"Лимит · люкс аксессуар", price:5600000, toggle:"monocle", limited:true, stock:10 },
   { id:"obsidian_horns", kind:"acc", rarity:"legend", name:"Обсидиановые рога", desc:"Лимит · только за алмазы", price:680, currency:"diamonds", toggle:"horns", limited:true, stock:12 }
 ];
 
 const frameItems = [
-  { id:"frame_common_moss", kind:"frame", rarity:"common", name:"Моховая рамка", desc:"Простая рамка профиля", price:120000, frameClass:"" },
-  { id:"frame_rare_wave", kind:"frame", rarity:"rare", name:"Волна болота", desc:"Редкая рамка с бликом", price:320000, frameClass:"" },
-  { id:"frame_epic_runes", kind:"frame", rarity:"epic", name:"Руническая рамка", desc:"Эпическая руническая окантовка", price:780000, frameClass:"" },
+  { id:"frame_common_moss", kind:"frame", rarity:"common", name:"Моховая рамка", desc:"Простая рамка профиля", price:80000, frameClass:"" },
+  { id:"frame_rare_wave", kind:"frame", rarity:"rare", name:"Волна болота", desc:"Редкая рамка с бликом", price:220000, frameClass:"" },
+  { id:"frame_epic_runes", kind:"frame", rarity:"epic", name:"Руническая рамка", desc:"Эпическая руническая окантовка", price:620000, frameClass:"" },
   { id:"frame_legend_glow", kind:"frame", rarity:"legend", name:"Легендарное сияние", desc:"Пульсирующая рамка с glow", price:1100, currency:"diamonds", frameClass:"frame-legendary" }
 ];
 
 const caseTypes = [
-  { id:"case_common", name:"Обычный кейс", price:120, rarities:["common","common","rare"] },
-  { id:"case_rare", name:"Редкий кейс", price:300, rarities:["rare","rare","epic"] },
-  { id:"case_epic", name:"Эпический кейс", price:650, rarities:["rare","epic","epic","legend"] },
-  { id:"case_legend", name:"Легендарный кейс", price:920000, rarities:["epic","legend","legend"] }
+  { id:"case_common", name:"Обычный кейс", price:95, rarities:["common","common","rare"] },
+  { id:"case_rare", name:"Редкий кейс", price:240, rarities:["rare","rare","epic"] },
+  { id:"case_epic", name:"Эпический кейс", price:520, rarities:["rare","epic","epic","legend"] },
+  { id:"case_legend", name:"Легендарный кейс", price:980, rarities:["epic","legend","legend"] }
 ];
 
 function rarityLabel(r){
@@ -1293,6 +1324,9 @@ function isCosmeticActive(it){
 function useCosmetic(it){
   if(it.kind==="skin" && it.apply){
     it.apply();
+  }else if(it.kind==="frame"){
+    state.account.frame = state.account.frame===it.id ? "" : it.id;
+    renderAvatar();
   }else if(it.toggle){
     // angel/demon mutually exclusive
     if(it.toggle==="angel"){
@@ -1343,7 +1377,8 @@ function openCase(caseId){
   if(!cs) return;
   if(state.diamonds < cs.price){ toast("Не хватает алмазов", `Нужно ${cs.price}`, "CASE"); return; }
   state.diamonds -= cs.price;
-  const pool = cosmeticItems.filter(it=> cs.rarities.includes(it.rarity));
+  let pool = cosmeticItems.filter(it=> cs.rarities.includes(it.rarity));
+  if(Math.random() < eventCaseLuck()) pool = cosmeticItems.filter(it=> it.rarity!=="common" && cs.rarities.includes(it.rarity));
   const drop = pool[Math.floor(Math.random()*pool.length)] || cosmeticItems[0];
   const caseResult = document.getElementById("caseResult");
   const wasOwned = own(drop.id);
@@ -1388,7 +1423,7 @@ function renderShop(){
   const order = {common:0, rare:1, epic:2, legend:3};
   const sorted = [...cosmeticItems].sort((a,b)=> (order[a.rarity]-order[b.rarity]) || (a.price-b.price));
   const limitedWrap = document.createElement("div");
-  limitedWrap.className = "item";
+  limitedWrap.className = "item limitedBlock";
   limitedWrap.innerHTML = `<div class="t">Лимит</div><div class="s">Редкие дорогие предметы поздней игры</div>`;
   const limitedGrid = document.createElement("div"); limitedGrid.className="shopGrid"; limitedWrap.appendChild(limitedGrid);
   for(const it of sorted){
@@ -1609,9 +1644,9 @@ function clickLogic(mult = 1){
   }
 
   const crit = rollCrit();
-  const comboBonus = 1 + (state.combo - 1) * 0.08; // мягкий бонус
-  const safeMult = Math.min(mult, 2.2);
-  const cost = Math.max(0.2, state.clickEnergyCost||1);
+  const comboBonus = 1 + (state.combo - 1) * 0.05; // мягкий бонус
+  const safeMult = Math.min(mult, 2.0);
+  const cost = Math.max(0.4, state.clickEnergyCost||1);
   let energyFactor = 1;
   if(state.energy >= cost){
     state.energy -= cost;
@@ -1628,7 +1663,8 @@ function clickLogic(mult = 1){
   gain *= eventClickMultiplier();
   gain *= (1 + (currentPerk().click||0));
 
-  state.points += Math.round(gain);
+  const finalGain = Math.max(1, Math.round(gain));
+  state.points += finalGain;
   state.bestPointsAllTime = Math.max(state.bestPointsAllTime||0, state.points);
   state.stats.clicks++;
   if(crit) state.stats.crits++;
@@ -1637,7 +1673,7 @@ function clickLogic(mult = 1){
   addXP(1 + (crit?1:0));
 
   // bonus drop
-  const dropChance = state.bonusDropChance || 0;
+  const dropChance = (state.bonusDropChance || 0) * 0.85;
   if(Math.random() < dropChance){
     const bonus = Math.max(1, Math.round(state.ppc * 0.75));
     state.points += bonus;
@@ -1650,6 +1686,7 @@ function clickLogic(mult = 1){
   updateUI();
   checkAchievements();
   save();
+  return { gain: finalGain, crit };
 }
 
 let lastEnergyTick = Date.now();
@@ -1658,7 +1695,7 @@ setInterval(()=>{
   if(now - state.comboLastHit > state.comboDecayMs) state.combo = 1;
   const dt = Math.max(0, (now - lastEnergyTick) / 1000);
   lastEnergyTick = now;
-  state.energy = clamp(state.energy + (state.energyRegen||6) * dt, 0, state.energyMax||100);
+  state.energy = clamp(state.energy + (state.energyRegen||6) * eventEnergyMultiplier() * dt, 0, state.energyMax||100);
   updateUI(false);
 }, 250);
 
@@ -1682,9 +1719,11 @@ setInterval(()=>{
 ========================= */
 const events = [
   { id:"none", name:"Тихий пруд", desc:"Без бонусов." },
-  { id:"rain", name:"Дождь в болоте", desc:"+20% очков за клики на 2 минуты", clickMul:1.2, dur:120000 },
-  { id:"buzz", name:"Стая мух", desc:"+25% наград мини-игр на 2 минуты", miniMul:1.25, dur:120000 },
-  { id:"moon", name:"Лунная слизь", desc:"+10% крит-шанс на 2 минуты", critBonus:0.10, dur:120000 }
+  { id:"rain", name:"Сезон дождей", desc:"+18% очков за клики · 5 минут", clickMul:1.18, dur:300000 },
+  { id:"buzz", name:"Рой светляков", desc:"+20% наград мини-игр · 5 минут", miniMul:1.2, dur:300000 },
+  { id:"moon", name:"Лунный прилив", desc:"+8% к шансу крита · 5 минут", critBonus:0.08, dur:300000 },
+  { id:"focus", name:"Энергетический всплеск", desc:"+35% реген энергии и +5% к кликам · 4 минуты", clickMul:1.05, energyMul:1.35, dur:240000 },
+  { id:"luck", name:"Охота за трофеями", desc:"+10% удачи кейсов · 4 минуты", caseLuck:0.10, dur:240000 }
 ];
 
 function setEvent(id){
@@ -1712,9 +1751,18 @@ function eventCritBonus(){
   const e = getActiveEvent();
   return e.critBonus || 0;
 }
+function eventEnergyMultiplier(){
+  const e = getActiveEvent();
+  return e.energyMul || 1;
+}
+function eventCaseLuck(){
+  const e = getActiveEvent();
+  return e.caseLuck || 0;
+}
 function updateEventUI(){
   const e = getActiveEvent();
-  document.getElementById("eventText").textContent = `${e.name}: ${e.desc}`;
+  const left = Math.max(0, Math.ceil(((state.event?.until||0)-Date.now())/1000));
+  document.getElementById("eventText").textContent = e.id==="none" ? `${e.name}: ${e.desc}` : `${e.name}: ${e.desc} · осталось ${left}с`;
   document.getElementById("eventTag").textContent = e.id==="none" ? "EVENT" : "ACTIVE";
 }
 document.getElementById("rerollEvent").addEventListener("click", ()=>{
@@ -1946,8 +1994,10 @@ function builtInAvatarSvg(id="frog1"){
 
 function renderAvatar(){
   avatarBox.innerHTML="";
-  avatarBox.classList.remove("frame-legendary");
-  if(state.account.frame==="frame_legend_glow") avatarBox.classList.add("frame-legendary");
+  avatarBox.classList.remove("frame-common","frame-rare","frame-epic","frame-legendary");
+  const frameClassById = { frame_common_moss:"frame-common", frame_rare_wave:"frame-rare", frame_epic_runes:"frame-epic", frame_legend_glow:"frame-legendary" };
+  const fc = frameClassById[state.account.frame||""];
+  if(fc) avatarBox.classList.add(fc);
   if(state.account.avatarDataUrl || state.account.builtInAvatar){
     const img=document.createElement("img");
     img.src=state.account.avatarDataUrl || builtInAvatarSvg(state.account.builtInAvatar);
@@ -2147,7 +2197,7 @@ function updateUI(full=true){
 const frogCanvas = document.getElementById("frog");
 const fctx = frogCanvas.getContext("2d");
 
-const fx = { ripples:[], particles:[], lastClick:0, squash:0 };
+const fx = { glows:[], particles:[], lastClick:0, squash:0 };
 const frogLife = { lookX:0, lookY:0, targetX:0, targetY:0, blink:0, nextBlink:performance.now()+rand(1200,3800), mood:"idle", happyUntil:0, angryUntil:0, lastUserAction:Date.now() };
 function frogMoodNow(){
   const n = Date.now();
@@ -2157,10 +2207,23 @@ function frogMoodNow(){
   return "idle";
 }
 
+function addFloatGain(px,py,gain,crit=false){
+  const holder=document.getElementById("frogWrap"); if(!holder) return;
+  const el=document.createElement("div");
+  el.className=`clickFloat ${crit?"crit":""}`;
+  el.textContent = `+${gain.toLocaleString("ru-RU")}`;
+  el.style.left=`${px*100}%`;
+  el.style.top=`${py*100}%`;
+  el.style.setProperty("--driftX",`${rand(-22,22).toFixed(1)}px`);
+  el.style.setProperty("--driftY",`${rand(-8,14).toFixed(1)}px`);
+  holder.appendChild(el);
+  if(holder.querySelectorAll(".clickFloat").length>28) holder.querySelector(".clickFloat")?.remove();
+  setTimeout(()=>el.remove(),1050);
+}
 function addClickFX(px,py, strong=false){
   if(!state.settings.particles) return;
   const W=frogCanvas.width, H=frogCanvas.height;
-  fx.ripples.push({x:px*W, y:py*H, t:performance.now(), d: strong? 720: 520, strong});
+  fx.glows.push({x:px*W, y:py*H, t:performance.now(), d: strong? 700: 500, strong});
   const n = strong ? 14 : 8;
   for(let i=0;i<n;i++){
     if(fx.particles.length>140) fx.particles.shift();
@@ -2588,8 +2651,11 @@ function drawAccessories(pal){
     fctx.restore();
   }
   if(state.cosmetics.neonRing){
+    const pulse = 0.65 + Math.sin(performance.now()*0.008)*0.25;
     fctx.save(); fctx.translate(0,-80); fctx.globalCompositeOperation="screen";
-    fctx.strokeStyle="rgba(0,255,240,0.85)"; fctx.lineWidth=11; fctx.beginPath(); fctx.ellipse(0,0,290,180,0,0,Math.PI*2); fctx.stroke();
+    fctx.strokeStyle=`rgba(0,255,240,${0.7+pulse*0.2})`; fctx.lineWidth=10 + pulse*4; fctx.beginPath(); fctx.ellipse(0,0,270,165,0,0,Math.PI*2); fctx.stroke();
+    fctx.strokeStyle="rgba(145,255,255,0.38)"; fctx.lineWidth=4; fctx.beginPath(); fctx.ellipse(0,0,290,182,0,0,Math.PI*2); fctx.stroke();
+    for(let i=0;i<4;i++){ const a=(performance.now()*0.002+i*Math.PI/2)%(Math.PI*2); fctx.fillStyle="rgba(170,255,245,0.7)"; fctx.beginPath(); fctx.arc(Math.cos(a)*270, Math.sin(a)*165, 4,0,Math.PI*2); fctx.fill(); }
     fctx.restore();
   }
   if(state.cosmetics.bandana){
@@ -2649,19 +2715,20 @@ function drawFX(){
   if(!state.settings.particles) return;
   const now = performance.now();
 
-  for(const r of fx.ripples){
+  for(const r of fx.glows){
     const age = (now - r.t) / r.d;
     if(age>=1) continue;
     const a = 1-age;
     fctx.save();
     fctx.globalAlpha = a;
-    fctx.strokeStyle = r.strong ? "rgba(255,209,102,0.58)" : "rgba(122,230,255,0.5)";
-    fctx.shadowColor = r.strong ? "rgba(255,209,102,0.55)" : "rgba(53,240,163,0.45)";
-    fctx.shadowBlur = 24;
-    fctx.lineWidth = 4;
+    const rad = lerp(10, 86, age);
+    const grad = fctx.createRadialGradient(r.x,r.y,6,r.x,r.y,rad);
+    grad.addColorStop(0, r.strong?"rgba(255,228,170,0.7)":"rgba(180,255,241,0.6)");
+    grad.addColorStop(1, "rgba(26,200,255,0)");
+    fctx.fillStyle = grad;
     fctx.beginPath();
-    fctx.arc(r.x, r.y, lerp(10, 118, age), 0, Math.PI*2);
-    fctx.stroke();
+    fctx.arc(r.x, r.y, rad, 0, Math.PI*2);
+    fctx.fill();
     fctx.restore();
   }
 
@@ -2678,7 +2745,7 @@ function drawFX(){
     fctx.restore();
   }
 
-  fx.ripples = fx.ripples.filter(r=> (now-r.t)<r.d);
+  fx.glows = fx.glows.filter(r=> (now-r.t)<r.d);
   fx.particles = fx.particles.filter(p=> (now-p.t)<p.d);
 }
 
@@ -2713,14 +2780,16 @@ wrap.addEventListener("pointerdown", (e)=>{
   addClickFX(px,py, dbl);
 
   frogLife.lastUserAction = Date.now();
+  let clickInfo;
   if(dbl){
-    clickLogic(2.0);
+    clickInfo = clickLogic(2.0);
     frogCroak(1.15);
     toastOnce("power_"+Math.floor(now/2500), "Суперква!", "Двойной клик дал бонус", "POWER", 1400);
   }else{
-    clickLogic(1);
+    clickInfo = clickLogic(1);
     frogCroak(1.0);
   }
+  if(clickInfo) addFloatGain(px,py, clickInfo.gain, clickInfo.crit);
 
   // daily: crit tracking
   // (we count crits inside clickLogic by checking state.stats change via check below)
@@ -2765,6 +2834,7 @@ function fliesEnd(){
   state.diamonds += dia;
   state.meta.fliesWins = (state.meta.fliesWins||0) + (fliesScore>0 ? 1 : 0);
   toast("Охота завершена", `+${payout} очков (x${mul.toFixed(2)}) · +${dia} алм.`, "MINI GAME");
+  showGameResult(fliesScore>0, payout, "Охота");
   dailySetProg("fliesWin", 1);
   save(); updateUI();
 }
@@ -2897,6 +2967,7 @@ function padsEnd(win=false){
   state.points += payout;
   if(win && Math.random() < (padsDifficulty==='hard'?0.3:padsDifficulty==='normal'?0.18:0.1)) state.diamonds += 1;
   toast("Память завершена", `+${payout} очков${win?' · шанс на алмаз выполнен':''}`, "MINI GAME");
+  showGameResult(!!win, payout, "Память");
   if(win) dailySetProg("padsWin", 1);
   save(); updateUI();
 }
@@ -3014,6 +3085,7 @@ function raidEnd(){
   state.diamonds += dia;
   state.meta.raidBest = Math.max(state.meta.raidBest||0, raidScore);
   toast("Рейд завершён", `+${payout} очков (x${mul.toFixed(2)}) · +${dia} алм.`, "MINI GAME");
+  showGameResult(raidLives>0, payout, "Рейд");
   // daily: raidScore target
   dailySetProg("raidScore", raidScore);
   save(); updateUI();
@@ -3162,6 +3234,7 @@ function bjEnd(result){
   else msg='Проигрыш';
   document.getElementById('bjState').textContent = msg;
   toast('Blackjack', msg, 'GAME', { forceImportant: result==='win' && bjBetVal>=1200 });
+  showGameResult(result==='win', result==='lose'?0:(result==='push'?bjBetVal:Math.round(bjBetVal*1.8)), 'Blackjack');
   save(); updateUI(false); bjRender(false);
 }
 function bjDeal(){
@@ -3259,14 +3332,15 @@ function showCaseModal(drop,duplicate){
   m.classList.add('show');
   const pool = cosmeticItems.filter(it=>it.kind===drop.kind);
   const reelItems = [];
-  for(let i=0;i<20;i++) reelItems.push(pool[Math.floor(Math.random()*pool.length)]||drop);
-  reelItems.push(drop);
+  for(let i=0;i<30;i++) reelItems.push(pool[Math.floor(Math.random()*pool.length)]||drop);
+  const targetIndex = 22 + Math.floor(Math.random()*4);
+  reelItems[targetIndex] = drop;
   c.className=`caseAnimCard rarityBurst-${drop.rarity}`;
-  c.innerHTML = `<div class="caseReel" id="caseReel">${reelItems.map((it,idx)=>`<div class="caseReelItem ${idx===reelItems.length-1?'win':''}">${it.name}</div>`).join('')}</div>`;
+  c.innerHTML = `<div class="casePointer"></div><div class="caseReelWrap"><div class="caseReel" id="caseReel">${reelItems.map((it)=>`<div class="caseReelItem">${it.name}</div>`).join('')}</div></div>`;
   const reel = document.getElementById('caseReel');
-  const total = 2400;
-  const itemW = 130;
-  const maxShift = (reelItems.length-1) * itemW;
+  const total = 3000;
+  const itemW = 142;
+  const maxShift = Math.max(0, targetIndex * itemW - 220);
   const started = performance.now();
   const animate = ()=>{
     const t = Math.min(1, (performance.now()-started)/total);
