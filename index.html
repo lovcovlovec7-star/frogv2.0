@@ -161,7 +161,12 @@
   .tabPane{display:none;}
   .tabPane.active{display:block;}
   .panel{max-height:calc(100vh - 36px);}
-  .panel .tabPane{max-height:calc(100vh - 160px); overflow:auto; padding-right:4px;}
+  .panel{display:flex; flex-direction:column; overflow:hidden;}
+  .panel .tabs{position:sticky; top:0; z-index:6; background:linear-gradient(180deg,#0f1a2af5,#0f1a2ae6 75%,transparent); padding-bottom:8px; margin-bottom:8px;}
+  .panelContent{flex:1; min-height:0; overflow-y:auto; overflow-x:hidden; padding-right:4px;}
+  .panelContent::-webkit-scrollbar{width:8px}
+  .panelContent::-webkit-scrollbar-thumb{background:#ffffff2c;border-radius:999px}
+  .panel .tabPane{padding-right:2px;}
   .panel .tabPane::-webkit-scrollbar{width:8px}
   .panel .tabPane::-webkit-scrollbar-thumb{background:#ffffff2c;border-radius:999px}
   .panel h2{margin:0 0 10px 0; font-size:16px;}
@@ -187,15 +192,14 @@
   .eqBadge{position:absolute;top:10px;right:10px;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:900;background:#35f0a31c;border:1px solid #35f0a37a;color:#8effc6}
 
   #leadersList{display:grid;gap:8px}
-  .leaderRow{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center}
+  .leaderRow{display:grid;grid-template-columns:30px 42px 1fr auto;gap:10px;align-items:center}
 
   @media (max-width: 430px){
     body{padding:10px}
     .card{padding:10px;border-radius:16px}
     .tabs{gap:7px}
     .tabBtn,.btn{font-size:12px;padding:8px 10px}
-    .panel{max-height:none}
-    .panel .tabPane{max-height:none;overflow:visible}
+    .panel{max-height:calc(100vh - 20px)}
   }
 
   /* Games */
@@ -284,6 +288,16 @@
   .locationGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .locCard.locked{opacity:.6;filter:saturate(.75)}
   .newsNew{display:inline-block;padding:3px 8px;border-radius:999px;background:#35f0a3;color:#062014;font-size:11px;font-weight:900;margin-left:8px}
+
+  .modalBack{position:fixed; inset:0; z-index:9998; display:none; place-items:center; background:#00000085; backdrop-filter:blur(4px)}
+  .modalBack.show{display:grid}
+  .modal{width:min(680px,calc(100vw - 28px)); border-radius:20px; border:1px solid var(--stroke); background:linear-gradient(160deg,#0b1628,#0a1220); box-shadow:0 24px 70px #0000008a; padding:14px}
+  .modalTop{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
+  .avatarGrid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:10px}
+  .avatarPick{cursor:pointer; border:1px solid #ffffff24; border-radius:14px; background:#00000025; overflow:hidden; padding:6px}
+  .avatarPick.active{border-color:#35f0a3aa; box-shadow:0 0 0 1px #35f0a355}
+  .avatarPick img{width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:10px}
+  @media (max-width:430px){.avatarGrid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 
   .bjCards{display:flex;gap:8px;flex-wrap:wrap;min-height:42px}
   .bjCard{padding:8px 10px;border-radius:10px;border:1px solid #ffffff2c;background:#0000002f;font-weight:900}
@@ -427,6 +441,8 @@
       <div style="flex:1"></div>
       <button class="tabBtn primary" id="saveBtn">Сохранить</button>
     </div>
+
+    <div class="panelContent">
 
     <div class="tabPane active" id="tab-upg">
       <h2>Прокачка</h2>
@@ -622,6 +638,12 @@
       </div>
 
       <div class="item">
+        <div class="t">Темы интерфейса</div>
+        <div class="s">Меняет акцентные цвета кнопок и свечения UI.</div>
+        <div class="locationGrid" id="themeList"></div>
+      </div>
+
+      <div class="item">
         <div class="t">Уведомления</div>
         <div class="s">Режим показа всплывающих событий</div>
         <div class="row">
@@ -632,10 +654,27 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
 </div>
 
 <div class="toasts" id="toasts"></div>
+<div class="modalBack" id="avatarModal">
+  <div class="modal">
+    <div class="modalTop">
+      <div>
+        <div class="t" style="font-weight:950">Выбор аватара</div>
+        <div class="s small">Загрузи свою картинку или выбери встроенную.</div>
+      </div>
+      <button class="btn" id="avatarModalClose">Закрыть</button>
+    </div>
+    <div class="btnRow">
+      <button class="btn primary" id="avatarModeUpload">Загрузить свою</button>
+      <button class="btn" id="avatarModeBuiltin">Выбрать встроенную</button>
+    </div>
+    <div id="avatarBuiltinWrap" class="avatarGrid"></div>
+  </div>
+</div>
 
 <script>
 /* =========================
@@ -673,6 +712,7 @@ const state = {
   dust: 0,
   bestPointsAllTime: 0,
   activeLocation: "swamp",
+  activeTheme: "emerald",
 
   stats: { clicks:0, crits:0 },
 
@@ -745,6 +785,7 @@ function load(){
     state.diamonds = Math.max(0, Math.floor(Number(state.diamonds)||0));
     state.bestPointsAllTime = Math.max(Number(state.bestPointsAllTime)||0, Number(state.points)||0);
     state.activeLocation ||= "swamp";
+    state.activeTheme ||= "emerald";
     localStorage.setItem(KEY, JSON.stringify(state));
   }catch{}
 }
@@ -879,11 +920,18 @@ function frogCroak(power=1){
 }
 
 const locations = [
-  { id:"swamp", name:"Болото", req:()=>true, accentA:"#35f0a3", accentB:"#1ac8ff", vibe:190 },
-  { id:"dirty", name:"Грязное болото", req:()=>state.level>=6, accentA:"#98c267", accentB:"#87633a", vibe:140 },
-  { id:"space", name:"Космос", req:()=>state.level>=14 || state.points>=150000, accentA:"#8ea3ff", accentB:"#8a4dff", vibe:260 },
-  { id:"hell", name:"Ад", req:()=>state.level>=22 || (state._ach?.rich5k), accentA:"#ff6b5f", accentB:"#f72a7a", vibe:96 },
-  { id:"heaven", name:"Рай", req:()=>state.level>=28, accentA:"#b2fff0", accentB:"#79b8ff", vibe:320 }
+  { id:"swamp", name:"Болото", req:()=>true, sceneA:"#0b2f26", sceneB:"#072638", vibe:[130.81,164.81,196,220], ambience:"mist" },
+  { id:"dirty", name:"Грязное болото", req:()=>state.level>=6, sceneA:"#2e2615", sceneB:"#16301f", vibe:[98,146.83,174.61,220], ambience:"mud" },
+  { id:"space", name:"Космос", req:()=>state.level>=14 || state.points>=150000, sceneA:"#0f1038", sceneB:"#220b3a", vibe:[146.83,220,246.94,329.63], ambience:"stars" },
+  { id:"hell", name:"Ад", req:()=>state.level>=22 || (state._ach?.rich5k), sceneA:"#3a0f10", sceneB:"#3d1a08", vibe:[98,123.47,146.83,174.61], ambience:"embers" },
+  { id:"heaven", name:"Рай", req:()=>state.level>=28, sceneA:"#1a3240", sceneB:"#224f63", vibe:[174.61,220,261.63,329.63], ambience:"sparkles" }
+];
+
+const uiThemes = [
+  { id:"emerald", name:"Изумруд", accentA:"#35f0a3", accentB:"#1ac8ff" },
+  { id:"violet", name:"Фиолет", accentA:"#b295ff", accentB:"#6f87ff" },
+  { id:"sunset", name:"Закат", accentA:"#ffb067", accentB:"#ff5f8f" },
+  { id:"ice", name:"Лёд", accentA:"#8cf7ff", accentB:"#8db9ff" }
 ];
 
 const versionNotes = [
@@ -893,38 +941,54 @@ const versionNotes = [
 const CURRENT_VERSION = versionNotes[0].v;
 
 let musicNodes = null;
+let musicStarted = false;
+function applyTheme(){
+  const t = uiThemes.find(x=>x.id===state.activeTheme) || uiThemes[0];
+  document.documentElement.style.setProperty('--accentA', t.accentA);
+  document.documentElement.style.setProperty('--accentB', t.accentB);
+}
 function updateLocationTheme(){
   const loc = locations.find(l=>l.id===state.activeLocation) || locations[0];
-  document.documentElement.style.setProperty('--accentA', loc.accentA);
-  document.documentElement.style.setProperty('--accentB', loc.accentB);
+  document.body.style.background = `radial-gradient(1100px 650px at 18% 10%, ${loc.sceneA}66, transparent 60%), radial-gradient(1100px 650px at 82% 25%, ${loc.sceneB}66, transparent 60%), linear-gradient(160deg, #060b14, #071f25)`;
 }
 function ensureMusic(){
   ensureAudio();
   if(musicNodes) return;
   const master = audioCtx.createGain();
-  const osc1 = audioCtx.createOscillator();
-  const osc2 = audioCtx.createOscillator();
-  const lfo = audioCtx.createOscillator();
-  const lfoGain = audioCtx.createGain();
+  const pad = audioCtx.createOscillator();
+  const padGain = audioCtx.createGain();
+  const lead = audioCtx.createOscillator();
+  const leadGain = audioCtx.createGain();
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 1800;
   master.gain.value = 0;
-  osc1.type = 'triangle'; osc2.type = 'sine';
-  osc1.frequency.value = 190; osc2.frequency.value = 95;
-  lfo.type = 'sine'; lfo.frequency.value = 0.13;
-  lfoGain.gain.value = 18;
-  lfo.connect(lfoGain); lfoGain.connect(osc1.frequency);
-  osc1.connect(master); osc2.connect(master); master.connect(audioCtx.destination);
-  osc1.start(); osc2.start(); lfo.start();
-  musicNodes = {master,osc1,osc2};
+  pad.type = "triangle";
+  lead.type = "sine";
+  pad.connect(padGain); lead.connect(leadGain);
+  padGain.connect(filter); leadGain.connect(filter); filter.connect(master); master.connect(audioCtx.destination);
+  padGain.gain.value = 0.05;
+  leadGain.gain.value = 0.02;
+  pad.start();
+  lead.start();
+  musicNodes = { master, pad, lead, seqI:-1 };
 }
-function refreshMusic(){
-  if(!state.settings.musicOn || state.muted){ if(musicNodes) musicNodes.master.gain.value = 0; return; }
-  ensureMusic();
+function stepMusic(){
+  if(!musicStarted || !musicNodes || !state.settings.musicOn || state.muted) return;
   const loc = locations.find(l=>l.id===state.activeLocation) || locations[0];
-  const vol = (state.settings.volumeMaster||1) * (state.settings.volumeMusic||0.5);
+  const seq = loc.vibe;
+  musicNodes.seqI = (musicNodes.seqI + 1) % seq.length;
+  const root = seq[musicNodes.seqI];
   const t = audioCtx.currentTime;
-  musicNodes.osc1.frequency.setTargetAtTime(loc.vibe, t, 0.6);
-  musicNodes.osc2.frequency.setTargetAtTime(Math.max(50, loc.vibe*0.53), t, 0.8);
-  musicNodes.master.gain.setTargetAtTime(0.05*vol, t, 0.6);
+  musicNodes.pad.frequency.setTargetAtTime(root, t, 0.08);
+  musicNodes.lead.frequency.setTargetAtTime(root * (musicNodes.seqI % 2 ? 1.5 : 2), t, 0.06);
+}
+setInterval(stepMusic, 550);
+function refreshMusic(){
+  if(!musicNodes){ if(!musicStarted) return; ensureMusic(); }
+  if(!state.settings.musicOn || state.muted || !musicStarted){ if(musicNodes) musicNodes.master.gain.setTargetAtTime(0, audioCtx.currentTime, 0.2); return; }
+  const vol = (state.settings.volumeMaster||1) * (state.settings.volumeMusic||0.5);
+  musicNodes.master.gain.setTargetAtTime(0.16*vol, audioCtx.currentTime, 0.35);
 }
 
 /* =========================
@@ -1276,7 +1340,7 @@ function autoUpdateLeaderboard(){
   if(!nick) return;
   const rows = loadLeaderboard();
   state.bestPointsAllTime = Math.max(state.bestPointsAllTime||0, state.points||0);
-  const row = { nick, best: Math.floor(state.bestPointsAllTime||0), current: Math.floor(state.points||0), level: state.level, rank: currentRank().name, updated: Date.now() };
+  const row = { nick, best: Math.floor(state.bestPointsAllTime||0), current: Math.floor(state.points||0), level: state.level, rank: currentRank().name, updated: Date.now(), avatarDataUrl: state.account.avatarDataUrl||"", builtInAvatar: state.account.builtInAvatar||"" };
   const i = rows.findIndex(r=>r.nick===nick);
   if(i>=0) rows[i]=row; else rows.push(row);
   rows.sort((a,b)=> (Number(b.best||b.points||0)-Number(a.best||a.points||0)) || (Number(b.current||0)-Number(a.current||0)));
@@ -1293,7 +1357,7 @@ function renderLeaders(){
     const cur = Number(r.current||r.points||0);
     const div = document.createElement("div");
     div.className = "item leaderRow";
-    div.innerHTML = `<div class="t">${idx+1}</div><div><div class="t">${r.nick}</div><div class="s">Рекорд: ${best.toLocaleString("ru-RU")} · Сейчас: ${cur.toLocaleString("ru-RU")} · ${r.rank} · ур. ${r.level}</div></div><div class="tag">${best.toLocaleString("ru-RU")}</div>`;
+    div.innerHTML = `<div class="t">${idx+1}</div><div class="avatar" style="width:42px;height:42px;border-radius:12px"><img src="${r.avatarDataUrl || builtInAvatarSvg(r.builtInAvatar||'frog1')}" alt="av"></div><div><div class="t">${r.nick}</div><div class="s">Рекорд: ${best.toLocaleString("ru-RU")} · Сейчас: ${cur.toLocaleString("ru-RU")} · ${r.rank} · ур. ${r.level}</div></div><div class="tag">${best.toLocaleString("ru-RU")}</div>`;
     box.appendChild(div);
   });
 }
@@ -1313,6 +1377,21 @@ function renderLocations(){
     box.appendChild(div);
   });
 }
+
+function renderThemes(){
+  const box = document.getElementById('themeList');
+  if(!box) return;
+  box.innerHTML='';
+  uiThemes.forEach(t=>{
+    const active = state.activeTheme===t.id;
+    const div = document.createElement('div');
+    div.className = `item ${active?'active':''}`;
+    div.innerHTML = `<div class="t">${t.name}</div><div class="s">Акценты интерфейса</div><div class="row"><button class="btn ${active?'primary':''}">${active?'Активна':'Выбрать'}</button></div>`;
+    div.querySelector('button').addEventListener('click', ()=>{ uiBeep(); state.activeTheme=t.id; applyTheme(); updateUI(false); save(); });
+    box.appendChild(div);
+  });
+}
+
 function renderNews(){
   const box = document.getElementById('newsList');
   if(!box) return;
@@ -1713,7 +1792,7 @@ const titleSelect = document.getElementById("titleSelect");
 const activeTitleTag = document.getElementById("activeTitleTag");
 function builtInAvatarSvg(id="frog1"){
   const palette = {
-    frog1:['#59d27b','#2f8f54'], frog2:['#7ecbff','#315e9f'], frog3:['#ffb37e','#a04f2a'], frog4:['#f4a3ff','#6e3d9d']
+    frog1:['#59d27b','#2f8f54'], frog2:['#7ecbff','#315e9f'], frog3:['#ffb37e','#a04f2a'], frog4:['#f4a3ff','#6e3d9d'], frog5:['#ffe26c','#a16f1f'], frog6:['#9fffd2','#2a8f84']
   };
   const c = palette[id] || palette.frog1;
   return `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='${c[0]}'/><stop offset='1' stop-color='${c[1]}'/></linearGradient></defs><rect width='120' height='120' rx='24' fill='#0c1526'/><ellipse cx='60' cy='70' rx='42' ry='30' fill='url(#g)'/><circle cx='43' cy='45' r='14' fill='#fff'/><circle cx='77' cy='45' r='14' fill='#fff'/><circle cx='43' cy='46' r='6' fill='#151515'/><circle cx='77' cy='46' r='6' fill='#151515'/><path d='M34 76 Q60 92 86 76' stroke='#fff' stroke-width='5' fill='none' stroke-linecap='round'/></svg>` )}`;
@@ -1732,22 +1811,40 @@ function renderAvatar(){
     avatarBox.appendChild(s);
   }
 }
+const avatarModal = document.getElementById("avatarModal");
+const avatarModeUpload = document.getElementById("avatarModeUpload");
+const avatarModeBuiltin = document.getElementById("avatarModeBuiltin");
+const avatarBuiltinWrap = document.getElementById("avatarBuiltinWrap");
+function renderAvatarGrid(){
+  const builtInIds = ["frog1","frog2","frog3","frog4","frog5","frog6"];
+  avatarBuiltinWrap.innerHTML = "";
+  builtInIds.forEach(id=>{
+    const div = document.createElement("button");
+    div.className = `avatarPick ${state.account.builtInAvatar===id ? "active" : ""}`;
+    div.innerHTML = `<img src="${builtInAvatarSvg(id)}" alt="${id}">`;
+    div.addEventListener("click", ()=>{
+      uiBeep();
+      state.account.builtInAvatar = id;
+      state.account.avatarDataUrl = "";
+      renderAvatarGrid(); renderAvatar(); save();
+    });
+    avatarBuiltinWrap.appendChild(div);
+  });
+}
 avatarBox.addEventListener("click", ()=>{
   uiBeep();
-  const mode = prompt('Аватар: 1 — Загрузить свою, 2 — Встроенная (frog1..frog4)', '1');
-  if(mode==='2'){
-    const id = prompt('Выбери встроенную: frog1, frog2, frog3, frog4', state.account.builtInAvatar||'frog1') || 'frog1';
-    state.account.builtInAvatar = id.trim();
-    state.account.avatarDataUrl = '';
-    renderAvatar(); save(); return;
-  }
-  avatarFile.click();
+  avatarModal.classList.add("show");
+  renderAvatarGrid();
 });
+document.getElementById("avatarModalClose").addEventListener("click", ()=> avatarModal.classList.remove("show"));
+avatarModal.addEventListener("click", (e)=>{ if(e.target===avatarModal) avatarModal.classList.remove("show"); });
+avatarModeUpload.addEventListener("click", ()=> avatarFile.click());
+avatarModeBuiltin.addEventListener("click", ()=>{ renderAvatarGrid(); });
 avatarFile.addEventListener("change", ()=>{
   const f=avatarFile.files?.[0];
   if(!f) return;
   const r=new FileReader();
-  r.onload=()=>{ state.account.avatarDataUrl=String(r.result); state.account.builtInAvatar=''; renderAvatar(); save(); };
+  r.onload=()=>{ state.account.avatarDataUrl=String(r.result); state.account.builtInAvatar=''; renderAvatar(); avatarModal.classList.remove("show"); save(); };
   r.readAsDataURL(f);
 });
 
@@ -1876,6 +1973,7 @@ function updateUI(full=true){
     renderTitles();
     renderLeaders();
     renderLocations();
+    renderThemes();
     renderNews();
   }
   updateProfileMeta();
@@ -1966,6 +2064,14 @@ function drawFrog(){
   bg.addColorStop(0.55, cB);
   bg.addColorStop(1, "rgba(0,0,0,0.45)");
   fctx.fillStyle=bg; fctx.fillRect(0,0,W,H);
+  for(let i=0;i<18;i++){
+    const ph=(tNow*0.0003+i*0.17)%1;
+    const x=(i*71+ph*W*1.7)%W;
+    const y=(i*53+Math.sin(tNow*0.001+i)*50+H)%H;
+    const r=loc.ambience==="stars"?1.7:(loc.ambience==="embers"?2.3:1.4);
+    fctx.fillStyle = loc.ambience==="embers" ? "rgba(255,140,60,0.24)" : loc.ambience==="stars" ? "rgba(200,220,255,0.32)" : "rgba(160,255,220,0.16)";
+    fctx.beginPath(); fctx.arc(x,y,r,0,Math.PI*2); fctx.fill();
+  }
 
   // ground shadow
   if(state.settings.shadows){
@@ -2058,7 +2164,7 @@ function drawFrog(){
 
   // mouth line (expression)
   const exprMood = frogMoodNow();
-  const mouthArc = exprMood==="happy" ? -70 : mood==="angry" ? 18 : mood==="tired" ? 8 : -10;
+  const mouthArc = exprMood==="happy" ? -70 : exprMood==="angry" ? 18 : exprMood==="tired" ? 8 : -10;
   fctx.strokeStyle="rgba(255,255,255,0.85)";
   fctx.lineWidth=10;
   fctx.lineCap="round";
@@ -3009,8 +3115,18 @@ window.rollCrit = function(){
   return Math.random() < chance;
 };
 
+applyTheme();
 updateLocationTheme();
-refreshMusic();
+
+const startMusicOnInteraction = ()=>{
+  if(musicStarted) return;
+  musicStarted = true;
+  ensureAudio();
+  ensureMusic();
+  refreshMusic();
+};
+window.addEventListener("pointerdown", startMusicOnInteraction, { once:true });
+window.addEventListener("keydown", startMusicOnInteraction, { once:true });
 
 // profile init
 nickInput.value = state.account.nick || "";
