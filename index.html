@@ -250,7 +250,8 @@
   .devEditorPreview .caption{text-align:center;font-size:11px;color:var(--muted);margin-top:4px}
   .devEditorControls{display:grid;gap:10px}
   .devEditorControls textarea{width:100%;min-height:120px;padding:10px;border-radius:12px;border:1px solid #ffffff22;background:#00000028;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
-  .devEditorRow{display:grid;grid-template-columns:82px 1fr auto;gap:8px;align-items:center}
+  .devEditorRow{display:grid;grid-template-columns:82px 1fr 88px auto;gap:8px;align-items:center}
+  .devEditorRow input[type=number]{width:100%;padding:6px 8px;border-radius:10px;border:1px solid #ffffff2a;background:#0000002e;color:var(--text);font-weight:800}
   .devEditorRow output{font-weight:900;min-width:66px;text-align:right;color:#aef7ff}
   .devEditorHint{font-size:12px;color:var(--muted);line-height:1.35}
   @media (max-width:980px){.devEditorGrid{grid-template-columns:1fr}.devEditorPreview{grid-template-columns:1fr}}
@@ -903,7 +904,7 @@
 <div class="modalBack" id="caseOpenModal"><div class="modal caseModal"><div class="caseModalTop"><div class="caseModalHeading"><div class="caseModalTitle" id="caseModalTitle">Выберите кейс</div><button class="caseHeaderInfo" id="caseModalOddsBtn" title="Показать шансы" aria-label="Показать шансы" style="display:none">ⓘ</button></div><div class="caseOddsPopup" id="caseModalOddsPopup"></div><button class="btn caseSecondary caseModalCloseBtn" id="caseModalClose">Закрыть</button></div><div class="modalScroll"><div id="caseModalContent" class="caseAnimCard"></div></div><div class="caseActions" style="margin-top:10px"><button class="btn casePrimary" id="caseSpinBtn">Начать открытие</button><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn" id="caseInventoryBtn" style="display:none">В инвентарь</button><button class="btn caseSecondary" id="caseSellBtn" style="display:none">В пыль</button><button class="btn caseSecondary" id="caseCloseBtn" style="display:none">Ок</button></div></div></div>
 <div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout modalScroll" style="margin-top:10px"><div class="shopPreview"><div id="shopPreviewWrap" class="previewFrogWrap"><canvas id="shopPreview" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div><canvas class="frogAccessoryFx" width="900" height="900"></canvas></div></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
 <div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
-<div class="modalBack" id="accessoryEditorModal"><div class="modal" style="width:min(1160px,calc(100vw - 24px));max-height:92vh;overflow:auto"><div class="modalTop"><div><div class="t" style="font-weight:950">Редактор аксессуаров (DEV)</div><div class="small">Тяни аксессуар мышью, используй стрелки (Shift = крупный шаг), меняй scale/rotation и публикуй DEFAULT_OFFSETS.</div></div><button class="btn" id="accessoryEditorCloseBtn">Закрыть</button></div><div class="devEditorGrid"><div><div class="devEditorPreview"><div><div id="editorMainPreview" class="previewFrogWrap"><canvas id="editorMainCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div></div><div class="caption">Main frog</div></div><div><div id="editorShopPreview" class="previewFrogWrap"><canvas id="editorShopCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div></div><div class="caption">Shop preview frog</div></div></div></div><div class="devEditorControls"><label class="small">Accessory<select id="accEditorSelect"></select></label><div class="devEditorFilters"><input id="accEditorSearch" placeholder="Поиск по имени / id"/><select id="accEditorRarity"><option value="">Все редкости</option><option value="common">common</option><option value="rare">rare</option><option value="epic">epic</option><option value="legend">legend</option><option value="limited">limited</option></select><select id="accEditorSlot"><option value="">Все слоты</option></select><label class="devEditorToggle"><input type="checkbox" id="accEditorPreviewOnly" checked/> Preview only</label></div><div class="devEditorRow"><label class="small" for="accEditorScale">Scale</label><input id="accEditorScale" type="range" min="0.4" max="2.2" step="0.01"><output id="accEditorScaleVal">1.00</output></div><div class="devEditorRow"><label class="small" for="accEditorRotation">Rotation</label><input id="accEditorRotation" type="range" min="-180" max="180" step="0.5"><output id="accEditorRotationVal">0.0°</output></div><div class="item"><div class="small" id="accEditorValues">dxN: 0 · dyN: 0 · scale: 1 · rotation: 0</div><div class="devEditorHint">Сохранить — в localStorage: <code>frog_accessory_offsets_dev_v1</code>. Publish offsets генерирует код для вставки в константу по умолчанию.</div></div><div class="btnRow"><button class="btn primary" id="accEditorSaveBtn">Сохранить</button><button class="btn" id="accEditorResetBtn">Сброс</button><button class="btn" id="accEditorResetAllBtn">Сбросить всё</button><button class="btn" id="accEditorExportBtn">Экспорт (JSON)</button><button class="btn" id="accEditorImportBtn">Импорт (JSON)</button><button class="btn" id="accEditorSaveFileBtn">Save offsets to file</button><button class="btn warn" id="accEditorPublishBtn">Publish offsets (copy code)</button></div><textarea id="accEditorJson" placeholder="JSON / сгенерированный код для DEFAULT_OFFSETS"></textarea><div class="btnRow"><button class="btn" id="accEditorCopyBtn">Copy</button><button class="btn" id="accEditorCloseBtnBottom">Закрыть</button></div><div class="small">Paste this into code to make placements default for everyone.</div></div></div></div></div>
+<div class="modalBack" id="accessoryEditorModal"><div class="modal" style="width:min(1160px,calc(100vw - 24px));max-height:92vh;overflow:auto"><div class="modalTop"><div><div class="t" style="font-weight:950">Редактор аксессуаров (DEV)</div><div class="small">Тяни аксессуар мышью, используй стрелки (Shift = крупный шаг), меняй scale/rotation и публикуй DEFAULT_OFFSETS.</div></div><button class="btn" id="accessoryEditorCloseBtn">Закрыть</button></div><div class="devEditorGrid"><div><div class="devEditorPreview"><div><div id="editorMainPreview" class="previewFrogWrap"><canvas id="editorMainCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div></div><div class="caption">Main frog</div></div><div><div id="editorShopPreview" class="previewFrogWrap"><canvas id="editorShopCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div></div><div class="caption">Shop preview frog</div></div></div></div><div class="devEditorControls"><label class="small">Accessory<select id="accEditorSelect"></select></label><div class="devEditorFilters"><input id="accEditorSearch" placeholder="Поиск по имени / id"/><select id="accEditorRarity"><option value="">Все редкости</option><option value="common">common</option><option value="rare">rare</option><option value="epic">epic</option><option value="legend">legend</option><option value="limited">limited</option></select><select id="accEditorSlot"><option value="">Все слоты</option></select><label class="devEditorToggle"><input type="checkbox" id="accEditorPreviewOnly" checked/> Preview only</label></div><div class="devEditorRow"><label class="small" for="accEditorScale">Scale</label><input id="accEditorScale" type="range" min="0.1" max="4" step="0.01"><input id="accEditorScaleNum" type="number" min="0.1" max="4" step="0.01" value="1"><output id="accEditorScaleVal">1.00</output></div><div class="devEditorRow"><label class="small" for="accEditorRotation">Rotation</label><input id="accEditorRotation" type="range" min="-180" max="180" step="0.5"><input id="accEditorRotationNum" type="number" min="-180" max="180" step="0.1" value="0"><output id="accEditorRotationVal">0.0°</output></div><div class="item"><div class="small" id="accEditorValues">dxN: 0 · dyN: 0 · scale: 1 · rotation: 0</div><div class="devEditorHint">Сохранить — в localStorage: <code>frog_accessory_offsets_dev_v1</code>. Publish offsets генерирует код для вставки в константу по умолчанию.</div></div><div class="btnRow"><button class="btn primary" id="accEditorSaveBtn">Сохранить</button><button class="btn" id="accEditorResetBtn">Сброс</button><button class="btn" id="accEditorResetAllBtn">Сбросить всё</button><button class="btn" id="accEditorExportBtn">Экспорт (JSON)</button><button class="btn" id="accEditorImportBtn">Импорт (JSON)</button><button class="btn" id="accEditorSaveFileBtn">Save offsets to file</button><button class="btn warn" id="accEditorPublishChangedBtn">Publish (changed only)</button><button class="btn warn" id="accEditorPublishFullBtn">Publish (full defaults)</button></div><textarea id="accEditorJson" placeholder="JSON / сгенерированный код для DEFAULT_OFFSETS"></textarea><div class="btnRow"><button class="btn" id="accEditorCopyBtn">Copy</button><button class="btn" id="accEditorCloseBtnBottom">Закрыть</button></div><div class="small" id="accEditorChangedInfo">Changed count: 0</div><div class="small">Paste this into code to make placements default for everyone.</div></div></div></div></div>
 
 <div id="gameResultOverlay" class="resultOverlay"><div id="gameResultTitle" class="t"></div><div id="gameResultText" class="s" style="margin-top:6px"></div></div>
 <div class="toasts" id="toasts"></div>
@@ -1595,7 +1596,7 @@ const ACCESSORY_SLOTS = {
 };
 const SLOT_ANCHOR_RULES = { FACE:'FACE', EYES:'EYES', HEAD_TOP:'HEAD_TOP', NECK:'NECK', MOUTH:'MOUTH', BODY:'BODY', AURA_BEHIND:'AURA_BEHIND', AURA_FRONT:'AURA_FRONT' };
 const ACCESSORY_SLOT_SCALE = {HEAD_TOP:1,EYES:0.9,FACE:0.88,MOUTH:0.82,NECK:0.9,BODY:0.95,AURA_BEHIND:1.24,AURA_FRONT:1.2};
-const ACCESSORY_SLOT_LIMITS = {HEAD_TOP:{dx:150,dy:120,s:[0.72,1.42]},EYES:{dx:92,dy:70,s:[0.72,1.3]},FACE:{dx:96,dy:88,s:[0.7,1.24]},MOUTH:{dx:120,dy:82,s:[0.72,1.22]},NECK:{dx:124,dy:90,s:[0.72,1.32]},BODY:{dx:130,dy:120,s:[0.72,1.36]},AURA_BEHIND:{dx:110,dy:120,s:[0.86,1.52]},AURA_FRONT:{dx:110,dy:110,s:[0.84,1.58]}};
+const ACCESSORY_SLOT_LIMITS = {HEAD_TOP:{dx:260,dy:220,s:[0.1,4]},EYES:{dx:220,dy:180,s:[0.1,4]},FACE:{dx:240,dy:220,s:[0.1,4]},MOUTH:{dx:220,dy:190,s:[0.1,4]},NECK:{dx:240,dy:220,s:[0.1,4]},BODY:{dx:260,dy:240,s:[0.1,4]},AURA_BEHIND:{dx:260,dy:260,s:[0.1,4]},AURA_FRONT:{dx:260,dy:260,s:[0.1,4]}};
 const DEFAULT_OFFSETS = {};
 let accessoryOffsets = {};
 
@@ -1635,7 +1636,7 @@ const accessoryItems = [
   {id:'l_crest_seal',signature:'crest-seal',name:'Печать Ордена',desc:'Фронтальная печать с зеркальным блеском.',rarity:'legend',slot:'AURA_FRONT',price:1190000,offset:{dx:0,dy:8,s:1.1,r:0},motif:'crestSeal',effects:{particles:{type:'mote',color:'#ffdcb0',count:18,rate:1.05,radius:175}}},
 
   {id:'lm_void_crown',signature:'void-crown',name:'Корона Бездны',desc:'Лимит: руны и глубинный градиент.',rarity:'limited',limited:true,stock:7,slot:'HEAD_TOP',price:4200000,offset:{dx:0,dy:-12,s:1.16,r:0},motif:'voidCrown',effects:{particles:{type:'rune',color:'#b99dff',count:20,rate:1.25,radius:220}}},
-  {id:'lm_rift_eyes',signature:'rift-eyes',name:'Глаза Разлома',desc:'Лимит: разломный визор с анимированным срезом.',rarity:'limited',limited:true,stock:8,slot:'EYES',price:4300000,offset:{dx:0,dy:0,s:1.15,r:0},motif:'riftEyes',effects:{particles:{type:'spark',color:'#8bf0ff',count:20,rate:1.2,radius:210}}},
+  {id:'lm_rift_eyes',signature:'rift-eyes',name:'Слэшерская маска',desc:'Лимит: оригинальная слэшер-маска с вентиляцией и потёртостями.',rarity:'limited',limited:true,stock:8,slot:'FACE',price:4300000,offset:{dx:0,dy:8,s:1.52,r:0},motif:'slasherMask',effects:{particles:{type:'spark',color:'#dfe8ff',count:12,rate:0.7,radius:210}}},
   {id:'lm_ember_mask',signature:'ember-mask',name:'Пепельная маска',desc:'Лимит: раскалённые прожилки и эмберы.',rarity:'limited',limited:true,stock:6,slot:'FACE',price:4400000,offset:{dx:0,dy:4,s:1.13,r:0},motif:'emberMask',effects:{particles:{type:'ember',color:'#ff9f68',count:20,rate:1.25,radius:205}}},
   {id:'lm_rune_torque',signature:'rune-torque',name:'Торк Архонта',desc:'Лимит: рунный обруч с синим пламенем.',rarity:'limited',limited:true,stock:9,slot:'NECK',price:4150000,offset:{dx:0,dy:6,s:1.13,r:0},motif:'runeTorque',effects:{particles:{type:'rune',color:'#9cfadf',count:20,rate:1.2,radius:215}}},
   {id:'lm_eclipse_back',signature:'eclipse-back',name:'Затмение',desc:'Лимит: позадний астральный диск с пеплом.',rarity:'limited',limited:true,stock:5,slot:'AURA_BEHIND',price:4600000,offset:{dx:0,dy:-14,s:1.18,r:0},motif:'eclipseBack',effects:{particles:{type:'ember',color:'#ffc38d',count:20,rate:1.3,radius:225}}},
@@ -1680,11 +1681,12 @@ function accessorySvgMarkup(it){
     photonHalo:'<g class="accLegendPulse"><ellipse cx="0" cy="0" rx="194" ry="110" fill="none" stroke="url(#ID_a)" stroke-width="20"/></g>',
     crestSeal:'<g class="accLegendPulse"><circle cx="0" cy="0" r="78" fill="url(#ID_a)" opacity=".62"/><path d="M-36 0H36M0 -36V36" stroke="#fff9" stroke-width="10"/></g>',
     voidCrown:'<g class="accLimitedPulse"><path d="M-138 24L-96 -58L-42 16L0 -74L42 16L96 -58L138 24Z" fill="url(#ID_a)"/><path d="M-92 12H92" stroke="#fff8" stroke-width="8"/></g>',
-    riftEyes:'<g class="accLimitedPulse"><rect x="-140" y="-40" width="280" height="80" rx="40" fill="url(#ID_a)"/><path d="M-120 0H120" stroke="#fff9" stroke-width="12"/></g>',
-    emberMask:'<g class="accLimitedPulse"><path d="M-130 -44Q0 -68 130 -44L108 42Q0 82 -108 42Z" fill="url(#ID_a)"/><path d="M-78 6Q0 42 78 6" stroke="#fff8" stroke-width="10"/></g>',
+    riftEyes:'<g class="accLimitedPulse"><ellipse cx="0" cy="0" rx="130" ry="52" fill="url(#ID_g)"/><path d="M-108 -8Q-62 22 -18 0T72 -2T108 10" stroke="#b6f9ff" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="-46" cy="2" r="13" fill="#fff" opacity=".8"/><circle cx="46" cy="-2" r="13" fill="#fff" opacity=".8"/></g>',
+    emberMask:'<g><defs><linearGradient id="ID_maskShade" x1="0" y1="-1" x2="0" y2="1"><stop offset="0" stop-color="#f0f5ff"/><stop offset="1" stop-color="#aeb6c8"/></linearGradient></defs><path d="M-132 -58Q0 -84 132 -58L118 66Q0 114 -118 66Z" fill="url(#ID_maskShade)" stroke="#2b3240" stroke-width="6"/><path d="M-102 -38Q0 -64 102 -38L96 52Q0 90 -96 52Z" fill="#ffffff24"/><ellipse cx="-44" cy="-6" rx="28" ry="18" fill="#1d2330"/><ellipse cx="44" cy="-6" rx="28" ry="18" fill="#1d2330"/><path d="M-50 44Q0 64 50 44" stroke="#2b3240" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M-170 -22H-122M122 -22H170" stroke="#5b6376" stroke-width="9" stroke-linecap="round"/></g>',
     runeTorque:'<g class="accLimitedPulse"><ellipse cx="0" cy="0" rx="150" ry="50" fill="none" stroke="url(#ID_a)" stroke-width="22"/><circle cx="0" cy="0" r="20" fill="#fff8"/></g>',
-    eclipseBack:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="156" fill="url(#ID_g)"/><circle cx="0" cy="0" r="126" fill="#11152b" opacity=".7"/></g>',
-    sigilFront:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="184" fill="url(#ID_g)" opacity=".28"/><g class="accSigilRotate"><circle cx="0" cy="0" r="156" fill="none" stroke="url(#ID_a)" stroke-width="12" stroke-opacity=".86"/><circle cx="0" cy="0" r="130" fill="none" stroke="#ffeec9" stroke-opacity=".58" stroke-width="4" stroke-dasharray="14 10"/><path d="M0 -150L24 -112L68 -112L112 -68L112 -24L150 0L112 24L112 68L68 112L24 112L0 150L-24 112L-68 112L-112 68L-112 24L-150 0L-112 -24L-112 -68L-68 -112L-24 -112Z" fill="none" stroke="url(#ID_a)" stroke-width="8" stroke-opacity=".78"/></g><g opacity=".9"><circle cx="0" cy="-170" r="6" fill="#fff5d5"/><circle cx="156" cy="0" r="5" fill="#ffe0a4"/><circle cx="0" cy="170" r="6" fill="#fff5d5"/><circle cx="-156" cy="0" r="5" fill="#ffe0a4"/></g><circle cx="0" cy="0" r="72" fill="url(#ID_g)" opacity=".2"/></g>'
+    slasherMask:'<g><path d="M-126 -74Q0 -102 126 -74L112 90Q0 132 -112 90Z" fill="#eceff6" stroke="#3a4050" stroke-width="8"/><path d="M-102 -58Q0 -82 102 -58L94 72Q0 104 -94 72Z" fill="#ffffff2e"/><ellipse cx="-46" cy="-22" rx="30" ry="20" fill="#1e2430"/><ellipse cx="46" cy="-22" rx="30" ry="20" fill="#1e2430"/><circle cx="0" cy="4" r="8" fill="#2f3645"/><g fill="#9ca6bd"><circle cx="-34" cy="18" r="5"/><circle cx="0" cy="22" r="5"/><circle cx="34" cy="18" r="5"/><circle cx="-20" cy="44" r="5"/><circle cx="20" cy="44" r="5"/></g><path d="M-92 -12L-62 -6M70 8L98 14M-46 86L-12 70" stroke="#7f8798" stroke-width="4" stroke-linecap="round" opacity=".75"/><path d="M-172 -28H-126M126 -28H172" stroke="#596177" stroke-width="10" stroke-linecap="round"/></g>',
+    eclipseBack:'<g><defs><radialGradient id="ID_e1"><stop offset="0" stop-color="#ffe8af" stop-opacity=".9"/><stop offset="0.45" stop-color="#b18cff" stop-opacity=".75"/><stop offset="1" stop-color="#201733" stop-opacity=".05"/></radialGradient></defs><circle cx="0" cy="0" r="192" fill="url(#ID_e1)" opacity=".48"/><circle cx="0" cy="0" r="150" fill="url(#ID_g)"/><circle cx="24" cy="-14" r="122" fill="#090d18" opacity=".76"/><circle cx="0" cy="0" r="156" fill="none" stroke="#ffdca2" stroke-opacity=".5" stroke-width="6"/></g>',
+    sigilFront:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="200" fill="url(#ID_g)" opacity=".24"/><g class="accSigilRotate"><circle cx="0" cy="0" r="166" fill="none" stroke="url(#ID_a)" stroke-width="10" stroke-opacity=".9"/><circle cx="0" cy="0" r="136" fill="none" stroke="#fff0d2" stroke-opacity=".55" stroke-width="5" stroke-dasharray="6 10"/><path d="M0 -158L26 -118L72 -116L114 -72L116 -26L158 0L116 26L114 72L72 116L26 118L0 158L-26 118L-72 116L-114 72L-116 26L-158 0L-116 -26L-114 -72L-72 -116L-26 -118Z" fill="none" stroke="url(#ID_a)" stroke-width="8" stroke-opacity=".75"/></g><g opacity=".9"><circle cx="0" cy="-178" r="7" fill="#fff5d5"/><circle cx="164" cy="0" r="6" fill="#ffe0a4"/><circle cx="0" cy="178" r="7" fill="#fff5d5"/><circle cx="-164" cy="0" r="6" fill="#ffe0a4"/></g><g opacity=".55"><circle cx="94" cy="-94" r="4" fill="#fff"/><circle cx="-112" cy="64" r="3.5" fill="#ffecc2"/><circle cx="52" cy="122" r="3" fill="#fff"/></g></g>'
   };
   return `<svg class="frog-cosmetics-svg" viewBox="-220 -220 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g class="accShape ${auraPulse}">${defs}${glow}${(S[it.motif]||S.cap).replaceAll('ID',it.id)}${shine}</g></svg>`;
 }
@@ -1708,7 +1710,7 @@ function normalizeAccessoryCatalog(){
     const limits=ACCESSORY_SLOT_LIMITS[it.slot]||ACCESSORY_SLOT_LIMITS.BODY;
     const off=it.offset||{};
     const sRaw=Number.isFinite(off.s)?off.s:1;
-    it.offset={dx:clamp(Number.isFinite(off.dx)?off.dx:0,-limits.dx,limits.dx),dy:clamp(Number.isFinite(off.dy)?off.dy:0,-limits.dy,limits.dy),s:clamp(sRaw,limits.s[0],limits.s[1]),r:clamp(Number.isFinite(off.r)?off.r:0,-26,26)};
+    it.offset={dx:clamp(Number.isFinite(off.dx)?off.dx:0,-limits.dx,limits.dx),dy:clamp(Number.isFinite(off.dy)?off.dy:0,-limits.dy,limits.dy),s:clamp(sRaw,limits.s[0],limits.s[1]),r:clamp(Number.isFinite(off.r)?off.r:0,-180,180)};
     if(!it.anchor || !ACCESSORY_SLOTS[it.anchor]) it.anchor=it.slot;
     if(!it.svgMarkup || !/(path|circle|ellipse|rect|polygon|line|polyline)\b/i.test(it.svgMarkup)){
       console.warn(`[Accessories] fallback motif for empty svg ${it.id}`);
@@ -2500,6 +2502,10 @@ function syncEditorValues(){
   const rotVal=document.getElementById('accEditorRotationVal');
   if(scale) scale.value=String(o.s);
   if(rot) rot.value=String(o.r);
+  const scaleNum=document.getElementById('accEditorScaleNum');
+  const rotNum=document.getElementById('accEditorRotationNum');
+  if(scaleNum) scaleNum.value=String(o.s);
+  if(rotNum) rotNum.value=String(o.r);
   if(scaleVal) scaleVal.textContent=o.s.toFixed(2);
   if(rotVal) rotVal.textContent=`${o.r.toFixed(1)}°`;
   const valEl=document.getElementById('accEditorValues');
@@ -2517,13 +2523,15 @@ function renderAccessoryEditorSelect(){
   const prev=accessoryEditorState.selectedId;
   sel.innerHTML=list.map(it=>`<option value="${it.id}">${it.name} (${it.slot} · ${it.rarity})</option>`).join('');
   accessoryEditorState.selectedId=list.find(it=>it.id===prev)?.id || prev || list[0]?.id || '';
+  accessoryEditorState.editorPreviewAccessoryId=accessoryEditorState.selectedId;
   if(!list.find(it=>it.id===accessoryEditorState.selectedId)) accessoryEditorState.selectedId=list[0]?.id || '';
+  accessoryEditorState.editorPreviewAccessoryId=accessoryEditorState.selectedId;
   sel.value=accessoryEditorState.selectedId;
   syncEditorValues();
 }
 function renderAccessoryEditorPreview(){
   const equipped=state.cosmetics.equippedSlots;
-  const opts=accessoryEditorState.open?{ previewId:accessoryEditorState.selectedId, previewOnly:accessoryEditorState.previewOnly }:{};
+  const opts=accessoryEditorState.open?{ previewId:accessoryEditorState.editorPreviewAccessoryId||accessoryEditorState.selectedId, previewOnly:accessoryEditorState.previewOnly, editorMode:true }:{};
   if(accessoryEditorState.open){
     renderFrogCosmetics(frogHosts.editorMain, getFrogRect(frogHosts.editorMain), equipped, opts);
     renderFrogCosmetics(frogHosts.editorShop, getFrogRect(frogHosts.editorShop), equipped, opts);
@@ -2565,30 +2573,68 @@ function initAccessoryEditor(){
   document.getElementById('openAccessoryEditorBtn')?.addEventListener('click',openAccessoryEditorModal);
   document.getElementById('accessoryEditorCloseBtn')?.addEventListener('click',closeAccessoryEditorModal);
   document.getElementById('accEditorCloseBtnBottom')?.addEventListener('click',closeAccessoryEditorModal);
-  selectEl?.addEventListener('change',(e)=>{ accessoryEditorState.selectedId=e.target.value; syncEditorValues(); renderAccessoryEditorPreview(); });
+  selectEl?.addEventListener('change',(e)=>{ accessoryEditorState.selectedId=e.target.value; accessoryEditorState.editorPreviewAccessoryId=e.target.value; syncEditorValues(); renderAccessoryEditorPreview(); });
   searchEl?.addEventListener('input',(e)=>{ accessoryEditorState.search=e.target.value||''; renderAccessoryEditorSelect(); renderAccessoryEditorPreview(); });
   rarityEl?.addEventListener('change',(e)=>{ accessoryEditorState.rarity=e.target.value||''; renderAccessoryEditorSelect(); renderAccessoryEditorPreview(); });
   slotEl?.addEventListener('change',(e)=>{ accessoryEditorState.slot=e.target.value||''; renderAccessoryEditorSelect(); renderAccessoryEditorPreview(); });
   previewOnlyEl?.addEventListener('change',(e)=>{ accessoryEditorState.previewOnly=!!e.target.checked; renderAccessoryEditorPreview(); });
-  document.getElementById('accEditorScale')?.addEventListener('input',(e)=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:Number(e.target.value),r:cur.r},false); syncEditorValues(); renderAccessoryEditorPreview(); });
-  document.getElementById('accEditorRotation')?.addEventListener('input',(e)=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:cur.s,r:Number(e.target.value)},false); syncEditorValues(); renderAccessoryEditorPreview(); });
+  document.getElementById('accEditorScale')?.addEventListener('input',(e)=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); const nextS=clamp(Number(e.target.value),0.1,4); setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:nextS,r:cur.r},false); syncEditorValues(); renderAccessoryEditorPreview(); });
+  document.getElementById('accEditorScaleNum')?.addEventListener('input',(e)=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); const nextS=clamp(Number(e.target.value),0.1,4); setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:nextS,r:cur.r},false); syncEditorValues(); renderAccessoryEditorPreview(); });
+  document.getElementById('accEditorRotation')?.addEventListener('input',(e)=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); const nextR=clamp(Number(e.target.value),-180,180); setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:cur.s,r:nextR},false); syncEditorValues(); renderAccessoryEditorPreview(); });
+  document.getElementById('accEditorRotationNum')?.addEventListener('input',(e)=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); const nextR=clamp(Number(e.target.value),-180,180); setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:cur.s,r:nextR},false); syncEditorValues(); renderAccessoryEditorPreview(); });
   document.getElementById('accEditorSaveBtn')?.addEventListener('click',()=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); accessoryOffsets[id]={dxN:cur.dxN,dyN:cur.dyN,s:cur.s,r:cur.r}; saveAccessoryOffsetsLocal(); renderAccessoryEditorPreview(); toast('Editor','Оффсет сохранён и применён к двум лягушкам','SETTINGS'); });
   document.getElementById('accEditorResetBtn')?.addEventListener('click',()=>{ const id=accessoryEditorState.selectedId; if(!id) return; accessoryOffsets[id]=sanitizeOffsetEntry(buildDefaultOffsets()[id]||{}); syncEditorValues(); renderAccessoryEditorPreview(); });
   document.getElementById('accEditorResetAllBtn')?.addEventListener('click',()=>{ accessoryOffsets=buildDefaultOffsets(); saveAccessoryOffsetsLocal(); syncEditorValues(); renderAccessoryEditorPreview(); });
   document.getElementById('accEditorExportBtn')?.addEventListener('click',()=>{ document.getElementById('accEditorJson').value=JSON.stringify(accessoryOffsets,null,2); });
   document.getElementById('accEditorImportBtn')?.addEventListener('click',()=>{ try{ const data=JSON.parse(document.getElementById('accEditorJson').value||'{}'); for(const [id,entry] of Object.entries(data||{})){ accessoryOffsets[id]=sanitizeOffsetEntry(entry); } renderAccessoryEditorSelect(); renderAccessoryEditorPreview(); }catch{ toast('Editor','Некорректный JSON','SETTINGS'); } });
   document.getElementById('accEditorSaveFileBtn')?.addEventListener('click',async()=>{ try{ if(!window.showSaveFilePicker) throw new Error('n/a'); const handle=await window.showSaveFilePicker({suggestedName:'frog_accessory_offsets_dev_v1.json',types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await handle.createWritable(); await w.write(JSON.stringify(accessoryOffsets,null,2)); await w.close(); toast('Editor','Файл сохранён','SETTINGS'); }catch(err){ if(err?.name==='AbortError') return; toast('Editor','File System Access API недоступен','SETTINGS'); } });
-  document.getElementById('accEditorPublishBtn')?.addEventListener('click',()=>{ const mergedOffsets=Object.assign(buildDefaultOffsets(), accessoryOffsets); const code=`const DEFAULT_OFFSETS = ${JSON.stringify(mergedOffsets,null,2)};`; document.getElementById('accEditorJson').value=code; });
+  const publishOutput=(mode='changed')=>{
+    const defaults=buildDefaultOffsets();
+    const changed={};
+    const ids=[];
+    const allIds=[...new Set([...Object.keys(defaults),...Object.keys(accessoryOffsets)])].sort();
+    for(const id of allIds){
+      const base=sanitizeOffsetEntry(defaults[id]||{});
+      const now=sanitizeOffsetEntry(accessoryOffsets[id]||{});
+      if(base.dxN!==now.dxN || base.dyN!==now.dyN || base.s!==now.s || base.r!==now.r){ changed[id]=now; ids.push(id); }
+    }
+    const info=document.getElementById('accEditorChangedInfo');
+    if(info) info.textContent=`Changed count: ${ids.length}${ids.length?` · ${ids.join(', ')}`:''}`;
+    const area=document.getElementById('accEditorJson');
+    if(mode==='full'){
+      const mergedOffsets=Object.assign({},defaults,accessoryOffsets);
+      area.value=`const DEFAULT_OFFSETS = ${JSON.stringify(mergedOffsets,null,2)};`;
+    }else{
+      area.value=`const DEFAULT_OFFSETS_PATCH = ${JSON.stringify(changed,null,2)};`;
+    }
+  };
+  document.getElementById('accEditorPublishChangedBtn')?.addEventListener('click',()=>publishOutput('changed'));
+  document.getElementById('accEditorPublishFullBtn')?.addEventListener('click',()=>publishOutput('full'));
+  publishOutput('changed');
   document.getElementById('accEditorCopyBtn')?.addEventListener('click',async()=>{ const v=document.getElementById('accEditorJson').value||''; try{ await navigator.clipboard.writeText(v); toast('Editor','Скопировано','SETTINGS'); }catch{} });
 
   const previews=[frogHosts.editorMain,frogHosts.editorShop].filter(Boolean);
   const stopDrag=(host,e)=>{ accessoryEditorState.dragging=false; accessoryEditorState.dragHost=null; host.classList.remove('dragging'); host.releasePointerCapture?.(e.pointerId); renderAccessoryEditorPreview(); };
   for(const host of previews){
+    host.addEventListener('wheel',(e)=>{
+      if(!accessoryEditorState.open || !accessoryEditorState.selectedId) return;
+      const id=accessoryEditorState.selectedId;
+      const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{});
+      if(e.shiftKey){
+        setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:cur.s,r:clamp(cur.r + (e.deltaY<0?0.5:-0.5),-180,180)},false);
+      }else{
+        setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:clamp(cur.s + (e.deltaY<0?0.01:-0.01),0.1,4),r:cur.r},false);
+      }
+      syncEditorValues();
+      renderAccessoryEditorPreview();
+      e.preventDefault();
+    },{passive:false});
     host.addEventListener('pointerdown',(e)=>{
       if(!accessoryEditorState.open || !isDevUser()) return;
       const target=e.target.closest('.frog-cosmetics-item'); if(!target) return;
       const id=target.dataset.accId; if(!id) return;
       accessoryEditorState.selectedId=id;
+      accessoryEditorState.editorPreviewAccessoryId=id;
       if(selectEl) selectEl.value=id;
       const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{});
       accessoryEditorState.dragging=true;
@@ -2913,7 +2959,7 @@ const frogHosts = {
 };
 const accessoryFxState = { main:{particles:[],lastSpawn:0}, shop:{particles:[],lastSpawn:0} };
 const accessoryDebug = { enabled:false };
-const accessoryEditorState = { open:false, selectedId:"", dragging:false, dragHost:null, startX:0, startY:0, startDxN:0, startDyN:0, search:'', rarity:'', slot:'', previewOnly:true };
+const accessoryEditorState = { open:false, selectedId:"", dragging:false, dragHost:null, startX:0, startY:0, startDxN:0, startDyN:0, search:'', rarity:'', slot:'', previewOnly:true, editorPreviewAccessoryId:'' };
 function getFrogRect(targetRoot){
   if(!targetRoot) return {width:900,height:900};
   const rect = targetRoot.getBoundingClientRect();
@@ -2970,8 +3016,10 @@ function renderFrogCosmetics(targetRoot, frogRect=getFrogRect(targetRoot), equip
   const list=[...equipped];
   const previewId=options?.previewId||'';
   const previewItem=previewId?accessoryItems.find(it=>it.id===previewId):null;
-  if(previewItem && (options?.previewOnly || !list.find(it=>it.id===previewItem.id))){
-    list.push(previewItem);
+  if(previewItem){
+    const existingIndex=list.findIndex(it=>it.id===previewItem.id);
+    if(existingIndex>=0 && options?.previewOnly) list.splice(existingIndex,1);
+    if(existingIndex<0 || options?.previewOnly) list.push(previewItem);
   }
   const sorted=list.sort((a,b)=>accTransform(a,frogRect).z-accTransform(b,frogRect).z);
   const results=[];
@@ -2986,7 +3034,7 @@ function renderFrogCosmetics(targetRoot, frogRect=getFrogRect(targetRoot), equip
     wrapper.style.zIndex=String(t.z||3);
     wrapper.style.setProperty('--acc-size',`${t.size}px`);
     wrapper.style.transform=`translate(-50%,-50%) translate(${t.dx}px,${t.dy}px) scale(${t.s}) rotate(${t.r}deg)`;
-    if(accessoryEditorState.open && accessoryEditorState.selectedId===it.id){
+    if(options?.editorMode && accessoryEditorState.open && accessoryEditorState.selectedId===it.id){
       wrapper.classList.add('editor-selected','editor-draggable');
       if(accessoryEditorState.dragging) wrapper.classList.add('dragging');
     }
