@@ -110,12 +110,14 @@
   @keyframes floatGain{0%{opacity:0;transform:translate(-50%,-16px) scale(.85)}10%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--driftX,0px)),calc(-110px + var(--driftY,0px))) scale(1.05)}}
   .resultOverlay{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10040;min-width:260px;max-width:min(94vw,620px);display:none;padding:10px 16px;border-radius:18px;border:1px solid #ffffff2f;background:#081224de;box-shadow:0 18px 40px #00000080;text-align:center;pointer-events:none;opacity:0}
   .resultOverlay.show{display:block;animation:centerPop 2.1s ease forwards}
-  .resultOverlay.win{border-color:#35f0a3aa}
-  .resultOverlay.lose{border-color:#ff4d6daa}
+  .resultOverlay.win{border-color:#35f0a3aa;box-shadow:0 18px 40px #00000080,0 0 26px #35f0a355}
+  .resultOverlay.lose{border-color:#ff4d6daa;box-shadow:0 18px 40px #00000080,0 0 26px #ff4d6d4d}
+  .resultOverlay.draw{border-color:#9ba7beaa;box-shadow:0 18px 40px #00000080,0 0 24px #aeb9cd4d}
   .resultOverlay .t{font-size:42px;line-height:1;font-weight:1000}
   .resultOverlay .s{font-size:20px;color:#e9f4ff}
   .resultOverlay.win .t{color:#35f0a3;text-shadow:0 0 18px #35f0a3aa}
   .resultOverlay.lose .t{color:#ff5d76;text-shadow:0 0 18px #ff4d6daa}
+  .resultOverlay.draw .t{color:#c8d1e2;text-shadow:0 0 16px #a9b6cf99}
   @keyframes centerPop{0%{opacity:0;transform:translate(-50%,-46%) scale(.82)}10%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-54%) scale(1.03)}}
   .avatar.frame-common{border-color:#8db79a;box-shadow:0 0 0 2px #8db79a55}
   .avatar.frame-rare{border-color:#62a7ff;box-shadow:0 0 0 2px #62a7ff66,0 0 18px #62a7ff55}
@@ -1244,13 +1246,16 @@ function nowDayKey(){
 const toasts = document.getElementById("toasts");
 const gameResultOverlay = document.getElementById("gameResultOverlay");
 let gameResultTimer = null;
-function showGameResult(win, points, title){
+function showGameResult(outcome, points, title){
   if(!gameResultOverlay) return;
+  const resultType = outcome===true ? "win" : outcome===false ? "lose" : (outcome==="draw" ? "draw" : "lose");
+  const roundedPoints = Math.round(Number(points)||0);
+  const sign = roundedPoints>=0 ? "+" : "-";
   clearTimeout(gameResultTimer);
-  gameResultOverlay.classList.remove("win","lose");
-  gameResultOverlay.classList.add("show", win?"win":"lose");
-  document.getElementById("gameResultTitle").textContent = `${title}: ${win?"WIN":"LOSE"}`;
-  document.getElementById("gameResultText").textContent = `+${Math.max(0,Math.round(points)).toLocaleString("ru-RU")} очков`;
+  gameResultOverlay.classList.remove("win","lose","draw");
+  gameResultOverlay.classList.add("show", resultType);
+  document.getElementById("gameResultTitle").textContent = `${title}: ${resultType.toUpperCase()}`;
+  document.getElementById("gameResultText").textContent = `${sign}${Math.abs(roundedPoints).toLocaleString("ru-RU")} очков`;
   gameResultTimer = setTimeout(()=>gameResultOverlay.classList.remove("show"), 2200);
 }
 document.getElementById("gameResultOk")?.addEventListener("click", ()=>gameResultOverlay?.classList.remove("show"));
@@ -4220,9 +4225,9 @@ function bjEnd(result){
     overlayPoints=-bjBetVal;
     msg=`LOSE -${bjBetVal}`;
   }
-  document.getElementById('bjState').textContent = msg;
+  document.getElementById('bjState').textContent = 'Раунд завершён. Нажми «Раздать» для новой игры';
   toast('Blackjack', msg, 'GAME', { forceImportant: result==='win' && bjBetVal>=1200 });
-  showGameResult(result==='win', overlayPoints, 'Blackjack');
+  showGameResult(result==='push' ? 'draw' : result==='win' ? 'win' : 'lose', overlayPoints, 'Blackjack');
   save(); updateUI(false); bjRender(false);
 }
 function bjDeal(){
