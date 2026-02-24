@@ -1246,9 +1246,18 @@ function nowDayKey(){
 const toasts = document.getElementById("toasts");
 const gameResultOverlay = document.getElementById("gameResultOverlay");
 let gameResultTimer = null;
+function resolveResultType(outcome){
+  if(outcome===true) return 'win';
+  if(outcome===false) return 'lose';
+  const normalized = String(outcome||'').trim().toLowerCase();
+  if(normalized==='win') return 'win';
+  if(normalized==='lose') return 'lose';
+  if(normalized==='draw' || normalized==='push') return 'draw';
+  return 'lose';
+}
 function showGameResult(outcome, points, title){
   if(!gameResultOverlay) return;
-  const resultType = outcome===true ? "win" : outcome===false ? "lose" : (outcome==="draw" ? "draw" : "lose");
+  const resultType = resolveResultType(outcome);
   const roundedPoints = Math.round(Number(points)||0);
   const sign = roundedPoints>=0 ? "+" : "-";
   clearTimeout(gameResultTimer);
@@ -4184,6 +4193,17 @@ drawRiverIntro();
   MINI GAME 4: BLACKJACK
 ========================= */
 let bjDeck=[], bjPlayer=[], bjDealer=[], bjRound=false, bjBetVal=0;
+function bjSyncControls(){
+  const inRound = !!bjRound;
+  const dealBtn = document.getElementById('bjDeal');
+  const hitBtn = document.getElementById('bjHit');
+  const standBtn = document.getElementById('bjStand');
+  const betInput = document.getElementById('bjBet');
+  if(dealBtn) dealBtn.disabled = inRound;
+  if(hitBtn) hitBtn.disabled = !inRound;
+  if(standBtn) standBtn.disabled = !inRound;
+  if(betInput) betInput.disabled = inRound;
+}
 function bjNewDeck(){
   const suits=['♠','♥','♦','♣'];
   const vals=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
@@ -4206,6 +4226,7 @@ function bjRender(hideDealer=false){
 }
 function bjEnd(result){
   bjRound=false;
+  bjSyncControls();
   let msg='';
   let overlayPoints=0;
   if(result==='win'){
@@ -4227,13 +4248,15 @@ function bjEnd(result){
   }
   document.getElementById('bjState').textContent = 'Раунд завершён. Нажми «Раздать» для новой игры';
   toast('Blackjack', msg, 'GAME', { forceImportant: result==='win' && bjBetVal>=1200 });
-  showGameResult(result==='push' ? 'draw' : result==='win' ? 'win' : 'lose', overlayPoints, 'Blackjack');
+  showGameResult(result, overlayPoints, 'Blackjack');
   save(); updateUI(false); bjRender(false);
 }
 function bjDeal(){
+  if(bjRound){ return; }
   const bet = Math.max(50, Math.floor(Number(document.getElementById('bjBet').value)||50));
   if(state.points < bet){ toast('Blackjack', `Нужно ${bet} очков`, 'GAME'); return; }
   state.points -= bet; bjBetVal=bet; bjRound=true;
+  bjSyncControls();
   bjNewDeck(); bjPlayer=[bjDeck.pop(), bjDeck.pop()]; bjDealer=[bjDeck.pop(), bjDeck.pop()];
   document.getElementById('bjState').textContent = `Ставка: ${bet}`;
   bjRender(true);
@@ -4250,6 +4273,7 @@ function bjStand(){
 document.getElementById('bjDeal')?.addEventListener('click', ()=>{ uiBeep(); bjDeal(); });
 document.getElementById('bjHit')?.addEventListener('click', ()=>{ uiBeep(); bjHit(); });
 document.getElementById('bjStand')?.addEventListener('click', ()=>{ uiBeep(); bjStand(); });
+bjSyncControls();
 document.getElementById('caseModalClose')?.addEventListener('click', closeCaseModal);
 document.getElementById('caseSpinBtn')?.addEventListener('click', ()=>{ uiBeep(); spinActiveCase(); });
 document.getElementById('caseEquipBtn')?.addEventListener('click', ()=>{ if(pendingCaseEquip){ useCosmetic(pendingCaseEquip); } closeCaseModal(); });
