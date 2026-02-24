@@ -58,6 +58,12 @@
     background:linear-gradient(180deg, var(--accentA), var(--accentB));
     box-shadow:0 0 18px color-mix(in srgb, var(--accentA) 55%, transparent);}
 
+  .statusCluster{display:flex;align-items:center;gap:8px;}
+  .settingsGear{width:34px;height:34px;border-radius:12px;border:1px solid var(--stroke);background:#0a1220cc;color:var(--text);font-size:17px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .18s ease,transform .08s ease,border-color .18s ease;}
+  .settingsGear:hover{background:#132640;border-color:#ffffff3d;}
+  .settingsGear:active{transform:scale(.96);}
+  .settingsGear.active{background:linear-gradient(90deg,var(--accentA),var(--accentB));color:var(--ink);border-color:transparent;}
+
   /* Left account panel */
   .profileCard .row{display:flex; gap:12px; align-items:center;}
   .accountLayout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start}
@@ -202,8 +208,8 @@
   /* Right tabs */
   .tabs{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; align-items:center;}
   .rightTabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch;margin-bottom:10px;}
-  .rightTabs .tabBtn{width:100%;min-height:44px;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px 10px;}
-  @media (min-width:1280px){.rightTabs{grid-template-columns:repeat(4,minmax(0,1fr));}}
+  .rightTabs .tabBtn{width:100%;min-height:50px;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px 12px;line-height:1.2;}
+  @media (min-width:900px){.rightTabs{grid-template-columns:repeat(3,minmax(0,1fr));}}
   .tabBtn{
     cursor:pointer; border:1px solid var(--stroke); background:#0a1220aa; color:var(--text);
     padding:10px 12px; border-radius:14px; font-weight:950; font-size:13px;
@@ -623,6 +629,8 @@
         <button class="btn" id="rerollEvent">Сменить</button>
       </div>
     </details>
+
+    <button class="btn primary" id="saveBtn">Сохранить игру</button>
   </div>
 
   <!-- CENTER: FROG -->
@@ -635,7 +643,7 @@
       <div class="heroBrand">
         <div class="heroTitle"><span class="heroLogo" aria-hidden="true"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="frogLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fffb5"/><stop offset="1" stop-color="#1ac8ff"/></linearGradient></defs><rect x="1" y="1" width="30" height="30" rx="9" fill="#081325" stroke="#5ef4c8" stroke-opacity=".45"/><ellipse cx="16" cy="19" rx="9" ry="6.5" fill="url(#frogLogoGrad)"/><circle cx="12" cy="12" r="3.7" fill="#fff"/><circle cx="20" cy="12" r="3.7" fill="#fff"/><circle cx="12" cy="12.2" r="1.35" fill="#0e1a2b"/><circle cx="20" cy="12.2" r="1.35" fill="#0e1a2b"/><path d="M11 21.2c1.8 2 8.2 2 10 0" stroke="#e9fbff" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></span><h1>Frog Clicker — PRO</h1></div>
       </div>
-      <div class="pill"><span class="dot"></span> OFFLINE OK</div>
+      <div class="statusCluster"><div class="pill"><span class="dot"></span> OFFLINE OK</div><button class="settingsGear" id="settingsGear" title="Настройки" aria-label="Открыть настройки">⚙</button></div>
     </div>
 
     <div class="arena" id="arena">
@@ -681,8 +689,6 @@
       <button class="tabBtn" data-tab="ranks">Ранги</button>
       <button class="tabBtn" data-tab="leaders">Лидеры</button>
       <button class="tabBtn" data-tab="news">Новости <span id="newsBadge" class="newsNew" style="display:none">new</span></button>
-      <button class="tabBtn" data-tab="set">Настройки</button>
-      <button class="tabBtn primary" id="saveBtn">Сохранить игру</button>
       <button class="tabBtn" data-tab="locations">Локации</button>
     </div>
 
@@ -2800,6 +2806,7 @@ function openTab(tab){
   document.querySelector(`.tabBtn[data-tab="${tab}"]`)?.classList.add("active");
   document.querySelectorAll(".tabPane").forEach(p=>p.classList.remove("active"));
   document.getElementById("tab-"+tab)?.classList.add("active");
+  document.getElementById("settingsGear")?.classList.toggle("active", tab==="set");
   if(tab==="account" && !profileStore.activeUser && !window.__guestMode){ showProfileGate(); return; }
   if(tab==="news"){
     state.newsSeenVersion = CURRENT_VERSION;
@@ -2810,6 +2817,11 @@ function openTab(tab){
 }
 document.querySelectorAll(".tabBtn[data-tab]").forEach(btn=>{
   btn.addEventListener("click", ()=>{ uiBeep(); openTab(btn.dataset.tab); });
+});
+
+document.getElementById("settingsGear")?.addEventListener("click", ()=>{
+  uiBeep();
+  openTab("set");
 });
 
 
@@ -4104,7 +4116,7 @@ window.addEventListener("keydown",(e)=>{
 const riverC = document.getElementById("river");
 const rv2 = riverC.getContext("2d");
 const riverHud = document.getElementById("riverHud");
-let riverRun=false, riverStartT=0, riverScore=0, riverFrogX=480;
+let riverRun=false, riverStartT=0, riverScore=0, riverFrogX=480, riverFrogY=460;
 let riverLogs=[], riverFireflies=[];
 function drawRiverIntro(){
   if(!rv2) return;
@@ -4112,15 +4124,15 @@ function drawRiverIntro(){
   const g=rv2.createLinearGradient(0,0,0,540); g.addColorStop(0,"#0b355d"); g.addColorStop(1,"#05213a"); rv2.fillStyle=g; rv2.fillRect(0,0,960,540);
   rv2.fillStyle="rgba(255,255,255,.9)";
   rv2.font="900 34px system-ui"; rv2.textAlign="center"; rv2.fillText("RIVER JUMP",480,130);
-  rv2.font="700 20px system-ui"; rv2.fillText("← → двигай лягушку · Старт для запуска",480,172);
+  rv2.font="700 20px system-ui"; rv2.fillText("WASD / стрелки: двигай лягушку · Старт для запуска",480,172);
   rv2.fillStyle="#6b4f34";
   for(let i=0;i<4;i++){ rv2.fillRect(120+i*200,230+(i%2)*70,140,24); }
-  rv2.fillStyle="#7dffb8"; rv2.beginPath(); rv2.ellipse(riverFrogX,460,26,19,0,0,Math.PI*2); rv2.fill();
-  rv2.fillStyle="#fff"; rv2.beginPath(); rv2.arc(riverFrogX-8,451,6,0,Math.PI*2); rv2.arc(riverFrogX+8,451,6,0,Math.PI*2); rv2.fill();
+  rv2.fillStyle="#7dffb8"; rv2.beginPath(); rv2.ellipse(riverFrogX,riverFrogY,26,19,0,0,Math.PI*2); rv2.fill();
+  rv2.fillStyle="#fff"; rv2.beginPath(); rv2.arc(riverFrogX-8,riverFrogY-9,6,0,Math.PI*2); rv2.arc(riverFrogX+8,riverFrogY-9,6,0,Math.PI*2); rv2.fill();
   riverHud.textContent="Ривер-джамп: нажмите Старт";
 }
 function riverReset(){
-  riverRun=true; riverStartT=performance.now(); riverScore=0; riverFrogX=480; riverLogs=[]; riverFireflies=[];
+  riverRun=true; riverStartT=performance.now(); riverScore=0; riverFrogX=480; riverFrogY=460; riverLogs=[]; riverFireflies=[];
   riverHud.textContent='Очки: 0 · Время: 35';
 }
 function riverEnd(){
@@ -4142,16 +4154,27 @@ function drawRiver(){
   if(Math.random()<0.045) riverLogs.push({x:Math.random()<0.5?-130:1090,y:rand(120,450),w:rand(110,180),h:26,v:rand(2.8,5.1)*(Math.random()<0.5?1:-1)});
   if(Math.random()<0.018) riverFireflies.push({x:rand(40,920),y:rand(90,420),r:10,t:now});
   riverLogs=riverLogs.filter(o=>o.x>-200&&o.x<1160);
-  for(const l of riverLogs){ l.x+=l.v; rv2.fillStyle='#6b4f34'; rv2.fillRect(l.x,l.y,l.w,l.h); rv2.strokeStyle='#8d6b4a'; rv2.strokeRect(l.x,l.y,l.w,l.h); if(Math.abs((l.x+l.w/2)-riverFrogX)<(l.w/2+26) && Math.abs((l.y+13)-460)<28){ riverScore=Math.max(0,riverScore-16); } }
+  for(const l of riverLogs){ l.x+=l.v; rv2.fillStyle='#6b4f34'; rv2.fillRect(l.x,l.y,l.w,l.h); rv2.strokeStyle='#8d6b4a'; rv2.strokeRect(l.x,l.y,l.w,l.h); if(Math.abs((l.x+l.w/2)-riverFrogX)<(l.w/2+26) && Math.abs((l.y+13)-riverFrogY)<28){ riverScore=Math.max(0,riverScore-16); } }
   riverFireflies=riverFireflies.filter(f=>now-f.t<4500);
-  for(const f of riverFireflies){ rv2.fillStyle='rgba(255,236,132,.8)'; rv2.beginPath(); rv2.arc(f.x,f.y,f.r,0,Math.PI*2); rv2.fill(); if(Math.hypot(f.x-riverFrogX,f.y-460)<34){ riverScore+=35; f.t=0; } }
+  for(const f of riverFireflies){ rv2.fillStyle='rgba(255,236,132,.8)'; rv2.beginPath(); rv2.arc(f.x,f.y,f.r,0,Math.PI*2); rv2.fill(); if(Math.hypot(f.x-riverFrogX,f.y-riverFrogY)<34){ riverScore+=35; f.t=0; } }
   riverScore += 1;
-  rv2.fillStyle='#7dffb8'; rv2.beginPath(); rv2.ellipse(riverFrogX,460,26,19,0,0,Math.PI*2); rv2.fill();
-  rv2.fillStyle='#fff'; rv2.beginPath(); rv2.arc(riverFrogX-8,451,6,0,Math.PI*2); rv2.arc(riverFrogX+8,451,6,0,Math.PI*2); rv2.fill();
+  rv2.fillStyle='#7dffb8'; rv2.beginPath(); rv2.ellipse(riverFrogX,riverFrogY,26,19,0,0,Math.PI*2); rv2.fill();
+  rv2.fillStyle='#fff'; rv2.beginPath(); rv2.arc(riverFrogX-8,riverFrogY-9,6,0,Math.PI*2); rv2.arc(riverFrogX+8,riverFrogY-9,6,0,Math.PI*2); rv2.fill();
   riverHud.textContent=`Очки: ${Math.floor(riverScore)} · Время: ${secLeft}`;
   if(secLeft<=0) riverEnd();
 }
-window.addEventListener('keydown',(e)=>{ if(!riverRun) return; if(e.key==='ArrowLeft') riverFrogX=clamp(riverFrogX-34,30,930); if(e.key==='ArrowRight') riverFrogX=clamp(riverFrogX+34,30,930); });
+window.addEventListener('keydown',(e)=>{
+  if(!riverRun) return;
+  const t=e.target;
+  if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable)) return;
+  let handled=true;
+  if(e.key==='ArrowLeft' || e.key==='a' || e.key==='A') riverFrogX=clamp(riverFrogX-34,30,930);
+  else if(e.key==='ArrowRight' || e.key==='d' || e.key==='D') riverFrogX=clamp(riverFrogX+34,30,930);
+  else if(e.key==='ArrowUp' || e.key==='w' || e.key==='W') riverFrogY=clamp(riverFrogY-30,82,510);
+  else if(e.key==='ArrowDown' || e.key==='s' || e.key==='S') riverFrogY=clamp(riverFrogY+30,82,510);
+  else handled=false;
+  if(handled) e.preventDefault();
+});
 document.getElementById('riverStart')?.addEventListener('click', ()=>{ uiBeep(); riverReset(); });
 document.getElementById('riverStop')?.addEventListener('click', ()=>{ uiBeep(); riverRun=false; drawRiverIntro(); });
 drawRiverIntro();
