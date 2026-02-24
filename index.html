@@ -237,6 +237,12 @@
   .accAnchorDot{position:absolute;width:10px;height:10px;border-radius:50%;background:#8cf6ff;border:2px solid #07253f;transform:translate(-50%,-50%);z-index:7;opacity:0;pointer-events:none}
   .accAnchorLabel{position:absolute;transform:translate(-50%,-150%);padding:2px 6px;border-radius:999px;border:1px solid #7bf3a6aa;background:#052138e8;color:#a5ffd2;font-size:10px;font-weight:800;white-space:nowrap;z-index:7;opacity:0;pointer-events:none}
   .frog-cosmetics-item.editor-selected{outline:2px dashed #7bf3a6;outline-offset:4px;border-radius:10px}
+  .devEditorPreview .frog-cosmetics-layer{pointer-events:auto}
+  .frog-cosmetics-item.editor-draggable{pointer-events:auto;cursor:grab}
+  .frog-cosmetics-item.editor-draggable.dragging{cursor:grabbing}
+  .devEditorFilters{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .devEditorFilters input,.devEditorFilters select{width:100%}
+  .devEditorToggle{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
 
   .devEditorGrid{display:grid;grid-template-columns:1.2fr .9fr;gap:12px}
   .devEditorPreview{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -897,7 +903,7 @@
 <div class="modalBack" id="caseOpenModal"><div class="modal caseModal"><div class="caseModalTop"><div class="caseModalHeading"><div class="caseModalTitle" id="caseModalTitle">Выберите кейс</div><button class="caseHeaderInfo" id="caseModalOddsBtn" title="Показать шансы" aria-label="Показать шансы" style="display:none">ⓘ</button></div><div class="caseOddsPopup" id="caseModalOddsPopup"></div><button class="btn caseSecondary caseModalCloseBtn" id="caseModalClose">Закрыть</button></div><div class="modalScroll"><div id="caseModalContent" class="caseAnimCard"></div></div><div class="caseActions" style="margin-top:10px"><button class="btn casePrimary" id="caseSpinBtn">Начать открытие</button><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn" id="caseInventoryBtn" style="display:none">В инвентарь</button><button class="btn caseSecondary" id="caseSellBtn" style="display:none">В пыль</button><button class="btn caseSecondary" id="caseCloseBtn" style="display:none">Ок</button></div></div></div>
 <div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout modalScroll" style="margin-top:10px"><div class="shopPreview"><div id="shopPreviewWrap" class="previewFrogWrap"><canvas id="shopPreview" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div><canvas class="frogAccessoryFx" width="900" height="900"></canvas></div></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
 <div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
-<div class="modalBack" id="accessoryEditorModal"><div class="modal" style="width:min(1160px,calc(100vw - 24px));max-height:92vh;overflow:auto"><div class="modalTop"><div><div class="t" style="font-weight:950">Редактор аксессуаров (DEV)</div><div class="small">Тяни аксессуар мышью, используй стрелки (Shift = крупный шаг), меняй scale/rotation и публикуй DEFAULT_OFFSETS.</div></div><button class="btn" id="accessoryEditorCloseBtn">Закрыть</button></div><div class="devEditorGrid"><div><div class="devEditorPreview"><div><div id="editorMainPreview" class="previewFrogWrap"><canvas id="editorMainCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div></div><div class="caption">Main frog</div></div><div><div id="editorShopPreview" class="previewFrogWrap"><canvas id="editorShopCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div></div><div class="caption">Shop preview frog</div></div></div></div><div class="devEditorControls"><label class="small">Accessory<select id="accEditorSelect"></select></label><div class="devEditorRow"><label class="small" for="accEditorScale">Scale</label><input id="accEditorScale" type="range" min="0.4" max="2.2" step="0.01"><output id="accEditorScaleVal">1.00</output></div><div class="devEditorRow"><label class="small" for="accEditorRotation">Rotation</label><input id="accEditorRotation" type="range" min="-180" max="180" step="0.5"><output id="accEditorRotationVal">0.0°</output></div><div class="item"><div class="small" id="accEditorValues">dxN: 0 · dyN: 0 · scale: 1 · rotation: 0</div><div class="devEditorHint">Сохранить — в localStorage: <code>frog_accessory_offsets_dev_v1</code>. Publish offsets генерирует код для вставки в константу по умолчанию.</div></div><div class="btnRow"><button class="btn primary" id="accEditorSaveBtn">Сохранить</button><button class="btn" id="accEditorResetBtn">Сброс</button><button class="btn" id="accEditorResetAllBtn">Сбросить всё</button><button class="btn" id="accEditorExportBtn">Экспорт (JSON)</button><button class="btn" id="accEditorImportBtn">Импорт (JSON)</button><button class="btn warn" id="accEditorPublishBtn">Publish offsets</button></div><textarea id="accEditorJson" placeholder="JSON / сгенерированный код для DEFAULT_OFFSETS"></textarea><div class="btnRow"><button class="btn" id="accEditorCopyBtn">Copy</button><button class="btn" id="accEditorCloseBtnBottom">Закрыть</button></div><div class="small">Paste this into code to make placements default for everyone.</div></div></div></div></div>
+<div class="modalBack" id="accessoryEditorModal"><div class="modal" style="width:min(1160px,calc(100vw - 24px));max-height:92vh;overflow:auto"><div class="modalTop"><div><div class="t" style="font-weight:950">Редактор аксессуаров (DEV)</div><div class="small">Тяни аксессуар мышью, используй стрелки (Shift = крупный шаг), меняй scale/rotation и публикуй DEFAULT_OFFSETS.</div></div><button class="btn" id="accessoryEditorCloseBtn">Закрыть</button></div><div class="devEditorGrid"><div><div class="devEditorPreview"><div><div id="editorMainPreview" class="previewFrogWrap"><canvas id="editorMainCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div></div><div class="caption">Main frog</div></div><div><div id="editorShopPreview" class="previewFrogWrap"><canvas id="editorShopCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div></div><div class="caption">Shop preview frog</div></div></div></div><div class="devEditorControls"><label class="small">Accessory<select id="accEditorSelect"></select></label><div class="devEditorFilters"><input id="accEditorSearch" placeholder="Поиск по имени / id"/><select id="accEditorRarity"><option value="">Все редкости</option><option value="common">common</option><option value="rare">rare</option><option value="epic">epic</option><option value="legend">legend</option><option value="limited">limited</option></select><select id="accEditorSlot"><option value="">Все слоты</option></select><label class="devEditorToggle"><input type="checkbox" id="accEditorPreviewOnly" checked/> Preview only</label></div><div class="devEditorRow"><label class="small" for="accEditorScale">Scale</label><input id="accEditorScale" type="range" min="0.4" max="2.2" step="0.01"><output id="accEditorScaleVal">1.00</output></div><div class="devEditorRow"><label class="small" for="accEditorRotation">Rotation</label><input id="accEditorRotation" type="range" min="-180" max="180" step="0.5"><output id="accEditorRotationVal">0.0°</output></div><div class="item"><div class="small" id="accEditorValues">dxN: 0 · dyN: 0 · scale: 1 · rotation: 0</div><div class="devEditorHint">Сохранить — в localStorage: <code>frog_accessory_offsets_dev_v1</code>. Publish offsets генерирует код для вставки в константу по умолчанию.</div></div><div class="btnRow"><button class="btn primary" id="accEditorSaveBtn">Сохранить</button><button class="btn" id="accEditorResetBtn">Сброс</button><button class="btn" id="accEditorResetAllBtn">Сбросить всё</button><button class="btn" id="accEditorExportBtn">Экспорт (JSON)</button><button class="btn" id="accEditorImportBtn">Импорт (JSON)</button><button class="btn" id="accEditorSaveFileBtn">Save offsets to file</button><button class="btn warn" id="accEditorPublishBtn">Publish offsets (copy code)</button></div><textarea id="accEditorJson" placeholder="JSON / сгенерированный код для DEFAULT_OFFSETS"></textarea><div class="btnRow"><button class="btn" id="accEditorCopyBtn">Copy</button><button class="btn" id="accEditorCloseBtnBottom">Закрыть</button></div><div class="small">Paste this into code to make placements default for everyone.</div></div></div></div></div>
 
 <div id="gameResultOverlay" class="resultOverlay"><div id="gameResultTitle" class="t"></div><div id="gameResultText" class="s" style="margin-top:6px"></div></div>
 <div class="toasts" id="toasts"></div>
@@ -2474,8 +2480,16 @@ function updateDevEditorVisibility(){
   if(!allowed) closeAccessoryEditorModal();
 }
 function getEditorSelectableAccessories(){
-  const equipped=getEquippedAccessories();
-  return equipped.length ? equipped : accessoryItems;
+  const q=(accessoryEditorState.search||'').trim().toLowerCase();
+  return accessoryItems.filter(it=>{
+    if(accessoryEditorState.rarity && it.rarity!==accessoryEditorState.rarity) return false;
+    if(accessoryEditorState.slot && it.slot!==accessoryEditorState.slot) return false;
+    if(q){
+      const hay=`${it.name||''} ${it.id||''}`.toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
 }
 function syncEditorValues(){
   const it=accessoryItems.find(x=>x.id===accessoryEditorState.selectedId); if(!it) return;
@@ -2493,26 +2507,35 @@ function syncEditorValues(){
 }
 function renderAccessoryEditorSelect(){
   const sel=document.getElementById('accEditorSelect'); if(!sel) return;
+  const slotSel=document.getElementById('accEditorSlot');
+  if(slotSel && !slotSel.dataset.ready){
+    const slots=[...new Set(accessoryItems.map(it=>it.slot))].sort();
+    slotSel.innerHTML='<option value="">Все слоты</option>'+slots.map(slot=>`<option value="${slot}">${slot}</option>`).join('');
+    slotSel.dataset.ready='1';
+  }
   const list=getEditorSelectableAccessories();
   const prev=accessoryEditorState.selectedId;
-  sel.innerHTML=list.map(it=>`<option value="${it.id}">${it.name} (${it.slot})</option>`).join('');
-  accessoryEditorState.selectedId=list.find(it=>it.id===prev)?.id || list[0]?.id || '';
+  sel.innerHTML=list.map(it=>`<option value="${it.id}">${it.name} (${it.slot} · ${it.rarity})</option>`).join('');
+  accessoryEditorState.selectedId=list.find(it=>it.id===prev)?.id || prev || list[0]?.id || '';
+  if(!list.find(it=>it.id===accessoryEditorState.selectedId)) accessoryEditorState.selectedId=list[0]?.id || '';
   sel.value=accessoryEditorState.selectedId;
   syncEditorValues();
 }
 function renderAccessoryEditorPreview(){
-  if(!accessoryEditorState.open) return;
   const equipped=state.cosmetics.equippedSlots;
-  renderFrogCosmetics(frogHosts.editorMain, getFrogRect(frogHosts.editorMain), equipped);
-  renderFrogCosmetics(frogHosts.editorShop, getFrogRect(frogHosts.editorShop), equipped);
-  renderFrogCosmetics(frogHosts.main, getFrogRect(frogHosts.main), equipped);
-  renderFrogCosmetics(frogHosts.shop, getFrogRect(frogHosts.shop), equipped);
+  const opts=accessoryEditorState.open?{ previewId:accessoryEditorState.selectedId, previewOnly:accessoryEditorState.previewOnly }:{};
+  if(accessoryEditorState.open){
+    renderFrogCosmetics(frogHosts.editorMain, getFrogRect(frogHosts.editorMain), equipped, opts);
+    renderFrogCosmetics(frogHosts.editorShop, getFrogRect(frogHosts.editorShop), equipped, opts);
+  }
+  renderFrogCosmetics(frogHosts.main, getFrogRect(frogHosts.main), equipped, opts);
+  renderFrogCosmetics(frogHosts.shop, getFrogRect(frogHosts.shop), equipped, opts);
 }
 function applyEditorDelta(dxN,dyN){
   if(!accessoryEditorState.selectedId) return;
   const id=accessoryEditorState.selectedId;
   const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{});
-  setAccessoryOffsetById(id,{dxN:cur.dxN+dxN,dyN:cur.dyN+dyN,s:cur.s,r:cur.r},false);
+  setAccessoryOffsetById(id,{dxN:clamp(cur.dxN+dxN,-0.65,0.65),dyN:clamp(cur.dyN+dyN,-0.65,0.65),s:cur.s,r:cur.r},false);
   syncEditorValues();
   renderAccessoryEditorPreview();
 }
@@ -2520,6 +2543,7 @@ function openAccessoryEditorModal(){
   if(!isDevUser()) return;
   accessoryEditorState.open=true;
   document.getElementById('accessoryEditorModal')?.classList.add('show');
+  const previewOnlyEl=document.getElementById('accEditorPreviewOnly'); if(previewOnlyEl) previewOnlyEl.checked=accessoryEditorState.previewOnly;
   renderAccessoryEditorSelect();
   renderAccessoryEditorPreview();
   syncModalLock();
@@ -2533,44 +2557,61 @@ function closeAccessoryEditorModal(){
   syncModalLock();
 }
 function initAccessoryEditor(){
+  const selectEl=document.getElementById('accEditorSelect');
+  const searchEl=document.getElementById('accEditorSearch');
+  const rarityEl=document.getElementById('accEditorRarity');
+  const slotEl=document.getElementById('accEditorSlot');
+  const previewOnlyEl=document.getElementById('accEditorPreviewOnly');
   document.getElementById('openAccessoryEditorBtn')?.addEventListener('click',openAccessoryEditorModal);
   document.getElementById('accessoryEditorCloseBtn')?.addEventListener('click',closeAccessoryEditorModal);
   document.getElementById('accEditorCloseBtnBottom')?.addEventListener('click',closeAccessoryEditorModal);
-  document.getElementById('accEditorSelect')?.addEventListener('change',(e)=>{ accessoryEditorState.selectedId=e.target.value; syncEditorValues(); renderAccessoryEditorPreview(); });
+  selectEl?.addEventListener('change',(e)=>{ accessoryEditorState.selectedId=e.target.value; syncEditorValues(); renderAccessoryEditorPreview(); });
+  searchEl?.addEventListener('input',(e)=>{ accessoryEditorState.search=e.target.value||''; renderAccessoryEditorSelect(); renderAccessoryEditorPreview(); });
+  rarityEl?.addEventListener('change',(e)=>{ accessoryEditorState.rarity=e.target.value||''; renderAccessoryEditorSelect(); renderAccessoryEditorPreview(); });
+  slotEl?.addEventListener('change',(e)=>{ accessoryEditorState.slot=e.target.value||''; renderAccessoryEditorSelect(); renderAccessoryEditorPreview(); });
+  previewOnlyEl?.addEventListener('change',(e)=>{ accessoryEditorState.previewOnly=!!e.target.checked; renderAccessoryEditorPreview(); });
   document.getElementById('accEditorScale')?.addEventListener('input',(e)=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:Number(e.target.value),r:cur.r},false); syncEditorValues(); renderAccessoryEditorPreview(); });
   document.getElementById('accEditorRotation')?.addEventListener('input',(e)=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:cur.s,r:Number(e.target.value)},false); syncEditorValues(); renderAccessoryEditorPreview(); });
-  document.getElementById('accEditorSaveBtn')?.addEventListener('click',()=>{ saveAccessoryOffsetsLocal(); toast('Editor','Локальные оффсеты сохранены','SETTINGS'); });
+  document.getElementById('accEditorSaveBtn')?.addEventListener('click',()=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); accessoryOffsets[id]={dxN:cur.dxN,dyN:cur.dyN,s:cur.s,r:cur.r}; saveAccessoryOffsetsLocal(); renderAccessoryEditorPreview(); toast('Editor','Оффсет сохранён и применён к двум лягушкам','SETTINGS'); });
   document.getElementById('accEditorResetBtn')?.addEventListener('click',()=>{ const id=accessoryEditorState.selectedId; if(!id) return; accessoryOffsets[id]=sanitizeOffsetEntry(buildDefaultOffsets()[id]||{}); syncEditorValues(); renderAccessoryEditorPreview(); });
   document.getElementById('accEditorResetAllBtn')?.addEventListener('click',()=>{ accessoryOffsets=buildDefaultOffsets(); saveAccessoryOffsetsLocal(); syncEditorValues(); renderAccessoryEditorPreview(); });
   document.getElementById('accEditorExportBtn')?.addEventListener('click',()=>{ document.getElementById('accEditorJson').value=JSON.stringify(accessoryOffsets,null,2); });
   document.getElementById('accEditorImportBtn')?.addEventListener('click',()=>{ try{ const data=JSON.parse(document.getElementById('accEditorJson').value||'{}'); for(const [id,entry] of Object.entries(data||{})){ accessoryOffsets[id]=sanitizeOffsetEntry(entry); } renderAccessoryEditorSelect(); renderAccessoryEditorPreview(); }catch{ toast('Editor','Некорректный JSON','SETTINGS'); } });
-  document.getElementById('accEditorPublishBtn')?.addEventListener('click',()=>{ const code=`const DEFAULT_OFFSETS = ${JSON.stringify(accessoryOffsets,null,2)};`; document.getElementById('accEditorJson').value=code; });
+  document.getElementById('accEditorSaveFileBtn')?.addEventListener('click',async()=>{ try{ if(!window.showSaveFilePicker) throw new Error('n/a'); const handle=await window.showSaveFilePicker({suggestedName:'frog_accessory_offsets_dev_v1.json',types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await handle.createWritable(); await w.write(JSON.stringify(accessoryOffsets,null,2)); await w.close(); toast('Editor','Файл сохранён','SETTINGS'); }catch(err){ if(err?.name==='AbortError') return; toast('Editor','File System Access API недоступен','SETTINGS'); } });
+  document.getElementById('accEditorPublishBtn')?.addEventListener('click',()=>{ const mergedOffsets=Object.assign(buildDefaultOffsets(), accessoryOffsets); const code=`const DEFAULT_OFFSETS = ${JSON.stringify(mergedOffsets,null,2)};`; document.getElementById('accEditorJson').value=code; });
   document.getElementById('accEditorCopyBtn')?.addEventListener('click',async()=>{ const v=document.getElementById('accEditorJson').value||''; try{ await navigator.clipboard.writeText(v); toast('Editor','Скопировано','SETTINGS'); }catch{} });
 
   const previews=[frogHosts.editorMain,frogHosts.editorShop].filter(Boolean);
+  const stopDrag=(host,e)=>{ accessoryEditorState.dragging=false; accessoryEditorState.dragHost=null; host.classList.remove('dragging'); host.releasePointerCapture?.(e.pointerId); renderAccessoryEditorPreview(); };
   for(const host of previews){
     host.addEventListener('pointerdown',(e)=>{
       if(!accessoryEditorState.open || !isDevUser()) return;
       const target=e.target.closest('.frog-cosmetics-item'); if(!target) return;
       const id=target.dataset.accId; if(!id) return;
       accessoryEditorState.selectedId=id;
-      document.getElementById('accEditorSelect').value=id;
+      if(selectEl) selectEl.value=id;
       const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{});
       accessoryEditorState.dragging=true;
       accessoryEditorState.dragHost=host;
       accessoryEditorState.startX=e.clientX; accessoryEditorState.startY=e.clientY;
       accessoryEditorState.startDxN=cur.dxN; accessoryEditorState.startDyN=cur.dyN;
+      host.classList.add('dragging');
       host.setPointerCapture?.(e.pointerId);
       syncEditorValues();
+      renderAccessoryEditorPreview();
+      e.preventDefault();
     });
     host.addEventListener('pointermove',(e)=>{
       if(!accessoryEditorState.dragging || accessoryEditorState.dragHost!==host || !accessoryEditorState.selectedId) return;
       const rect=getFrogRect(host);
-      setAccessoryOffsetById(accessoryEditorState.selectedId,{dxN:accessoryEditorState.startDxN + (e.clientX-accessoryEditorState.startX)/Math.max(1,rect.width),dyN:accessoryEditorState.startDyN + (e.clientY-accessoryEditorState.startY)/Math.max(1,rect.height)},false);
+      const nx=clamp(accessoryEditorState.startDxN + (e.clientX-accessoryEditorState.startX)/Math.max(1,rect.width),-0.65,0.65);
+      const ny=clamp(accessoryEditorState.startDyN + (e.clientY-accessoryEditorState.startY)/Math.max(1,rect.height),-0.65,0.65);
+      setAccessoryOffsetById(accessoryEditorState.selectedId,{dxN:nx,dyN:ny},false);
       syncEditorValues();
       renderAccessoryEditorPreview();
     });
-    host.addEventListener('pointerup',()=>{ accessoryEditorState.dragging=false; accessoryEditorState.dragHost=null; });
+    host.addEventListener('pointerup',(e)=>stopDrag(host,e));
+    host.addEventListener('pointercancel',(e)=>stopDrag(host,e));
   }
 
   window.addEventListener('keydown',(e)=>{
@@ -2872,7 +2913,7 @@ const frogHosts = {
 };
 const accessoryFxState = { main:{particles:[],lastSpawn:0}, shop:{particles:[],lastSpawn:0} };
 const accessoryDebug = { enabled:false };
-const accessoryEditorState = { open:false, selectedId:"", dragging:false, dragHost:null, startX:0, startY:0, startDxN:0, startDyN:0 };
+const accessoryEditorState = { open:false, selectedId:"", dragging:false, dragHost:null, startX:0, startY:0, startDxN:0, startDyN:0, search:'', rarity:'', slot:'', previewOnly:true };
 function getFrogRect(targetRoot){
   if(!targetRoot) return {width:900,height:900};
   const rect = targetRoot.getBoundingClientRect();
@@ -2920,14 +2961,21 @@ function ensureCosmeticsLayer(targetElement){
   }
   return layer;
 }
-function renderFrogCosmetics(targetRoot, frogRect=getFrogRect(targetRoot), equippedState=state.cosmetics.equippedSlots){
+function renderFrogCosmetics(targetRoot, frogRect=getFrogRect(targetRoot), equippedState=state.cosmetics.equippedSlots, options={}){
   if(!targetRoot) return [];
   const layer = ensureCosmeticsLayer(targetRoot);
   if(!layer) return [];
   layer.innerHTML = '';
-  const equipped = getEquippedAccessories(equippedState).sort((a,b)=>accTransform(a,frogRect).z-accTransform(b,frogRect).z);
+  const equipped = getEquippedAccessories(equippedState);
+  const list=[...equipped];
+  const previewId=options?.previewId||'';
+  const previewItem=previewId?accessoryItems.find(it=>it.id===previewId):null;
+  if(previewItem && (options?.previewOnly || !list.find(it=>it.id===previewItem.id))){
+    list.push(previewItem);
+  }
+  const sorted=list.sort((a,b)=>accTransform(a,frogRect).z-accTransform(b,frogRect).z);
   const results=[];
-  for(const it of equipped){
+  for(const it of sorted){
     const t=accTransform(it,frogRect);
     const wrapper=document.createElement('div');
     wrapper.className=`frog-cosmetics-item accItem ${it.rarity==='legend'||it.rarity==='limited'?'premium':''} rarity-${it.rarity}`;
@@ -2939,7 +2987,8 @@ function renderFrogCosmetics(targetRoot, frogRect=getFrogRect(targetRoot), equip
     wrapper.style.setProperty('--acc-size',`${t.size}px`);
     wrapper.style.transform=`translate(-50%,-50%) translate(${t.dx}px,${t.dy}px) scale(${t.s}) rotate(${t.r}deg)`;
     if(accessoryEditorState.open && accessoryEditorState.selectedId===it.id){
-      wrapper.classList.add('editor-selected');
+      wrapper.classList.add('editor-selected','editor-draggable');
+      if(accessoryEditorState.dragging) wrapper.classList.add('dragging');
     }
     wrapper.innerHTML = it.svgMarkup;
     layer.appendChild(wrapper);
