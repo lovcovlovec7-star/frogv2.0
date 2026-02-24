@@ -630,7 +630,6 @@
       </div>
     </details>
 
-    <button class="btn primary" id="saveBtn">Сохранить игру</button>
   </div>
 
   <!-- CENTER: FROG -->
@@ -1301,26 +1300,10 @@ async function ensureCroakAudio(){
   if(croakAudioReadyState === "loading") return null;
   const a = document.getElementById("croakAudio");
   if(!a) return null;
-  croakAudioReadyState = "loading";
-  try{
-    const url = "./frog-croak.mp3";
-    const res = await fetch(url, { method:"GET", cache:"no-store" });
-    if(!res.ok) throw new Error(`Croak file unavailable (${res.status})`);
-    const blob = await res.blob();
-    if(!blob || !blob.size) throw new Error("Croak file is empty");
-    if(croakAudioUrl) URL.revokeObjectURL(croakAudioUrl);
-    croakAudioUrl = URL.createObjectURL(blob);
-    a.src = croakAudioUrl;
-    a.preload = "auto";
-    a.load();
-    croakAudioReadyState = "ready";
-    return croakAudioUrl;
-  }catch(e){
-    a.removeAttribute("src");
-    a.preload = "none";
-    croakAudioReadyState = "missing";
-    return null;
-  }
+  a.removeAttribute("src");
+  a.preload = "none";
+  croakAudioReadyState = "missing";
+  return null;
 }
 function uiBeep(){
   if(state.settings && (state.settings.volumeMaster??1)===0) return;
@@ -2204,7 +2187,7 @@ function renderLocations(){
     const div = document.createElement('div');
     div.className = `item locCard ${unlocked?'':'locked'} ${active?'active':''}`;
     div.innerHTML = `<div class="t">${loc.name}</div><div class="s">${unlocked?'Открыта':'Нужно больше прогресса'}</div><div class="row"><button class="btn ${active?'primary':''}" ${unlocked?'':'disabled'}>${active?'Активна':'Выбрать'}</button></div>`;
-    div.querySelector('button').addEventListener('click', ()=>{ if(!unlocked) return; uiBeep(); state.activeLocation=loc.id; updateLocationTheme(); updateSceneFx(); refreshMusic(); updateUI(false); save(); });
+    div.querySelector('button').addEventListener('click', ()=>{ if(!unlocked) return; uiBeep(); state.activeLocation=loc.id; updateLocationTheme(); updateSceneFx(); refreshMusic(); renderLocations(); updateUI(false); save(); });
     box.appendChild(div);
   });
 }
@@ -2218,7 +2201,7 @@ function renderThemes(){
     const div = document.createElement('div');
     div.className = `item ${active?'active':''}`;
     div.innerHTML = `<div class="t">${t.name}</div><div class="s">Акценты интерфейса</div><div class="row"><button class="btn ${active?'primary':''}">${active?'Активна':'Выбрать'}</button></div>`;
-    div.querySelector('button').addEventListener('click', ()=>{ uiBeep(); state.activeTheme=t.id; applyTheme(); updateUI(false); save(); });
+    div.querySelector('button').addEventListener('click', ()=>{ uiBeep(); state.activeTheme=t.id; applyTheme(); renderThemes(); updateUI(false); save(); });
     box.appendChild(div);
   });
 }
@@ -3007,14 +2990,6 @@ document.getElementById("resetBtn").addEventListener("click", ()=>{
   location.reload();
 });
 
-/* =========================
-  SAVE BUTTON
-========================= */
-document.getElementById("saveBtn").addEventListener("click", ()=>{
-  uiBeep();
-  save();
-  toast("Сохранение игры", "Ручной сейв прогресса выполнен", "SAVE");
-});
 document.getElementById("leaderResetBtn")?.addEventListener("click", ()=>{
   if(!confirm("Сбросить таблицу лидеров?")) return;
   localStorage.removeItem(LEADERBOARD_KEY);
@@ -4118,6 +4093,7 @@ const rv2 = riverC.getContext("2d");
 const riverHud = document.getElementById("riverHud");
 let riverRun=false, riverStartT=0, riverScore=0, riverFrogX=480, riverFrogY=460;
 let riverLogs=[], riverFireflies=[];
+let riverHealth=100, riverLastHitAt=0;
 function drawRiverIntro(){
   if(!rv2) return;
   rv2.clearRect(0,0,960,540);
@@ -4132,8 +4108,28 @@ function drawRiverIntro(){
   riverHud.textContent="Ривер-джамп: нажмите Старт";
 }
 function riverReset(){
-  riverRun=true; riverStartT=performance.now(); riverScore=0; riverFrogX=480; riverFrogY=460; riverLogs=[]; riverFireflies=[];
-  riverHud.textContent='Очки: 0 · Время: 35';
+  riverRun=true; riverStartT=performance.now(); riverScore=0; riverFrogX=480; riverFrogY=460; riverLogs=[]; riverFireflies=[]; riverHealth=100; riverLastHitAt=0;
+  riverHud.textContent='Очки: 0 · HP: 100 · Время: 35';
+}
+function riverCollidesWithLog(log){
+  const frogHalfW=24, frogHalfH=17;
+  const closestX = clamp(riverFrogX, log.x, log.x+log.w);
+  const closestY = clamp(riverFrogY, log.y, log.y+log.h);
+  const dx = riverFrogX-closestX;
+  const dy = riverFrogY-closestY;
+  return ((dx*dx)/(frogHalfW*frogHalfW) + (dy*dy)/(frogHalfH*frogHalfH)) <= 1;
+}
+function riverHitLog(now){
+  if(now-riverLastHitAt<250) return;
+  riverLastHitAt=now;
+  riverHealth=Math.max(0, riverHealth-50);
+  if(riverHealth<=0){
+    riverRun=false;
+    riverHud.textContent='Очки: 0 · HP: 0 · Время: 0';
+    toast('Ривер-джамп', 'Лягушка врезалась в бревно — поражение', 'MINI GAME');
+    showGameResult(false,0,'Ривер-джамп');
+    save(); updateUI(false);
+  }
 }
 function riverEnd(){
   if(!riverRun) return;
@@ -4154,14 +4150,14 @@ function drawRiver(){
   if(Math.random()<0.045) riverLogs.push({x:Math.random()<0.5?-130:1090,y:rand(120,450),w:rand(110,180),h:26,v:rand(2.8,5.1)*(Math.random()<0.5?1:-1)});
   if(Math.random()<0.018) riverFireflies.push({x:rand(40,920),y:rand(90,420),r:10,t:now});
   riverLogs=riverLogs.filter(o=>o.x>-200&&o.x<1160);
-  for(const l of riverLogs){ l.x+=l.v; rv2.fillStyle='#6b4f34'; rv2.fillRect(l.x,l.y,l.w,l.h); rv2.strokeStyle='#8d6b4a'; rv2.strokeRect(l.x,l.y,l.w,l.h); if(Math.abs((l.x+l.w/2)-riverFrogX)<(l.w/2+26) && Math.abs((l.y+13)-riverFrogY)<28){ riverScore=Math.max(0,riverScore-16); } }
+  for(const l of riverLogs){ l.x+=l.v; rv2.fillStyle='#6b4f34'; rv2.fillRect(l.x,l.y,l.w,l.h); rv2.strokeStyle='#8d6b4a'; rv2.strokeRect(l.x,l.y,l.w,l.h); if(riverRun && riverCollidesWithLog(l)) riverHitLog(now); }
   riverFireflies=riverFireflies.filter(f=>now-f.t<4500);
   for(const f of riverFireflies){ rv2.fillStyle='rgba(255,236,132,.8)'; rv2.beginPath(); rv2.arc(f.x,f.y,f.r,0,Math.PI*2); rv2.fill(); if(Math.hypot(f.x-riverFrogX,f.y-riverFrogY)<34){ riverScore+=35; f.t=0; } }
   riverScore += 1;
   rv2.fillStyle='#7dffb8'; rv2.beginPath(); rv2.ellipse(riverFrogX,riverFrogY,26,19,0,0,Math.PI*2); rv2.fill();
   rv2.fillStyle='#fff'; rv2.beginPath(); rv2.arc(riverFrogX-8,riverFrogY-9,6,0,Math.PI*2); rv2.arc(riverFrogX+8,riverFrogY-9,6,0,Math.PI*2); rv2.fill();
-  riverHud.textContent=`Очки: ${Math.floor(riverScore)} · Время: ${secLeft}`;
-  if(secLeft<=0) riverEnd();
+  riverHud.textContent=`Очки: ${Math.floor(riverScore)} · HP: ${riverHealth} · Время: ${secLeft}`;
+  if(riverRun && secLeft<=0) riverEnd();
 }
 window.addEventListener('keydown',(e)=>{
   if(!riverRun) return;
@@ -4206,12 +4202,27 @@ function bjRender(hideDealer=false){
 function bjEnd(result){
   bjRound=false;
   let msg='';
-  if(result==='win'){ const reward=Math.round(Math.min(9e12,bjBetVal*1.8)); state.points += reward; const tinyDia=Math.random()<0.2?Math.floor(Math.random()*4):0; state.diamonds=Math.min(999999, state.diamonds + tinyDia); msg=`Победа! +${reward}${tinyDia?` и +${tinyDia}💎`:''}`; }
-  else if(result==='push'){ state.points += bjBetVal; msg='Ничья, ставка возвращена'; }
-  else msg='Проигрыш';
+  let overlayPoints=0;
+  if(result==='win'){
+    const reward=Math.round(Math.min(9e12,bjBetVal*1.8));
+    state.points += reward;
+    overlayPoints=reward;
+    const tinyDia=Math.random()<0.2?Math.floor(Math.random()*4):0;
+    state.diamonds=Math.min(999999, state.diamonds + tinyDia);
+    msg=`WIN +${reward}${tinyDia?` · +${tinyDia}💎`:''}`;
+  }
+  else if(result==='push'){
+    state.points += bjBetVal;
+    overlayPoints=bjBetVal;
+    msg=`DRAW +${bjBetVal}`;
+  }
+  else {
+    overlayPoints=-bjBetVal;
+    msg=`LOSE -${bjBetVal}`;
+  }
   document.getElementById('bjState').textContent = msg;
   toast('Blackjack', msg, 'GAME', { forceImportant: result==='win' && bjBetVal>=1200 });
-  showGameResult(result==='win', result==='lose'?0:(result==='push'?bjBetVal:Math.round(bjBetVal*1.8)), 'Blackjack');
+  showGameResult(result==='win', overlayPoints, 'Blackjack');
   save(); updateUI(false); bjRender(false);
 }
 function bjDeal(){
