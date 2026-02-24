@@ -160,7 +160,7 @@
   canvas#frog{width:100%;height:100%;display:block;cursor:pointer;position:relative;z-index:2;}
   .frog-cosmetics-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;overflow:visible}
   .frog-cosmetics-item{position:absolute;left:0;top:0;transform-origin:center;will-change:transform;z-index:3}
-  .frog-cosmetics-item .frog-cosmetics-svg{width:240px;height:240px;display:block;overflow:visible}
+  .frog-cosmetics-item .frog-cosmetics-svg{width:var(--acc-size,26.666%);height:var(--acc-size,26.666%);display:block;overflow:visible}
   .frogAccessoryFx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;mix-blend-mode:screen}
   .hintChip{
     position:absolute; left:12px; bottom:12px;
@@ -234,8 +234,8 @@
   .accDebugPanel .accDbgRow{display:flex;justify-content:space-between;gap:8px}
   .accDebugPanel .ok{color:#8dffbf}
   .accDebugPanel .bad{color:#ff9b9b}
-  .accAnchorDot{position:absolute;width:10px;height:10px;border-radius:50%;background:#8cf6ff;border:2px solid #07253f;transform:translate(-50%,-50%);z-index:7}
-  .accAnchorLabel{position:absolute;transform:translate(-50%,-150%);padding:2px 6px;border-radius:999px;border:1px solid #7bf3a6aa;background:#052138e8;color:#a5ffd2;font-size:10px;font-weight:800;white-space:nowrap;z-index:7}
+  .accAnchorDot{position:absolute;width:10px;height:10px;border-radius:50%;background:#8cf6ff;border:2px solid #07253f;transform:translate(-50%,-50%);z-index:7;opacity:0;pointer-events:none}
+  .accAnchorLabel{position:absolute;transform:translate(-50%,-150%);padding:2px 6px;border-radius:999px;border:1px solid #7bf3a6aa;background:#052138e8;color:#a5ffd2;font-size:10px;font-weight:800;white-space:nowrap;z-index:7;opacity:0;pointer-events:none}
 
   .shopCard.pop{animation:shopPop .35s ease;}
   @keyframes shopPop{0%{transform:scale(.96)}55%{transform:scale(1.03)}100%{transform:scale(1)}}
@@ -585,8 +585,7 @@
     <div class="topActions">
       <button class="btn primary" id="openShopModalBtn">🛒 Магазин</button>
       <button class="btn" id="openGamesModalBtn">🎮 Мини-игры</button>
-      <button class="btn" id="testRenderBtn" title="Debug accessory render">🧪 Test Render</button>
-    </div>
+          </div>
     <div class="top">
       <div class="brand">
         <h1>🐸 Frog Clicker — PRO</h1>
@@ -1547,15 +1546,16 @@ function upgradePrice(u){
 ========================= */
 
 const ACCESSORY_SLOTS = {
-  HEAD_TOP:{ax:0.5,ay:0.23,baseScale:1,baseRotation:0,zLayer:70},
-  EYES:{ax:0.5,ay:0.42,baseScale:1,baseRotation:0,zLayer:60},
-  FACE:{ax:0.5,ay:0.49,baseScale:1,baseRotation:0,zLayer:58},
-  MOUTH:{ax:0.5,ay:0.58,baseScale:1,baseRotation:0,zLayer:56},
-  NECK:{ax:0.5,ay:0.67,baseScale:1,baseRotation:0,zLayer:45},
-  BODY:{ax:0.5,ay:0.75,baseScale:1,baseRotation:0,zLayer:44},
+  HEAD_TOP:{ax:0.5,ay:0.205,baseScale:1.02,baseRotation:0,zLayer:70},
+  EYES:{ax:0.5,ay:0.392,baseScale:0.98,baseRotation:0,zLayer:60},
+  FACE:{ax:0.5,ay:0.5,baseScale:1,baseRotation:0,zLayer:58},
+  MOUTH:{ax:0.5,ay:0.585,baseScale:0.97,baseRotation:0,zLayer:56},
+  NECK:{ax:0.5,ay:0.665,baseScale:1.02,baseRotation:0,zLayer:45},
+  BODY:{ax:0.5,ay:0.76,baseScale:1,baseRotation:0,zLayer:44},
   AURA_BEHIND:{ax:0.5,ay:0.5,baseScale:1.05,baseRotation:0,zLayer:8},
   AURA_FRONT:{ax:0.5,ay:0.5,baseScale:1.05,baseRotation:0,zLayer:82}
 };
+const SLOT_ANCHOR_RULES = { FACE:'FACE', EYES:'EYES', HEAD_TOP:'HEAD_TOP', NECK:'NECK' };
 
 const accessoryItems = [
   {id:'c_moss_cap',signature:'moss-cap',name:'Мшистый колпак',desc:'Лесной колпак с мягкой кромкой.',rarity:'common',slot:'HEAD_TOP',price:220000,offset:{dx:0,dy:-4,s:1,r:0},motif:'cap'},
@@ -1642,7 +1642,7 @@ function accessorySvgMarkup(it){
     emberMask:'<g class="accLimitedPulse"><path d="M-130 -44Q0 -68 130 -44L108 42Q0 82 -108 42Z" fill="url(#ID_a)"/><path d="M-78 6Q0 42 78 6" stroke="#fff8" stroke-width="10"/></g>',
     runeTorque:'<g class="accLimitedPulse"><ellipse cx="0" cy="0" rx="150" ry="50" fill="none" stroke="url(#ID_a)" stroke-width="22"/><circle cx="0" cy="0" r="20" fill="#fff8"/></g>',
     eclipseBack:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="156" fill="url(#ID_g)"/><circle cx="0" cy="0" r="126" fill="#11152b" opacity=".7"/></g>',
-    sigilFront:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="118" fill="none" stroke="url(#ID_a)" stroke-width="18"/><path d="M0 -82L62 42L-62 42Z" fill="url(#ID_a)" opacity=".45"/></g>'
+    sigilFront:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="154" fill="url(#ID_g)" opacity=".22"/><circle cx="0" cy="0" r="126" fill="none" stroke="url(#ID_a)" stroke-width="16"/><circle cx="0" cy="0" r="92" fill="none" stroke="#ffecc2" stroke-opacity=".55" stroke-width="5"/><path d="M0 -112L78 -16L44 88L-44 88L-78 -16Z" fill="url(#ID_a)" opacity=".82"/><path d="M0 -82L46 -20L24 48H-24L-46 -20Z" fill="#fff5d1" opacity=".45"/><g opacity=".88"><circle cx="0" cy="-130" r="7" fill="#fff4d9"/><circle cx="116" cy="0" r="6" fill="#ffdca2"/><circle cx="-116" cy="0" r="6" fill="#ffdca2"/><circle cx="0" cy="130" r="7" fill="#fff4d9"/></g><path d="M-106 -60Q0 -96 106 -60" stroke="#fff3d8" stroke-opacity=".52" stroke-width="4" fill="none"/></g>'
   };
   return `<svg class="frog-cosmetics-svg" viewBox="-220 -220 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g class="accShape ${auraPulse}">${defs}${glow}${(S[it.motif]||S.cap).replaceAll('ID',it.id)}${shine}</g></svg>`;
 }
@@ -1653,6 +1653,12 @@ function validateAccessoryCatalog(){
   for(const it of accessoryItems){
     if(sig.has(it.signature)) console.warn('[Accessories] duplicate signature',it.signature,it.id,sig.get(it.signature)); else sig.set(it.signature,it.id);
     if(svg.has(it.svgMarkup)) console.warn('[Accessories] duplicate svg markup',it.id,svg.get(it.svgMarkup)); else svg.set(it.svgMarkup,it.id);
+    const forced=SLOT_ANCHOR_RULES[it.slot];
+    const declared=it.anchor||it.slot;
+    if(forced && declared!==forced){
+      console.warn(`[Accessories] slot ${it.slot} forced anchor ${forced} for ${it.id} (was ${declared})`);
+      it.anchor=forced;
+    }
   }
 }
 
@@ -2628,8 +2634,8 @@ function updateUI(full=true){
   if(full){
     renderUpgrades();
     renderShop();
-    renderFrogCosmetics(frogHosts.main, state.cosmetics.equippedSlots);
-    renderFrogCosmetics(frogHosts.shop, state.cosmetics.equippedSlots);
+    renderFrogCosmetics(frogHosts.main, getFrogRect(frogHosts.main), state.cosmetics.equippedSlots);
+    renderFrogCosmetics(frogHosts.shop, getFrogRect(frogHosts.shop), state.cosmetics.equippedSlots);
     renderAchievements();
     renderRanks();
     renderTitles();
@@ -2655,13 +2661,42 @@ const frogHosts = {
 };
 const accessoryFxState = { main:{particles:[],lastSpawn:0}, shop:{particles:[],lastSpawn:0} };
 const accessoryDebug = { enabled:false };
+function getFrogRect(targetRoot){
+  if(!targetRoot) return {width:900,height:900};
+  const rect = targetRoot.getBoundingClientRect();
+  const width = rect.width || targetRoot.clientWidth || 900;
+  const height = rect.height || targetRoot.clientHeight || width || 900;
+  return {width,height};
+}
 function getEquippedAccessories(equippedState=state.cosmetics.equippedSlots||{}){
   return accessoryItems.filter(it=>equippedState?.[it.slot]===it.id);
 }
-function accTransform(it){
-  const slot=ACCESSORY_SLOTS[it.slot]||ACCESSORY_SLOTS.BODY;
+function validateAccessoryAnchor(it){
+  const forced=SLOT_ANCHOR_RULES[it.slot];
+  const sourceAnchor=it.anchor||it.slot;
+  const safeAnchor=ACCESSORY_SLOTS[sourceAnchor]?sourceAnchor:'BODY';
+  if(forced && safeAnchor!==forced){
+    console.warn(`[Accessories] anchor override ${it.id}: ${safeAnchor} -> ${forced}`);
+    return forced;
+  }
+  return safeAnchor;
+}
+function accTransform(it,frogRect={width:900,height:900}){
+  const anchorKey=validateAccessoryAnchor(it);
+  const slot=ACCESSORY_SLOTS[anchorKey]||ACCESSORY_SLOTS.BODY;
   const off=it.offset||{dx:0,dy:0,s:1,r:0};
-  return {x:slot.ax*900,y:slot.ay*900,s:(slot.baseScale||1)*(off.s||1),r:(slot.baseRotation||0)+(off.r||0),dx:off.dx||0,dy:off.dy||0,z:slot.zLayer||50};
+  const sx=(frogRect.width||900)/900;
+  const sy=(frogRect.height||900)/900;
+  return {
+    x:slot.ax*(frogRect.width||900),
+    y:slot.ay*(frogRect.height||900),
+    s:(slot.baseScale||1)*(off.s||1),
+    r:(slot.baseRotation||0)+(off.r||0),
+    dx:(off.dx||0)*sx,
+    dy:(off.dy||0)*sy,
+    z:slot.zLayer||50,
+    size:Math.min(frogRect.width||900,frogRect.height||900)*0.2666
+  };
 }
 function ensureCosmeticsLayer(targetElement){
   if(!targetElement) return null;
@@ -2673,22 +2708,23 @@ function ensureCosmeticsLayer(targetElement){
   }
   return layer;
 }
-function renderFrogCosmetics(targetElement, equippedState){
-  if(!targetElement) return [];
-  const layer = ensureCosmeticsLayer(targetElement);
+function renderFrogCosmetics(targetRoot, frogRect=getFrogRect(targetRoot), equippedState=state.cosmetics.equippedSlots){
+  if(!targetRoot) return [];
+  const layer = ensureCosmeticsLayer(targetRoot);
   if(!layer) return [];
   layer.innerHTML = '';
-  const equipped = getEquippedAccessories(equippedState).sort((a,b)=>accTransform(a).z-accTransform(b).z);
+  const equipped = getEquippedAccessories(equippedState).sort((a,b)=>accTransform(a,frogRect).z-accTransform(b,frogRect).z);
   const results=[];
   for(const it of equipped){
-    const t=accTransform(it);
+    const t=accTransform(it,frogRect);
     const wrapper=document.createElement('div');
     wrapper.className=`frog-cosmetics-item accItem ${it.rarity==='legend'||it.rarity==='limited'?'premium':''} rarity-${it.rarity}`;
     wrapper.dataset.accId=it.id;
     wrapper.dataset.slot=it.slot;
-    wrapper.style.left=`${t.x/9}%`;
-    wrapper.style.top=`${t.y/9}%`;
+    wrapper.style.left=`${(t.x/frogRect.width)*100}%`;
+    wrapper.style.top=`${(t.y/frogRect.height)*100}%`;
     wrapper.style.zIndex=String(t.z||3);
+    wrapper.style.setProperty('--acc-size',`${t.size}px`);
     wrapper.style.transform=`translate(-50%,-50%) translate(${t.dx}px,${t.dy}px) scale(${t.s}) rotate(${t.r}deg)`;
     wrapper.innerHTML = it.svgMarkup;
     layer.appendChild(wrapper);
@@ -2710,19 +2746,21 @@ function renderFrogCosmetics(targetElement, equippedState){
     if(accessoryDebug.enabled){
       const dot=document.createElement('div');
       dot.className='accAnchorDot';
-      dot.style.left=`${t.x/9}%`;
-      dot.style.top=`${t.y/9}%`;
+      dot.style.left=`${(t.x/frogRect.width)*100}%`;
+      dot.style.top=`${(t.y/frogRect.height)*100}%`;
+      dot.style.opacity='1';
       layer.appendChild(dot);
       const label=document.createElement('div');
       label.className='accAnchorLabel';
-      label.style.left=`${t.x/9}%`;
-      label.style.top=`${t.y/9}%`;
+      label.style.left=`${(t.x/frogRect.width)*100}%`;
+      label.style.top=`${(t.y/frogRect.height)*100}%`;
+      label.style.opacity='1';
       label.textContent=`${it.slot}: ${it.id}`;
       layer.appendChild(label);
     }
     results.push({id:it.id,slot:it.slot,rendered});
   }
-  updateAccessoryDebugPanel(results, targetElement===frogHosts.main);
+  updateAccessoryDebugPanel(results, targetRoot===frogHosts.main);
   return results;
 }
 function updateAccessoryDebugPanel(results, isMain){
@@ -2731,11 +2769,15 @@ function updateAccessoryDebugPanel(results, isMain){
   panel.classList.toggle('show',accessoryDebug.enabled);
   if(!accessoryDebug.enabled) return;
   const rows=results.map(r=>`<div class="accDbgRow"><span>${r.id}</span><b class="${r.rendered?'ok':'bad'}">${r.rendered?'rendered':'missing'}</b></div>`).join('') || '<div class="accDbgRow"><span>none</span><b>—</b></div>';
-  panel.innerHTML=`<div class="accDbgTitle">Accessory Debug (K)</div>${rows}`;
+  panel.innerHTML=`<div class="accDbgTitle">Accessory Debug (Shift+K)</div>${rows}`;
 }
 function drawAccessoryFxLayer(hostKey, pause){
   const host=frogHosts[hostKey]; if(!host) return;
   const canvas=host.querySelector('.frogAccessoryFx'); const ctx=canvas?.getContext('2d'); if(!ctx) return;
+  const rect=getFrogRect(host);
+  const targetW=Math.max(2,Math.round(rect.width));
+  const targetH=Math.max(2,Math.round(rect.height));
+  if(canvas.width!==targetW || canvas.height!==targetH){ canvas.width=targetW; canvas.height=targetH; }
   const st=accessoryFxState[hostKey]; ctx.clearRect(0,0,canvas.width,canvas.height);
   if(!state.settings.particles || pause) return;
   const equipped=getEquippedAccessories();
@@ -2743,34 +2785,21 @@ function drawAccessoryFxLayer(hostKey, pause){
   if(now-st.lastSpawn>80){ st.lastSpawn=now;
     for(const it of equipped){
       const fx=it.effects?.particles; if(!fx||Math.random()>(fx.rate||0.5)) continue;
-      const t=accTransform(it); const max=Math.min(20, fx.count||12);
+      const t=accTransform(it,rect); const max=Math.min(24, fx.count||12);
       if(st.particles.filter(p=>p.id===it.id).length>=max) continue;
-      st.particles.push({id:it.id,x:t.x+t.dx+rand(-fx.radius,fx.radius)*0.25,y:t.y+t.dy+rand(-fx.radius,fx.radius)*0.2,vx:rand(-.4,.4),vy:rand(-.9,-.18),size:rand(1.5,3.6),life:rand(650,1500),born:now,color:fx.color||'#fff',type:fx.type||'mote'});
+      st.particles.push({id:it.id,x:t.x+t.dx+rand(-fx.radius,fx.radius)*0.25*(rect.width/900),y:t.y+t.dy+rand(-fx.radius,fx.radius)*0.2*(rect.height/900),vx:rand(-.4,.4)*(rect.width/900),vy:rand(-.9,-.18)*(rect.height/900),size:rand(1.5,3.6)*(Math.min(rect.width,rect.height)/900),life:rand(650,1500),born:now,color:fx.color||'#fff',type:fx.type||'mote'});
     }
   }
-  st.particles=st.particles.filter(p=> now-p.born<p.life).slice(-120);
+  st.particles=st.particles.filter(p=> now-p.born<p.life).slice(-140);
   for(const p of st.particles){
-    const age=(now-p.born)/p.life; ctx.globalAlpha=(1-age)*0.85; p.x+=p.vx; p.y+=p.vy; ctx.fillStyle=p.color; ctx.beginPath();
-    if(p.type==='rune'){ctx.rect(p.x-p.size,p.y-p.size,p.size*2,p.size*2);} else if(p.type==='star'||p.type==='spark'){ctx.moveTo(p.x,p.y-p.size*2);ctx.lineTo(p.x+p.size,p.y+p.size*1.6);ctx.lineTo(p.x-p.size*1.6,p.y-p.size*.2);ctx.lineTo(p.x+p.size*1.6,p.y-p.size*.2);ctx.lineTo(p.x-p.size,p.y+p.size*1.6);ctx.closePath();} else {ctx.arc(p.x,p.y,p.size,0,Math.PI*2);} ctx.fill();
+    const age=(now-p.born)/p.life; ctx.globalAlpha=(1-age)*0.7; p.x+=p.vx; p.y+=p.vy; ctx.fillStyle=p.color; ctx.beginPath();
+    if(p.type==='rune'){ctx.moveTo(p.x,p.y-p.size*1.8);ctx.lineTo(p.x+p.size*1.3,p.y);ctx.lineTo(p.x,p.y+p.size*1.8);ctx.lineTo(p.x-p.size*1.3,p.y);ctx.closePath();}
+    else if(p.type==='star'||p.type==='spark'){ctx.moveTo(p.x,p.y-p.size*2);ctx.lineTo(p.x+p.size,p.y+p.size*1.6);ctx.lineTo(p.x-p.size*1.6,p.y-p.size*.2);ctx.lineTo(p.x+p.size*1.6,p.y-p.size*.2);ctx.lineTo(p.x-p.size,p.y+p.size*1.6);ctx.closePath();}
+    else {ctx.arc(p.x,p.y,p.size,0,Math.PI*2);} ctx.fill();
   }
   ctx.globalAlpha=1;
 }
-window.addEventListener('keydown',(e)=>{ if(e.key.toLowerCase()==='k'){ accessoryDebug.enabled=!accessoryDebug.enabled; renderFrogCosmetics(frogHosts.main,state.cosmetics.equippedSlots); renderFrogCosmetics(frogHosts.shop,state.cosmetics.equippedSlots);} });
-document.getElementById('testRenderBtn')?.addEventListener('click',()=>{
-  const prev={...(state.cosmetics.equippedSlots||{})};
-  const testSlots=['HEAD_TOP','EYES','FACE','NECK','BODY','MOUTH','AURA_BEHIND','AURA_FRONT'];
-  state.cosmetics.equippedSlots ||= {};
-  for(const slot of testSlots){
-    const pick=accessoryItems.find(it=>it.slot===slot);
-    if(pick) state.cosmetics.equippedSlots[slot]=pick.id;
-  }
-  updateUI(false);
-  renderFrogCosmetics(frogHosts.main,state.cosmetics.equippedSlots);
-  renderFrogCosmetics(frogHosts.shop,state.cosmetics.equippedSlots);
-  toast('Debug','Test Render: временно экипированы аксессуары по слотам.','INFO');
-  setTimeout(()=>{ state.cosmetics.equippedSlots=prev; updateUI(false); renderFrogCosmetics(frogHosts.main,state.cosmetics.equippedSlots); renderFrogCosmetics(frogHosts.shop,state.cosmetics.equippedSlots); }, 3500);
-});
-
+window.addEventListener('keydown',(e)=>{ if(e.shiftKey && e.key.toLowerCase()==='k'){ accessoryDebug.enabled=!accessoryDebug.enabled; renderFrogCosmetics(frogHosts.main,getFrogRect(frogHosts.main),state.cosmetics.equippedSlots); renderFrogCosmetics(frogHosts.shop,getFrogRect(frogHosts.shop),state.cosmetics.equippedSlots);} });
 const fx = { glows:[], particles:[], lastClick:0, squash:0 };
 const frogLife = { lookX:0, lookY:0, targetX:0, targetY:0, blink:0, nextBlink:performance.now()+rand(1200,3800), mood:"idle", happyUntil:0, angryUntil:0, lastUserAction:Date.now() };
 function frogMoodNow(){
@@ -3686,14 +3715,14 @@ function updateShopPreview(){
   if(!ctx) return;
   ctx.clearRect(0,0,pc.width,pc.height);
   ctx.drawImage(frogCanvas, 0, 0, pc.width, pc.height);
-  renderFrogCosmetics(frogHosts.shop, state.cosmetics.equippedSlots);
+  renderFrogCosmetics(frogHosts.shop, getFrogRect(frogHosts.shop), state.cosmetics.equippedSlots);
 }
 /* =========================
   MAIN DRAW LOOP
 ========================= */
 function loop(){
   drawFrog();
-  renderFrogCosmetics(frogHosts.main, state.cosmetics.equippedSlots);
+  renderFrogCosmetics(frogHosts.main, getFrogRect(frogHosts.main), state.cosmetics.equippedSlots);
   drawAccessoryFxLayer('main', false);
   const shopOpen = document.getElementById('shopModal')?.classList.contains('show');
   updateShopPreview();
