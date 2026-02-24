@@ -158,8 +158,8 @@
     touch-action: manipulation;
   }
   canvas#frog{width:100%;height:100%;display:block;cursor:pointer;position:relative;z-index:2;}
-  #accessoryLayer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
-  #accessoryFx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;mix-blend-mode:screen}
+  .frogAccessoryLayer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+  .frogAccessoryFx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;mix-blend-mode:screen}
   .hintChip{
     position:absolute; left:12px; bottom:12px;
     font-size:12px; color:var(--muted);
@@ -218,6 +218,14 @@
   .shopCard{position:relative; transition:transform .22s ease, border-color .2s ease, box-shadow .25s ease;display:flex;flex-direction:column;height:100%;min-height:196px;max-height:196px}
   .shopCard:hover{transform:translateY(-3px)}
   .shopCard.active{border-color:#35f0a3aa; box-shadow:0 0 0 1px #35f0a355, 0 16px 36px #00000075;}
+  .shopCard .shopCardHeader{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+  .shopCard .t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25;min-height:2.5em;padding-right:6px}
+  .shopCard .s{font-size:12px;line-height:1.45;color:#c8d8ef}
+  .shopCard .row{margin-top:auto}
+  .eqBadge{margin-bottom:4px}
+  .accDebugPoint{fill:#8cf6ff;stroke:#07253f;stroke-width:3}
+  .accDebugBox{fill:none;stroke:#7bf3a6;stroke-width:2;stroke-dasharray:8 6}
+
   .shopCard.pop{animation:shopPop .35s ease;}
   @keyframes shopPop{0%{transform:scale(.96)}55%{transform:scale(1.03)}100%{transform:scale(1)}}
   .shopPrice{font-weight:900;font-size:13px}
@@ -333,8 +341,10 @@
   #shopModalBody::-webkit-scrollbar{width:8px}
   #shopModalBody::-webkit-scrollbar-thumb{background:#ffffff30;border-radius:999px}
   #shopPreview{width:100%;height:auto;display:block;border-radius:12px;border:1px solid #ffffff22;background:linear-gradient(160deg,#0a1324,#071a1f)}
+  .previewFrogWrap{position:relative;overflow:hidden;border-radius:12px}
+  .previewFrogWrap .frogAccessoryLayer,.previewFrogWrap .frogAccessoryFx{inset:0}
   @media (max-width:900px){.shopModalLayout{grid-template-columns:1fr}.shopPreview{position:static}}
-  .shopGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;max-height:none;overflow:visible;padding-right:6px;align-content:start;grid-auto-flow:row dense;align-items:stretch}
+  .shopGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;max-height:none;overflow:visible;padding-right:6px;align-content:start;align-items:stretch}
   .shopGrid>*{min-width:0}
   .limitedBlock{margin-top:12px;border:1px solid #ffd16666;background:linear-gradient(145deg,#261f0b,#1a1424);box-shadow:0 0 22px #ffd1662f inset;grid-column:1/-1}
   .limitedBlock .t{color:#ffe39c}
@@ -347,6 +357,13 @@
   @keyframes accIdle{0%,100%{opacity:.97}50%{opacity:1}}
   @keyframes accPulse{0%,100%{opacity:.86}50%{opacity:1}}
   @keyframes scanlineMove{0%{transform:translateY(-14px)}50%{transform:translateY(24px)}100%{transform:translateY(-14px)}}
+  .accLegendPulse{animation:accLegendPulse 2.6s ease-in-out infinite}
+  .accLimitedPulse{animation:accLimitedPulse 2.2s ease-in-out infinite}
+  .accAuraPulse{animation:accAuraPulse 3.1s ease-in-out infinite}
+  @keyframes accLegendPulse{0%,100%{filter:drop-shadow(0 0 6px #ffd16688)}50%{filter:drop-shadow(0 0 18px #ffd166dd)}}
+  @keyframes accLimitedPulse{0%,100%{filter:drop-shadow(0 0 8px #ff9b6baa)}50%{filter:drop-shadow(0 0 22px #b68bff)}}
+  @keyframes accAuraPulse{0%,100%{opacity:.82}50%{opacity:1}}
+
 
   .caseOpenFx{min-height:32px;font-weight:900;color:#d5f5ff}
   .locationGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -569,9 +586,9 @@
     <div class="arena" id="arena">
       <div id="frogWrap">
         <div class="sceneFx" id="sceneFx"></div>
-        <svg id="accessoryLayer" viewBox="0 0 900 900" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <svg class="frogAccessoryLayer" viewBox="0 0 900 900" preserveAspectRatio="none" aria-hidden="true"></svg>
         <canvas id="frog" width="900" height="900"></canvas>
-        <canvas id="accessoryFx" width="900" height="900"></canvas>
+        <canvas class="frogAccessoryFx" width="900" height="900"></canvas>
       </div>
     </div>
 
@@ -844,7 +861,7 @@
   </div>
 </div>
 <div class="modalBack" id="caseOpenModal"><div class="modal caseModal"><div class="caseModalTop"><div class="caseModalHeading"><div class="caseModalTitle" id="caseModalTitle">Выберите кейс</div><button class="caseHeaderInfo" id="caseModalOddsBtn" title="Показать шансы" aria-label="Показать шансы" style="display:none">ⓘ</button></div><div class="caseOddsPopup" id="caseModalOddsPopup"></div><button class="btn caseSecondary caseModalCloseBtn" id="caseModalClose">Закрыть</button></div><div class="modalScroll"><div id="caseModalContent" class="caseAnimCard"></div></div><div class="caseActions" style="margin-top:10px"><button class="btn casePrimary" id="caseSpinBtn">Начать открытие</button><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn" id="caseInventoryBtn" style="display:none">В инвентарь</button><button class="btn caseSecondary" id="caseSellBtn" style="display:none">В пыль</button><button class="btn caseSecondary" id="caseCloseBtn" style="display:none">Ок</button></div></div></div>
-<div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout modalScroll" style="margin-top:10px"><div class="shopPreview"><canvas id="shopPreview" width="420" height="420"></canvas></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
+<div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout modalScroll" style="margin-top:10px"><div class="shopPreview"><div id="shopPreviewWrap" class="previewFrogWrap"><canvas id="shopPreview" width="420" height="420"></canvas><svg class="frogAccessoryLayer" viewBox="0 0 900 900" preserveAspectRatio="none" aria-hidden="true"></svg><canvas class="frogAccessoryFx" width="900" height="900"></canvas></div></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
 <div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
 
 <div id="gameResultOverlay" class="resultOverlay"><div id="gameResultTitle" class="t"></div><div id="gameResultText" class="s" style="margin-top:6px"></div></div>
@@ -911,6 +928,7 @@ const state = {
 
   cosmetics: {
     skin:"default",
+    equippedSlots:{},
     chainGold:false, cyberVisor:false, crown:false, monocle:false, spikes:false,
     halo:false, horns:false, scar:false, angel:false, demon:false,
     bowTie:false, leafHat:false, respirator:false, pearlNecklace:false, captainCap:false,
@@ -1314,6 +1332,7 @@ const uiThemes = [
 ];
 
 const versionNotes = [
+  { v:"3.3.0", date:"2026-03-04", points:["Accessories 3.0 — Full redesign, slot rig system, premium Limited visuals, shop preview sync, duplicate removal."] },
   { v:"3.2.0", date:"2026-03-02", points:["Cases 2.0 fixes: исправлен поток открытия кейса (спин → reveal → действия)","Починен макет News: новости рендерятся аккуратным списком внутри панели без layout bleed","На карточки кейсов возвращены кнопки Buy/Open + popup «Шансы» с точными вероятностями","Shop и Case Opening теперь используют внутренние скролл-контейнеры и корректный z-index","Добавлены действия после reveal: надеть сейчас, в инвентарь, конвертация дубликата в пыль","Синхронизированы отображаемые проценты и фактическая логика выбора награды"] },
   { v:"3.1.0", date:"2026-02-26", points:["Обновлён профиль: новый аккуратный layout аккаунта и рамка аватара","Исправлено сохранение профиля по аккаунтам: ник/био/аватар возвращаются после входа","Аксессуары и лимитные предметы выровнены по высоте, без «небоскрёбов»","Кейсы получили визуал сундуков, редкостные свечения и новые таблицы вероятностей","Экран открытия кейса: сундук, бесконечный reel с иконками и итоговая rarity-рамка","Система титулов переработана: условия, locked/unlocked и вывод в лидерборде","Горячие клавиши музыки: M / Ь (без срабатывания в полях ввода)","Мини-игры показывают большой WIN/LOSE overlay по центру","Полировка Blackjack: новые кнопки, карты и читабельная компоновка","Добавлен lock скролла: колесо прокручивает только верхнюю модалку"] },
   { v:"3.0.0", date:"2026-02-25", points:["Мульти-профили и гостевой вход","Ранги дают реальные бонусы и прогресс-бар","Анимированное открытие кейсов + пыль за дубликаты","Blackjack сбалансирован: алмазы сильно ограничены","Добавлены модальные окна магазина и мини-игр"] },
@@ -1514,92 +1533,115 @@ function upgradePrice(u){
   COSMETICS (split)
 ========================= */
 
+const ACCESSORY_SLOTS = {
+  HEAD_TOP:{ax:0.5,ay:0.23,baseScale:1,baseRotation:0,zLayer:70},
+  EYES:{ax:0.5,ay:0.42,baseScale:1,baseRotation:0,zLayer:60},
+  FACE:{ax:0.5,ay:0.49,baseScale:1,baseRotation:0,zLayer:58},
+  MOUTH:{ax:0.5,ay:0.58,baseScale:1,baseRotation:0,zLayer:56},
+  NECK:{ax:0.5,ay:0.67,baseScale:1,baseRotation:0,zLayer:45},
+  BODY:{ax:0.5,ay:0.75,baseScale:1,baseRotation:0,zLayer:44},
+  AURA_BEHIND:{ax:0.5,ay:0.5,baseScale:1.05,baseRotation:0,zLayer:8},
+  AURA_FRONT:{ax:0.5,ay:0.5,baseScale:1.05,baseRotation:0,zLayer:82}
+};
+
 const accessoryItems = [
-  { id:"chain_gold", kind:"acc", rarity:"rare", name:"Золотая цепь", desc:"Толстая цепь и литой кулон", flavor:"Тяжёлый блеск поздней игры.", price:540000, toggle:"chainGold", slot:"neck", style:"chain", anchor:{x:0,y:118,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"glasses_cyber", kind:"acc", rarity:"epic", name:"Кибер-визор", desc:"Неоновая маска с HUD-слоями", flavor:"Пульсирует, как боевой интерфейс.", price:760000, toggle:"cyberVisor", slot:"eyes", style:"visor", anchor:{x:0,y:-92,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"crown", kind:"acc", rarity:"legend", name:"Корона болота", desc:"Королевский силуэт с самоцветами", flavor:"Трофей за длинный гринд.", price:980000, toggle:"crown", slot:"hat", style:"crown", anchor:{x:0,y:-236,scale:1,rotation:0}, effects:{particles:{type:"spark",color:"#ffd166",count:8,rate:0.45,radius:150}} },
-  { id:"monocle", kind:"acc", rarity:"rare", name:"Монокль", desc:"Классическая линза с цепочкой", price:510000, toggle:"monocle", slot:"face", style:"monocle", anchor:{x:-146,y:-118,scale:1,rotation:-6}, effects:{particles:null} },
-  { id:"spikes", kind:"acc", rarity:"epic", name:"Шипы", desc:"Агрессивный воротник из стали", flavor:"Шипы читаются даже в тени.", price:620000, toggle:"spikes", slot:"neck", style:"spikes", anchor:{x:0,y:128,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"scar", kind:"acc", rarity:"common", name:"Боевой шрам", desc:"Опытный вид без лишнего пафоса", price:420000, toggle:"scar", slot:"face", style:"scar", anchor:{x:28,y:-130,scale:1,rotation:8}, effects:{particles:null} },
-  { id:"halo", kind:"acc", rarity:"epic", name:"Нимб", desc:"Светлая дуга над головой", flavor:"Тихий свет, мощный силуэт.", price:860000, toggle:"halo", slot:"aura", style:"halo", anchor:{x:0,y:-284,scale:1,rotation:0}, effects:{particles:{type:"mote",color:"#fff2a8",count:10,rate:0.4,radius:170}} },
-  { id:"horns", kind:"acc", rarity:"epic", name:"Рога", desc:"Тёмная форма обсидиана", price:860000, toggle:"horns", slot:"head", style:"horns", anchor:{x:0,y:-236,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"auraAngel", kind:"acc", rarity:"legend", name:"Ангельская аура", desc:"Сияющий ореол с мягкой пылью", flavor:"Свечение, будто утренний туман.", price:920000, toggle:"angel", slot:"aura", style:"angelAura", anchor:{x:0,y:-20,scale:1,rotation:0}, effects:{particles:{type:"mote",color:"#cffff5",count:15,rate:0.7,radius:260}} },
-  { id:"auraDemon", kind:"acc", rarity:"legend", name:"Демоническая аура", desc:"Пульсирующее пламя и пепел", flavor:"Горит даже без движения.", price:690000, toggle:"demon", slot:"aura", style:"demonAura", anchor:{x:0,y:10,scale:1,rotation:0}, effects:{particles:{type:"ember",color:"#ff7e52",count:16,rate:0.85,radius:260}} },
-  { id:"bow_tie", kind:"acc", rarity:"common", name:"Бабочка", desc:"Яркий шейный бант", price:62000, toggle:"bowTie", slot:"neck", style:"bow", anchor:{x:0,y:126,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"leaf_hat", kind:"acc", rarity:"rare", name:"Шляпа-лист", desc:"Большой лист кувшинки", price:118000, toggle:"leafHat", slot:"hat", style:"leaf", anchor:{x:0,y:-220,scale:1,rotation:-8}, effects:{particles:null} },
-  { id:"respirator", kind:"acc", rarity:"rare", name:"Респиратор", desc:"Тактическая маска с фильтрами", price:126000, toggle:"respirator", slot:"face", style:"resp", anchor:{x:0,y:-30,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"pearl_necklace", kind:"acc", rarity:"rare", name:"Жемчужное ожерелье", desc:"Кольцо из жемчужин", price:138000, toggle:"pearlNecklace", slot:"neck", style:"pearls", anchor:{x:0,y:126,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"captain_cap", kind:"acc", rarity:"epic", name:"Капитанская фуражка", desc:"Морской стиль с кокардой", flavor:"Командует даже болотом.", price:480000, toggle:"captainCap", slot:"hat", style:"cap", anchor:{x:0,y:-234,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"flower_crown", kind:"acc", rarity:"epic", name:"Цветочный венок", desc:"Венок из болотных цветов", flavor:"Цветёт даже ночью.", price:420000, toggle:"flowerCrown", slot:"head", style:"flowers", anchor:{x:0,y:-228,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"neon_ring", kind:"acc", rarity:"legend", name:"Неон-кольцо", desc:"Плавающее кольцо света", flavor:"Премиум-ореол для топов.", price:620000, toggle:"neonRing", slot:"aura", style:"ring", anchor:{x:0,y:-56,scale:1,rotation:0}, effects:{particles:{type:"spark",color:"#7cffec",count:12,rate:0.7,radius:280}} },
-  { id:"bandana", kind:"acc", rarity:"common", name:"Бандана", desc:"Контрастная повязка", price:54000, toggle:"bandana", slot:"head", style:"bandana", anchor:{x:0,y:-174,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"ear_cuffs", kind:"acc", rarity:"rare", name:"Ушные кольца", desc:"Металлические каффы", price:102000, toggle:"earCuffs", slot:"head", style:"cuffs", anchor:{x:0,y:-134,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"whiskers_paint", kind:"acc", rarity:"common", name:"Боевой грим", desc:"Полосы на морде", price:59000, toggle:"whiskersPaint", slot:"face", style:"paint", anchor:{x:0,y:-88,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"rune_tattoo", kind:"acc", rarity:"epic", name:"Рунический узор", desc:"Светящиеся руны", flavor:"Старая магия в новом свете.", price:510000, toggle:"runeTattoo", slot:"neck", style:"runes", anchor:{x:0,y:76,scale:1,rotation:0}, effects:{particles:null} },
-  { id:"bubble_pipe", kind:"acc", rarity:"rare", name:"Трубка пузырей", desc:"Пузыри при дыхании", price:116000, toggle:"bubblePipe", slot:"face", style:"pipe", anchor:{x:136,y:18,scale:1,rotation:12}, effects:{particles:{type:"bubble",color:"#bde9ff",count:8,rate:0.42,radius:120}} },
+  {id:'c_moss_cap',signature:'moss-cap',name:'Мшистый колпак',desc:'Лесной колпак с мягкой кромкой.',rarity:'common',slot:'HEAD_TOP',price:220000,offset:{dx:0,dy:-4,s:1,r:0},motif:'cap'},
+  {id:'c_glass_pebbles',signature:'glass-pebbles',name:'Речной монокристалл',desc:'Прозрачные стекляшки у глаз.',rarity:'common',slot:'EYES',price:235000,offset:{dx:0,dy:0,s:1,r:0},motif:'pebbleEyes'},
+  {id:'c_reed_pipe',signature:'reed-pipe',name:'Тростниковая трубка',desc:'Лёгкая трубка для спокойного вайба.',rarity:'common',slot:'MOUTH',price:210000,offset:{dx:84,dy:16,s:1,r:8},motif:'pipe'},
+  {id:'c_lily_bow',signature:'lily-bow',name:'Лилийный бант',desc:'Мини-бант с водяной текстурой.',rarity:'common',slot:'NECK',price:240000,offset:{dx:0,dy:2,s:1,r:0},motif:'bow'},
+  {id:'c_sticker_blush',signature:'sticker-blush',name:'Розовые метки',desc:'Мягкие румяные маркеры на щёках.',rarity:'common',slot:'FACE',price:170000,offset:{dx:0,dy:2,s:1,r:0},motif:'blush'},
+  {id:'c_seed_brooch',signature:'seed-brooch',name:'Семенной брошь',desc:'Скромный бронзовый значок.',rarity:'common',slot:'BODY',price:250000,offset:{dx:0,dy:0,s:1,r:0},motif:'brooch'},
+  {id:'c_leaf_band',signature:'leaf-band',name:'Листовой обод',desc:'Тонкий обод с парой листьев.',rarity:'common',slot:'HEAD_TOP',price:260000,offset:{dx:0,dy:-2,s:1,r:0},motif:'leafBand'},
+  {id:'c_soft_lenses',signature:'soft-lenses',name:'Мягкие линзы',desc:'Округлые линзы без яркого свечения.',rarity:'common',slot:'EYES',price:245000,offset:{dx:0,dy:0,s:1,r:0},motif:'lenses'},
+  {id:'c_foam_collar',signature:'foam-collar',name:'Пенный ворот',desc:'Пенный воротник с волнистым краем.',rarity:'common',slot:'NECK',price:255000,offset:{dx:0,dy:1,s:1,r:0},motif:'collar'},
+  {id:'c_kiss_mark',signature:'kiss-mark',name:'Искра улыбки',desc:'Небольшой акцент у губ.',rarity:'common',slot:'MOUTH',price:195000,offset:{dx:8,dy:5,s:1,r:0},motif:'smileMark'},
 
-  { id:"legend_neon_visor", kind:"acc", rarity:"legend", name:"Neon Visor", desc:"Легендарный визор со сканлинией", flavor:"Сканирует арену полосой неона.", price:640000, toggle:"neonVisorLegend", slot:"eyes", style:"legendVisor", anchor:{x:0,y:-96,scale:1,rotation:0}, effects:{particles:{type:"spark",color:"#4cf9ff",count:10,rate:0.65,radius:180}} },
-  { id:"legend_thorn_crown", kind:"acc", rarity:"legend", name:"Royal Thorn Crown", desc:"Шипастая корона с королевским металлом", flavor:"Красиво и опасно одновременно.", price:850000, toggle:"thornCrown", slot:"hat", style:"thorn", anchor:{x:0,y:-238,scale:1,rotation:0}, effects:{particles:{type:"mote",color:"#ffe3a5",count:10,rate:0.5,radius:170}} },
-  { id:"legend_astral_halo", kind:"acc", rarity:"legend", name:"Astral Halo", desc:"Астральный нимб с орбитальными звёздами", flavor:"Над головой будто мини-космос.", price:720000, toggle:"astralHalo", slot:"aura", style:"astral", anchor:{x:0,y:-248,scale:1,rotation:0}, effects:{particles:{type:"star",color:"#b6d0ff",count:18,rate:0.9,radius:230}} },
-  { id:"legend_inferno_chain", kind:"acc", rarity:"legend", name:"Inferno Chain", desc:"Огненная цепь с жаром", flavor:"Звенья дышат углём.", price:930000, toggle:"infernoChain", slot:"neck", style:"inferno", anchor:{x:0,y:126,scale:1,rotation:0}, effects:{particles:{type:"ember",color:"#ff8f4b",count:16,rate:0.95,radius:180}} },
-  { id:"legend_cyber_goggles", kind:"acc", rarity:"legend", name:"Cyber Goggles", desc:"Двойные линзы с HUD-мерцанием", flavor:"Считывает всё, что движется.", price:580000, toggle:"cyberGoggles", slot:"eyes", style:"goggles", anchor:{x:0,y:-98,scale:1,rotation:0}, effects:{particles:{type:"spark",color:"#92f4ff",count:8,rate:0.45,radius:160}} },
-  { id:"legend_golden_laurel", kind:"acc", rarity:"legend", name:"Golden Laurel", desc:"Лавровый венец премиум-класса", flavor:"Блеск чемпиона болота.", price:540000, toggle:"goldenLaurel", slot:"head", style:"laurel", anchor:{x:0,y:-218,scale:1,rotation:0}, effects:{particles:{type:"mote",color:"#ffe6a7",count:11,rate:0.6,radius:170}} },
+  {id:'r_aurora_visors',signature:'aurora-visors',name:'Аврора-визоры',desc:'Матовый каркас с небесным бликом.',rarity:'rare',slot:'EYES',price:420000,offset:{dx:0,dy:0,s:1.03,r:0},motif:'visor',effects:{particles:{type:'mote',color:'#8cd5ff',count:10,rate:0.6,radius:120}}},
+  {id:'r_gilded_tiara',signature:'gilded-tiara',name:'Позолоченная диадема',desc:'Тёплый металл и тонкие камни.',rarity:'rare',slot:'HEAD_TOP',price:460000,offset:{dx:0,dy:-6,s:1.03,r:0},motif:'tiara'},
+  {id:'r_reef_chain',signature:'reef-chain',name:'Рифовая цепь',desc:'Гладкие звенья с перламутром.',rarity:'rare',slot:'NECK',price:430000,offset:{dx:0,dy:1,s:1.02,r:0},motif:'chain'},
+  {id:'r_frost_mark',signature:'frost-mark',name:'Холодный грим',desc:'Кристальные линии по щеке.',rarity:'rare',slot:'FACE',price:410000,offset:{dx:0,dy:0,s:1,r:0},motif:'frostMark'},
+  {id:'r_amber_pin',signature:'amber-pin',name:'Янтарный пин',desc:'Тёплый пин в центр корпуса.',rarity:'rare',slot:'BODY',price:380000,offset:{dx:0,dy:2,s:1,r:0},motif:'amberPin'},
+  {id:'r_whisper_halo',signature:'whisper-halo',name:'Тихий ореол',desc:'Слабое кольцо позади героя.',rarity:'rare',slot:'AURA_BEHIND',price:490000,offset:{dx:0,dy:-12,s:1.02,r:0},motif:'haloThin',effects:{particles:{type:'spark',color:'#92f1ff',count:12,rate:0.7,radius:140}}},
+  {id:'r_smoke_vapor',signature:'smoke-vapor',name:'Вапор-дымка',desc:'Лёгкий фронтальный туман.',rarity:'rare',slot:'AURA_FRONT',price:470000,offset:{dx:0,dy:12,s:1,r:0},motif:'frontMist',effects:{particles:{type:'smoke',color:'#8fe8ff',count:10,rate:0.55,radius:110}}},
+  {id:'r_jet_mustache',signature:'jet-mustache',name:'Графитовые усы',desc:'Острые дуги с гладкой тенью.',rarity:'rare',slot:'MOUTH',price:390000,offset:{dx:0,dy:6,s:1,r:0},motif:'mustache'},
 
-  { id:"terror_mask", kind:"acc", rarity:"limited", name:"Slasher Mask", desc:"Лимит: хоррор-маска с дымными клапанами", flavor:"Взгляд как финальный босс.", price:3200000, toggle:"respirator", limited:true, stock:25, slot:"face", style:"slasher", anchor:{x:0,y:-64,scale:1.02,rotation:0}, effects:{particles:{type:"smoke",color:"#ff5f6d",count:22,rate:1.15,radius:220}} },
-  { id:"tactical_glasses", kind:"acc", rarity:"limited", name:"Tactical Eclipse", desc:"Лимит: тактический визор элитной серии", flavor:"Молчит, но давит присутствием.", price:4200000, toggle:"cyberVisor", limited:true, stock:18, slot:"eyes", style:"legendVisor", anchor:{x:0,y:-100,scale:1.03,rotation:0}, effects:{particles:{type:"spark",color:"#6ef0ff",count:18,rate:1.0,radius:200}} },
-  { id:"gold_mask", kind:"acc", rarity:"limited", name:"Regal Gold Mask", desc:"Лимит: роскошная маска с тёплым сиянием", flavor:"Сразу видно: коллекция не для всех.", price:5600000, toggle:"monocle", limited:true, stock:10, slot:"face", style:"relic", anchor:{x:0,y:-70,scale:1.02,rotation:0}, effects:{particles:{type:"mote",color:"#ffe3a5",count:20,rate:1.15,radius:210}} },
-  { id:"obsidian_horns", kind:"acc", rarity:"limited", name:"Obsidian Horns", desc:"Лимит: кристальные рога из обсидиана", flavor:"Холодный силуэт с адским блеском.", price:680, currency:"diamonds", toggle:"horns", limited:true, stock:12, slot:"head", style:"horns", anchor:{x:0,y:-238,scale:1.14,rotation:0}, effects:{particles:{type:"ember",color:"#a79cff",count:18,rate:1.05,radius:200}} },
-  { id:"limited_star_crown", kind:"acc", rarity:"limited", name:"Cartoon Star Crown", desc:"Лимит: корона в мульт-стиле со звёздами", flavor:"Сияет максимально дерзко.", price:3900000, toggle:"cartoonStarCrown", limited:true, stock:16, slot:"hat", style:"starCrown", anchor:{x:0,y:-254,scale:1.05,rotation:0}, effects:{particles:{type:"star",color:"#ffe890",count:24,rate:1.25,radius:240}} },
-  { id:"limited_space_commander", kind:"acc", rarity:"limited", name:"Space Commander Helmet", desc:"Лимит: sci-fi шлем с голограммой", flavor:"Лук уровня космического рейда.", price:4300000, toggle:"spaceCommanderHelmet", limited:true, stock:12, slot:"head", style:"commander", anchor:{x:0,y:-164,scale:1.08,rotation:0}, effects:{particles:{type:"spark",color:"#8fd2ff",count:20,rate:1.1,radius:250}} },
-  { id:"limited_angelic_relic", kind:"acc", rarity:"limited", name:"Angelic Relic Mask", desc:"Лимит: реликтовая маска с лучами", flavor:"Световой артефакт эндгейма.", price:4600000, toggle:"angelicRelicMask", limited:true, stock:9, slot:"face", style:"relic", anchor:{x:0,y:-66,scale:1.04,rotation:0}, effects:{particles:{type:"mote",color:"#fff6d2",count:26,rate:1.3,radius:240}} },
-  { id:"limited_void_sigil", kind:"acc", rarity:"limited", name:"Void Sigil Halo", desc:"Лимит: сигил пустоты с теневыми рунами", flavor:"Чернильное свечение для ультра-редких сетов.", price:5100000, toggle:"voidSigil", limited:true, stock:7, slot:"aura", style:"voidSigil", anchor:{x:0,y:-92,scale:1.1,rotation:0}, effects:{particles:{type:"smoke",color:"#b99dff",count:24,rate:1.2,radius:250}} }
-];
+  {id:'e_plasma_crown',signature:'plasma-crown',name:'Плазменная корона',desc:'Парящие кристаллы и яркий контур.',rarity:'epic',slot:'HEAD_TOP',price:760000,offset:{dx:0,dy:-8,s:1.08,r:0},motif:'plasmaCrown',effects:{particles:{type:'spark',color:'#b392ff',count:15,rate:0.85,radius:160}}},
+  {id:'e_holo_lenses',signature:'holo-lenses',name:'Голо-линзы',desc:'Скан-линии и яркий блик.',rarity:'epic',slot:'EYES',price:720000,offset:{dx:0,dy:0,s:1.07,r:0},motif:'holoEyes',effects:{particles:{type:'mote',color:'#89e7ff',count:14,rate:0.8,radius:140}}},
+  {id:'e_rune_mask',signature:'rune-mask',name:'Руническая маска',desc:'Символы и объёмная эмаль.',rarity:'epic',slot:'FACE',price:780000,offset:{dx:0,dy:3,s:1.06,r:0},motif:'runeMask',effects:{particles:{type:'spark',color:'#d8b1ff',count:16,rate:0.9,radius:150}}},
+  {id:'e_flux_choker',signature:'flux-choker',name:'Флюкс-чокер',desc:'Магнитный контур с мягким свечением.',rarity:'epic',slot:'NECK',price:740000,offset:{dx:0,dy:2,s:1.06,r:0},motif:'fluxChoker',effects:{particles:{type:'mote',color:'#8ef8d7',count:14,rate:0.8,radius:145}}},
+  {id:'e_orbit_back',signature:'orbit-back',name:'Орбитальный круг',desc:'Световой круг за спиной.',rarity:'epic',slot:'AURA_BEHIND',price:810000,offset:{dx:0,dy:-10,s:1.08,r:0},motif:'orbitAura',effects:{particles:{type:'spark',color:'#9dd2ff',count:16,rate:0.9,radius:170}}},
+  {id:'e_prism_front',signature:'prism-front',name:'Призма фронта',desc:'Передний призмовый отблеск.',rarity:'epic',slot:'AURA_FRONT',price:790000,offset:{dx:0,dy:12,s:1.06,r:0},motif:'prismFront',effects:{particles:{type:'mote',color:'#ffd9ff',count:15,rate:0.85,radius:150}}},
+
+  {id:'l_solar_diadem',signature:'solar-diadem',name:'Солярная диадема',desc:'Премиум металл и живой луч.',rarity:'legend',slot:'HEAD_TOP',price:1200000,offset:{dx:0,dy:-10,s:1.1,r:0},motif:'solarDiadem',effects:{particles:{type:'spark',color:'#ffd166',count:18,rate:1.1,radius:180}}},
+  {id:'l_royal_vizor',signature:'royal-vizor',name:'Королевский визор',desc:'Шлифованное стекло с волной света.',rarity:'legend',slot:'EYES',price:1180000,offset:{dx:0,dy:0,s:1.1,r:0},motif:'royalVizor',effects:{particles:{type:'mote',color:'#91deff',count:18,rate:1.05,radius:170}}},
+  {id:'l_empress_mask',signature:'empress-mask',name:'Маска императрицы',desc:'Скульптурный фронт с сияющей гравировкой.',rarity:'legend',slot:'FACE',price:1240000,offset:{dx:0,dy:2,s:1.08,r:0},motif:'empressMask',effects:{particles:{type:'spark',color:'#ffd2a6',count:17,rate:1.0,radius:175}}},
+  {id:'l_relic_torque',signature:'relic-torque',name:'Реликтовый торк',desc:'Тяжёлый торк с мягкой аурой.',rarity:'legend',slot:'NECK',price:1160000,offset:{dx:0,dy:4,s:1.08,r:0},motif:'relicTorque',effects:{particles:{type:'ember',color:'#ffcb8d',count:16,rate:0.95,radius:165}}},
+  {id:'l_photon_halo',signature:'photon-halo',name:'Фотонный нимб',desc:'Пульсирующее кольцо вокруг героя.',rarity:'legend',slot:'AURA_BEHIND',price:1260000,offset:{dx:0,dy:-10,s:1.13,r:0},motif:'photonHalo',effects:{particles:{type:'spark',color:'#ffe2a7',count:20,rate:1.1,radius:190}}},
+  {id:'l_crest_seal',signature:'crest-seal',name:'Печать Ордена',desc:'Фронтальная печать с зеркальным блеском.',rarity:'legend',slot:'AURA_FRONT',price:1190000,offset:{dx:0,dy:8,s:1.1,r:0},motif:'crestSeal',effects:{particles:{type:'mote',color:'#ffdcb0',count:18,rate:1.05,radius:175}}},
+
+  {id:'lm_void_crown',signature:'void-crown',name:'Корона Бездны',desc:'Лимит: руны и глубинный градиент.',rarity:'limited',limited:true,stock:7,slot:'HEAD_TOP',price:4200000,offset:{dx:0,dy:-12,s:1.16,r:0},motif:'voidCrown',effects:{particles:{type:'rune',color:'#b99dff',count:20,rate:1.25,radius:220}}},
+  {id:'lm_rift_eyes',signature:'rift-eyes',name:'Глаза Разлома',desc:'Лимит: разломный визор с анимированным срезом.',rarity:'limited',limited:true,stock:8,slot:'EYES',price:4300000,offset:{dx:0,dy:0,s:1.15,r:0},motif:'riftEyes',effects:{particles:{type:'spark',color:'#8bf0ff',count:20,rate:1.2,radius:210}}},
+  {id:'lm_ember_mask',signature:'ember-mask',name:'Пепельная маска',desc:'Лимит: раскалённые прожилки и эмберы.',rarity:'limited',limited:true,stock:6,slot:'FACE',price:4400000,offset:{dx:0,dy:4,s:1.13,r:0},motif:'emberMask',effects:{particles:{type:'ember',color:'#ff9f68',count:20,rate:1.25,radius:205}}},
+  {id:'lm_rune_torque',signature:'rune-torque',name:'Торк Архонта',desc:'Лимит: рунный обруч с синим пламенем.',rarity:'limited',limited:true,stock:9,slot:'NECK',price:4150000,offset:{dx:0,dy:6,s:1.13,r:0},motif:'runeTorque',effects:{particles:{type:'rune',color:'#9cfadf',count:20,rate:1.2,radius:215}}},
+  {id:'lm_eclipse_back',signature:'eclipse-back',name:'Затмение',desc:'Лимит: позадний астральный диск с пеплом.',rarity:'limited',limited:true,stock:5,slot:'AURA_BEHIND',price:4600000,offset:{dx:0,dy:-14,s:1.18,r:0},motif:'eclipseBack',effects:{particles:{type:'ember',color:'#ffc38d',count:20,rate:1.3,radius:225}}},
+  {id:'lm_sigil_front',signature:'sigil-front',name:'Сигил Предела',desc:'Лимит: фронтальный сигил с бегущими рунами.',rarity:'limited',limited:true,stock:4,slot:'AURA_FRONT',price:4700000,offset:{dx:0,dy:10,s:1.16,r:0},motif:'sigilFront',effects:{particles:{type:'rune',color:'#ffe9b4',count:20,rate:1.3,radius:230}}}
+].map(it=>({...it,kind:'acc',currency:it.currency||'points'}));
 
 function accessorySvgMarkup(it){
-  const defs=`<defs><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 0.08"/></feComponentTransfer></filter></defs>`;
-  const spikes = Array.from({length:9},(_,i)=>`<path d="M${-190+i*47} 64l17-46 17 46" fill="#d6dae4"/>`).join('');
-  const pearls = Array.from({length:13},(_,i)=>`<circle cx="${-168+i*28}" cy="${(40+(i-6)*(i-6)*0.2).toFixed(1)}" r="12" fill="#f8f7ff"/>`).join('');
-  const flowerCols=['#ff83be','#ffe174','#a7ffd0','#9ec4ff'];
-  const flowers = Array.from({length:9},(_,i)=>`<circle cx="${-164+i*41}" cy="54" r="20" fill="${flowerCols[i%4]}"/>`).join('');
-  const laurel = Array.from({length:11},(_,i)=>`<path d="${170-(i*34)} 98q14-16 24 0q-10 16-24 0Z" fill="#f4c85f"/>`).join('');
-  const m = {
-    chain:`${defs}<path d="M-190 20Q0 104 190 20" stroke="#f0c35f" stroke-width="24" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="132" rx="32" ry="42" fill="#d89f38"/><rect x="-220" y="0" width="440" height="170" filter="url(#n)"/>`,
-    visor:`${defs}<rect x="-236" y="-48" width="472" height="108" rx="48" fill="#16253d"/><rect x="-206" y="-20" width="412" height="52" rx="25" fill="#083256" stroke="#4ef2ff" stroke-width="3"/>`,
-    crown:`${defs}<path d="M-170 102L-130 30-70 96 0 18 70 96 130 30 170 102V146H-170Z" fill="#d7a03b"/><circle cx="0" cy="104" r="14" fill="#ff79b0"/>`,
-    monocle:`<circle cx="0" cy="0" r="52" fill="#5ca6c8a6" stroke="#f8d68a" stroke-width="8"/><path d="M42 36Q68 72 108 98" stroke="#f8d68a" stroke-width="4" fill="none"/>`,
-    spikes:`<path d="M-220 62Q0 134 220 62" stroke="#4a5264" stroke-width="32" fill="none"/>${spikes}`,
-    scar:`<path d="M-74 -8Q0 28 84 -14" stroke="#e86d86" stroke-width="13" fill="none" stroke-linecap="round"/>`,
-    halo:`<ellipse cx="0" cy="0" rx="178" ry="44" fill="none" stroke="#f7d77e" stroke-width="17"/>`,
-    horns:`<path d="M-158 124Q-248 32 -184 -54Q-150 -88 -126 -24Q-114 34 -158 124Z" fill="#6c6678"/><path d="M158 124Q248 32 184 -54Q150 -88 126 -24Q114 34 158 124Z" fill="#6c6678"/>`,
-    angelAura:`<ellipse cx="0" cy="0" rx="330" ry="250" fill="#ccfff032"/>`,
-    demonAura:`<ellipse cx="0" cy="0" rx="340" ry="260" fill="#ff75782f"/>`,
-    bow:`<path d="M-12 0L-118 -42V42Z" fill="#ce305f"/><path d="M12 0L118 -42V42Z" fill="#ce305f"/><ellipse cx="0" cy="0" rx="24" ry="19" fill="#ffd2de"/>`,
-    leaf:`<ellipse cx="0" cy="0" rx="192" ry="70" transform="rotate(8)" fill="#5da868"/>`,
-    resp:`<rect x="-124" y="-42" width="248" height="98" rx="30" fill="#3f4a5d"/><circle cx="-64" cy="10" r="22" fill="#8d99af"/><circle cx="64" cy="10" r="22" fill="#8d99af"/>`,
-    pearls:pearls,
-    cap:`<rect x="-160" y="-14" width="320" height="88" rx="24" fill="#f2f6ff"/><rect x="-184" y="36" width="368" height="48" rx="22" fill="#1f3252"/><circle cx="0" cy="34" r="18" fill="#ffd36f"/>`,
-    flowers:flowers,
-    ring:`<ellipse cx="0" cy="0" rx="280" ry="168" fill="none" stroke="#00ffe1" stroke-width="11"/><ellipse cx="0" cy="0" rx="296" ry="184" fill="none" stroke="#b7fff9" stroke-width="3" opacity=".55"/>`,
-    bandana:`<rect x="-226" y="-24" width="452" height="58" rx="20" fill="#ac2442"/>`,
-    cuffs:`<circle cx="-244" cy="0" r="22" fill="none" stroke="#dfe5ef" stroke-width="8"/><circle cx="244" cy="0" r="22" fill="none" stroke="#dfe5ef" stroke-width="8"/>`,
-    paint:`<path d="M-250 -58L-116 -42M-250 -18L-126 -8M-250 20L-134 28M250 -58L116 -42M250 -18L126 -8M250 20L134 28" stroke="#16211f99" stroke-width="12" stroke-linecap="round"/>`,
-    runes:`<path d="M-136 26L-86 86L-34 34L20 96L84 28" stroke="#8fd0ff" stroke-width="8" fill="none" stroke-linecap="round"/>`,
-    pipe:`<path d="M-24 -10Q14 14 44 -6" stroke="#7a4e2b" stroke-width="11" fill="none"/><circle cx="56" cy="-18" r="8" fill="#bde9ff6b"/><circle cx="74" cy="-34" r="10" fill="#c8f0ff63"/>`,
-    legendVisor:`<rect x="-230" y="-48" width="460" height="112" rx="44" fill="#05253e" stroke="#82f4ff" stroke-width="4"/><rect x="-204" y="-8" width="408" height="14" rx="8" fill="#2affff" class="scanline"/>`,
-    thorn:`<path d="M-168 112Q-80 32 -12 104Q56 22 168 112V150H-168Z" fill="#c79035"/><path d="M-152 98l30-58 36 58M-58 100l38-74 38 74M54 100l36-70 42 70" stroke="#3c2515" stroke-width="8" fill="none"/>`,
-    astral:`<ellipse cx="0" cy="0" rx="198" ry="50" fill="none" stroke="#a6b7ff" stroke-width="14"/><ellipse cx="0" cy="0" rx="212" ry="63" fill="none" stroke="#d3ddff88" stroke-width="3"/>`,
-    inferno:`<path d="M-198 20Q0 108 198 20" stroke="#ff7d3f" stroke-width="24" fill="none"/><ellipse cx="0" cy="136" rx="30" ry="38" fill="#ff9a4f"/>`,
-    goggles:`<rect x="-210" y="-34" width="160" height="84" rx="24" fill="#071d36" stroke="#65f3ff" stroke-width="4"/><rect x="50" y="-34" width="160" height="84" rx="24" fill="#071d36" stroke="#65f3ff" stroke-width="4"/>`,
-    laurel:laurel,
-    slasher:`<path d="M-142 -90Q0 -170 142 -90V102Q0 174 -142 102Z" fill="#d6d2cb" stroke="#2c2620" stroke-width="7"/><path d="M-62 -12h34M28 -12h34" stroke="#ff4d5f" stroke-width="11"/>`,
-    starCrown:`<path d="M-178 126L-146 48-84 104-14 24 58 104 126 48 178 126V156H-178Z" fill="#ffd25c" stroke="#b26f1f" stroke-width="8"/>`,
-    commander:`<path d="M-186 -102Q0 -208 186 -102V118Q0 202 -186 118Z" fill="#a9b9df" stroke="#27365d" stroke-width="8"/><rect x="-156" y="-26" width="312" height="88" rx="30" fill="#0a2244" stroke="#93e4ff" stroke-width="4"/>`,
-    relic:`<path d="M-136 -84Q0 -152 136 -84V110Q0 170 -136 110Z" fill="#e4c98d" stroke="#7c5e2a" stroke-width="7"/><path d="M0 -132V-182M-44 -122l-24-38M44 -122l24-38" stroke="#ffe9ad" stroke-width="8"/>`,
-    voidSigil:`<ellipse cx="0" cy="0" rx="250" ry="150" fill="none" stroke="#8f74ff" stroke-width="14"/><path d="M-180 0H180M0 -118V118M-126 -74L126 74M126 -74L-126 74" stroke="#d8c9ff66" stroke-width="4"/>`
+  const c={common:['#8dc7a8','#5f9f83'],rare:['#7dc5ff','#3e86df'],epic:['#ca92ff','#7c55f2'],legend:['#ffe09b','#ffb14f'],limited:['#ffbb8f','#a46cff']}[it.rarity]||['#9dc0ad','#4f7f69'];
+  const glow=(it.rarity==='legend'||it.rarity==='limited')?`<ellipse cx="0" cy="0" rx="118" ry="56" fill="url(#${it.id}_g)" opacity=".45"/>`:'';
+  const shine=(it.rarity==='legend'||it.rarity==='limited')?`<rect x="-110" y="-18" width="220" height="16" fill="url(#${it.id}_s)" opacity=".3" class="scanline"/>`:'';
+  const auraPulse=(it.rarity==='legend'||it.rarity==='limited')?'accAuraPulse':'';
+  const defs=`<defs><linearGradient id="${it.id}_a" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${c[0]}"/><stop offset="100%" stop-color="${c[1]}"/></linearGradient><radialGradient id="${it.id}_g"><stop offset="0%" stop-color="${c[0]}" stop-opacity=".85"/><stop offset="100%" stop-color="${c[1]}" stop-opacity="0"/></radialGradient><linearGradient id="${it.id}_s" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#fff0"/><stop offset="50%" stop-color="#ffffff"/><stop offset="100%" stop-color="#fff0"/></linearGradient></defs>`;
+  const S={
+    cap:'<path d="M-90 -26Q-36 -84 36 -84Q93 -84 114 -28Q79 -5 0 -2Q-74 -4 -90 -26Z" fill="url(#ID_a)"/><path d="M-74 -4Q0 9 72 -4" stroke="#fff8" stroke-width="8" stroke-linecap="round"/>',
+    pebbleEyes:'<g><ellipse cx="-58" cy="-2" rx="40" ry="26" fill="url(#ID_a)"/><ellipse cx="58" cy="-2" rx="40" ry="26" fill="url(#ID_a)"/><circle cx="-50" cy="-8" r="7" fill="#fff8"/><circle cx="66" cy="-8" r="7" fill="#fff8"/></g>',
+    pipe:'<g><rect x="-30" y="-10" width="96" height="20" rx="10" fill="url(#ID_a)"/><circle cx="68" cy="0" r="20" fill="#583e2e"/></g>',
+    bow:'<g><ellipse cx="-56" cy="0" rx="44" ry="26" fill="url(#ID_a)"/><ellipse cx="56" cy="0" rx="44" ry="26" fill="url(#ID_a)"/><rect x="-14" y="-20" width="28" height="40" rx="12" fill="#fff7"/></g>',
+    blush:'<g opacity=".78"><ellipse cx="-74" cy="8" rx="30" ry="18" fill="url(#ID_a)"/><ellipse cx="74" cy="8" rx="30" ry="18" fill="url(#ID_a)"/></g>',
+    brooch:'<g><circle cx="0" cy="0" r="32" fill="url(#ID_a)"/><path d="M0 -18L10 0L0 18L-10 0Z" fill="#fff8"/></g>',
+    leafBand:'<g><path d="M-122 -8Q0 -42 122 -8" stroke="url(#ID_a)" stroke-width="18" fill="none"/><path d="M-40 -26Q-4 -62 24 -28" stroke="#fff7" stroke-width="8" fill="none"/></g>',
+    lenses:'<g><rect x="-98" y="-24" width="196" height="48" rx="24" fill="url(#ID_a)"/><rect x="-18" y="-24" width="36" height="48" fill="#0004"/></g>',
+    collar:'<g><path d="M-130 -10Q-62 34 0 22Q58 34 130 -10" fill="url(#ID_a)"/></g>',
+    smileMark:'<path d="M-26 6Q0 24 28 6" stroke="url(#ID_a)" stroke-width="10" fill="none" stroke-linecap="round"/>',
+    visor:'<g><rect x="-122" y="-34" width="244" height="68" rx="34" fill="url(#ID_a)"/><rect x="-112" y="-22" width="224" height="14" rx="7" fill="#fff6"/></g>',
+    tiara:'<g><path d="M-118 14L-88 -30L-42 14L0 -36L42 14L88 -30L118 14Z" fill="url(#ID_a)"/></g>',
+    chain:'<g><path d="M-128 0Q0 44 128 0" stroke="url(#ID_a)" stroke-width="22" fill="none"/><circle cx="0" cy="12" r="18" fill="#fff6"/></g>',
+    frostMark:'<g><path d="M-80 -12L-22 12" stroke="url(#ID_a)" stroke-width="12"/><path d="M22 12L80 -12" stroke="url(#ID_a)" stroke-width="12"/></g>',
+    amberPin:'<g><path d="M0 -26L22 0L0 26L-22 0Z" fill="url(#ID_a)"/><circle cx="0" cy="0" r="7" fill="#fff8"/></g>',
+    haloThin:'<ellipse cx="0" cy="0" rx="154" ry="84" fill="none" stroke="url(#ID_a)" stroke-width="14"/>',
+    frontMist:'<ellipse cx="0" cy="0" rx="178" ry="98" fill="url(#ID_g)"/>',
+    mustache:'<path d="M-92 6Q-36 -24 0 0Q36 -24 92 6" stroke="url(#ID_a)" stroke-width="12" fill="none" stroke-linecap="round"/>',
+    plasmaCrown:'<g><path d="M-122 20L-88 -42L-38 18L0 -54L38 18L88 -42L122 20Z" fill="url(#ID_a)"/><circle cx="0" cy="-54" r="11" fill="#fff9"/></g>',
+    holoEyes:'<g><rect x="-126" y="-36" width="252" height="72" rx="36" fill="url(#ID_a)"/><path d="M-108 -6H108" stroke="#fff8" stroke-width="8"/></g>',
+    runeMask:'<g><path d="M-118 -34Q0 -54 118 -34L96 34Q0 64 -96 34Z" fill="url(#ID_a)"/><path d="M-74 -8H74M-46 14H46" stroke="#fff8" stroke-width="8"/></g>',
+    fluxChoker:'<g><ellipse cx="0" cy="0" rx="134" ry="42" fill="none" stroke="url(#ID_a)" stroke-width="18"/><circle cx="0" cy="0" r="16" fill="#fff9"/></g>',
+    orbitAura:'<g><ellipse cx="0" cy="0" rx="182" ry="120" fill="none" stroke="url(#ID_a)" stroke-width="16"/><circle cx="134" cy="-18" r="14" fill="#fff8"/></g>',
+    prismFront:'<g><path d="M-84 48L0 -58L84 48Z" fill="url(#ID_a)" opacity=".7"/></g>',
+    solarDiadem:'<g class="accLegendPulse"><path d="M-130 18L-90 -48L-40 18L0 -62L40 18L90 -48L130 18Z" fill="url(#ID_a)"/></g>',
+    royalVizor:'<g class="accLegendPulse"><rect x="-130" y="-38" width="260" height="76" rx="38" fill="url(#ID_a)"/><path d="M-112 -8H112" stroke="#fff9" stroke-width="9"/></g>',
+    empressMask:'<g class="accLegendPulse"><path d="M-124 -40Q0 -70 124 -40L102 42Q0 78 -102 42Z" fill="url(#ID_a)"/></g>',
+    relicTorque:'<g class="accLegendPulse"><ellipse cx="0" cy="0" rx="144" ry="46" fill="none" stroke="url(#ID_a)" stroke-width="20"/></g>',
+    photonHalo:'<g class="accLegendPulse"><ellipse cx="0" cy="0" rx="194" ry="110" fill="none" stroke="url(#ID_a)" stroke-width="20"/></g>',
+    crestSeal:'<g class="accLegendPulse"><circle cx="0" cy="0" r="78" fill="url(#ID_a)" opacity=".62"/><path d="M-36 0H36M0 -36V36" stroke="#fff9" stroke-width="10"/></g>',
+    voidCrown:'<g class="accLimitedPulse"><path d="M-138 24L-96 -58L-42 16L0 -74L42 16L96 -58L138 24Z" fill="url(#ID_a)"/><path d="M-92 12H92" stroke="#fff8" stroke-width="8"/></g>',
+    riftEyes:'<g class="accLimitedPulse"><rect x="-140" y="-40" width="280" height="80" rx="40" fill="url(#ID_a)"/><path d="M-120 0H120" stroke="#fff9" stroke-width="12"/></g>',
+    emberMask:'<g class="accLimitedPulse"><path d="M-130 -44Q0 -68 130 -44L108 42Q0 82 -108 42Z" fill="url(#ID_a)"/><path d="M-78 6Q0 42 78 6" stroke="#fff8" stroke-width="10"/></g>',
+    runeTorque:'<g class="accLimitedPulse"><ellipse cx="0" cy="0" rx="150" ry="50" fill="none" stroke="url(#ID_a)" stroke-width="22"/><circle cx="0" cy="0" r="20" fill="#fff8"/></g>',
+    eclipseBack:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="156" fill="url(#ID_g)"/><circle cx="0" cy="0" r="126" fill="#11152b" opacity=".7"/></g>',
+    sigilFront:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="118" fill="none" stroke="url(#ID_a)" stroke-width="18"/><path d="M0 -82L62 42L-62 42Z" fill="url(#ID_a)" opacity=".45"/></g>'
   };
-  return m[it.style] || `<circle cx="0" cy="0" r="32" fill="#fff"/>`;
+  return `<g class="accShape ${auraPulse}">${defs}${glow}${(S[it.motif]||S.cap).replaceAll('ID',it.id)}${shine}</g>`;
 }
-accessoryItems.forEach(it=>{ it.svgMarkup = accessorySvgMarkup(it); });
+accessoryItems.forEach(it=>{ it.svgMarkup = accessorySvgMarkup(it); it.signature=it.signature||it.id;});
+validateAccessoryCatalog();
+function validateAccessoryCatalog(){
+  const sig=new Map(), svg=new Map();
+  for(const it of accessoryItems){
+    if(sig.has(it.signature)) console.warn('[Accessories] duplicate signature',it.signature,it.id,sig.get(it.signature)); else sig.set(it.signature,it.id);
+    if(svg.has(it.svgMarkup)) console.warn('[Accessories] duplicate svg markup',it.id,svg.get(it.svgMarkup)); else svg.set(it.svgMarkup,it.id);
+  }
+}
 
 const cosmeticItems = [
   // Skins
@@ -1647,7 +1689,7 @@ function own(id){ return !!state.owned[id] || id==="skin_default"; }
 function isCosmeticActive(it){
   if (it.kind==="skin") return state.cosmetics.skin === it.id.replace("skin_","");
   if (it.kind==="frame") return state.account.frame===it.id;
-  if (it.toggle) return !!state.cosmetics[it.toggle];
+  if (it.kind==="acc") return state.cosmetics.equippedSlots?.[it.slot]===it.id;
   return false;
 }
 function useCosmetic(it){
@@ -1656,17 +1698,10 @@ function useCosmetic(it){
   }else if(it.kind==="frame"){
     state.account.frame = state.account.frame===it.id ? "" : it.id;
     renderAvatar();
-  }else if(it.toggle){
-    // angel/demon mutually exclusive
-    if(it.toggle==="angel"){
-      state.cosmetics.angel = !state.cosmetics.angel;
-      if(state.cosmetics.angel) state.cosmetics.demon = false;
-    } else if(it.toggle==="demon"){
-      state.cosmetics.demon = !state.cosmetics.demon;
-      if(state.cosmetics.demon) state.cosmetics.angel = false;
-    } else {
-      state.cosmetics[it.toggle] = !state.cosmetics[it.toggle];
-    }
+  }else if(it.kind==="acc"){
+    state.cosmetics.equippedSlots ||= {};
+    const cur = state.cosmetics.equippedSlots[it.slot];
+    state.cosmetics.equippedSlots[it.slot] = cur===it.id ? "" : it.id;
   }
   save(); updateUI();
 }
@@ -2580,7 +2615,8 @@ function updateUI(full=true){
   if(full){
     renderUpgrades();
     renderShop();
-    renderAccessoryLayer();
+    renderFrogCosmetics(frogHosts.main, state.cosmetics.equippedSlots);
+    renderFrogCosmetics(frogHosts.shop, state.cosmetics.equippedSlots);
     renderAchievements();
     renderRanks();
     renderTitles();
@@ -2600,13 +2636,52 @@ function updateUI(full=true){
 ========================= */
 const frogCanvas = document.getElementById("frog");
 const fctx = frogCanvas.getContext("2d");
-const accessoryLayer = document.getElementById("accessoryLayer");
-const accessoryFxCanvas = document.getElementById("accessoryFx");
-const afxCtx = accessoryFxCanvas?.getContext("2d");
-const accessoryFxState = { particles:[], lastSpawn:0 };
-function activeAccessories(){ return accessoryItems.filter(it=> !!state.cosmetics[it.toggle]); }
-function renderAccessoryLayer(){ if(!accessoryLayer) return; const order={aura:0,neck:1,face:2,eyes:3,head:4,hat:5}; const html=activeAccessories().sort((a,b)=>(order[a.slot]||3)-(order[b.slot]||3)).map((it,i)=>{ const a=it.anchor||{x:0,y:0,scale:1,rotation:0}; const prem=(it.rarity==='legend'||it.rarity==='limited')?' premium':''; return `<g class="accItem${prem}" transform="translate(${450+a.x} ${450+a.y}) rotate(${a.rotation||0}) scale(${a.scale||1})">${it.svgMarkup}</g>`; }).join(''); accessoryLayer.innerHTML=html; }
-function drawAccessoryFxLayer(){ if(!afxCtx) return; afxCtx.clearRect(0,0,900,900); if(!state.settings.particles) return; const now=performance.now(); if(now-accessoryFxState.lastSpawn>66){ accessoryFxState.lastSpawn=now; for(const it of activeAccessories()){ const fx=it.effects?.particles; if(!fx||Math.random()> (fx.rate||0.4)) continue; const a=it.anchor||{x:0,y:0}; accessoryFxState.particles.push({x:450+a.x+rand(-fx.radius,fx.radius)*0.3,y:450+a.y+rand(-fx.radius,fx.radius)*0.22,vx:rand(-.35,.35),vy:rand(-.8,-.2),size:rand(1.4,3.8),life:rand(700,1500),born:now,color:fx.color||'#fff',type:fx.type||'mote'}); } if(accessoryFxState.particles.length>240) accessoryFxState.particles=accessoryFxState.particles.slice(-240);} accessoryFxState.particles=accessoryFxState.particles.filter(p=> now-p.born<p.life); for(const p of accessoryFxState.particles){ const age=(now-p.born)/p.life; afxCtx.globalAlpha=(1-age)*0.85; p.x+=p.vx; p.y+=p.vy; afxCtx.fillStyle=p.color; afxCtx.beginPath(); if(p.type==='star'){ afxCtx.moveTo(p.x,p.y-p.size*2); afxCtx.lineTo(p.x+p.size*.7,p.y+p.size*1.8); afxCtx.lineTo(p.x-p.size*1.5,p.y-p.size*.2); afxCtx.lineTo(p.x+p.size*1.5,p.y-p.size*.2); afxCtx.lineTo(p.x-p.size*.7,p.y+p.size*1.8); afxCtx.closePath(); } else { afxCtx.arc(p.x,p.y,p.size,0,Math.PI*2);} afxCtx.fill(); } afxCtx.globalAlpha=1; }
+const frogHosts = {
+  main: document.getElementById('frogWrap'),
+  shop: document.getElementById('shopPreviewWrap')
+};
+const accessoryFxState = { main:{particles:[],lastSpawn:0}, shop:{particles:[],lastSpawn:0} };
+const accessoryDebug = { enabled:false };
+function getEquippedAccessories(equippedState=state.cosmetics.equippedSlots||{}){
+  return accessoryItems.filter(it=>equippedState?.[it.slot]===it.id);
+}
+function accTransform(it){
+  const slot=ACCESSORY_SLOTS[it.slot]||ACCESSORY_SLOTS.BODY;
+  const off=it.offset||{dx:0,dy:0,s:1,r:0};
+  return {x:slot.ax*900,y:slot.ay*900,s:(slot.baseScale||1)*(off.s||1),r:(slot.baseRotation||0)+(off.r||0),dx:off.dx||0,dy:off.dy||0,z:slot.zLayer||50};
+}
+function renderFrogCosmetics(targetElement, equippedState){
+  if(!targetElement) return;
+  const layer = targetElement.querySelector('.frogAccessoryLayer');
+  if(!layer) return;
+  const equipped = getEquippedAccessories(equippedState).sort((a,b)=>accTransform(a).z-accTransform(b).z);
+  const debugNodes=[];
+  const html = equipped.map(it=>{ const t=accTransform(it); if(accessoryDebug.enabled){debugNodes.push(`<g transform="translate(${t.x} ${t.y})"><circle class="accDebugPoint" r="7"/><rect class="accDebugBox" x="-120" y="-70" width="240" height="140"/></g>`);} return `<g class="accItem ${it.rarity==='legend'||it.rarity==='limited'?'premium':''} rarity-${it.rarity}" style="transform:translate(-50%,-50%) translate(${t.dx}px,${t.dy}px) scale(${t.s}) rotate(${t.r}deg);transform-box:fill-box;transform-origin:center" transform="translate(${t.x} ${t.y})">${it.svgMarkup}</g>`; }).join('');
+  layer.innerHTML = html + (accessoryDebug.enabled?debugNodes.join(''): '');
+}
+function drawAccessoryFxLayer(hostKey, pause){
+  const host=frogHosts[hostKey]; if(!host) return;
+  const canvas=host.querySelector('.frogAccessoryFx'); const ctx=canvas?.getContext('2d'); if(!ctx) return;
+  const st=accessoryFxState[hostKey]; ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!state.settings.particles || pause) return;
+  const equipped=getEquippedAccessories();
+  const now=performance.now();
+  if(now-st.lastSpawn>80){ st.lastSpawn=now;
+    for(const it of equipped){
+      const fx=it.effects?.particles; if(!fx||Math.random()>(fx.rate||0.5)) continue;
+      const t=accTransform(it); const max=Math.min(20, fx.count||12);
+      if(st.particles.filter(p=>p.id===it.id).length>=max) continue;
+      st.particles.push({id:it.id,x:t.x+t.dx+rand(-fx.radius,fx.radius)*0.25,y:t.y+t.dy+rand(-fx.radius,fx.radius)*0.2,vx:rand(-.4,.4),vy:rand(-.9,-.18),size:rand(1.5,3.6),life:rand(650,1500),born:now,color:fx.color||'#fff',type:fx.type||'mote'});
+    }
+  }
+  st.particles=st.particles.filter(p=> now-p.born<p.life).slice(-120);
+  for(const p of st.particles){
+    const age=(now-p.born)/p.life; ctx.globalAlpha=(1-age)*0.85; p.x+=p.vx; p.y+=p.vy; ctx.fillStyle=p.color; ctx.beginPath();
+    if(p.type==='rune'){ctx.rect(p.x-p.size,p.y-p.size,p.size*2,p.size*2);} else if(p.type==='star'||p.type==='spark'){ctx.moveTo(p.x,p.y-p.size*2);ctx.lineTo(p.x+p.size,p.y+p.size*1.6);ctx.lineTo(p.x-p.size*1.6,p.y-p.size*.2);ctx.lineTo(p.x+p.size*1.6,p.y-p.size*.2);ctx.lineTo(p.x-p.size,p.y+p.size*1.6);ctx.closePath();} else {ctx.arc(p.x,p.y,p.size,0,Math.PI*2);} ctx.fill();
+  }
+  ctx.globalAlpha=1;
+}
+window.addEventListener('keydown',(e)=>{ if(e.key.toLowerCase()==='k'){ accessoryDebug.enabled=!accessoryDebug.enabled; renderFrogCosmetics(frogHosts.main,state.cosmetics.equippedSlots); renderFrogCosmetics(frogHosts.shop,state.cosmetics.equippedSlots);} });
 
 const fx = { glows:[], particles:[], lastClick:0, squash:0 };
 const frogLife = { lookX:0, lookY:0, targetX:0, targetY:0, blink:0, nextBlink:performance.now()+rand(1200,3800), mood:"idle", happyUntil:0, angryUntil:0, lastUserAction:Date.now() };
@@ -3523,14 +3598,18 @@ function updateShopPreview(){
   if(!ctx) return;
   ctx.clearRect(0,0,pc.width,pc.height);
   ctx.drawImage(frogCanvas, 0, 0, pc.width, pc.height);
+  renderFrogCosmetics(frogHosts.shop, state.cosmetics.equippedSlots);
 }
 /* =========================
   MAIN DRAW LOOP
 ========================= */
 function loop(){
   drawFrog();
-  drawAccessoryFxLayer();
+  renderFrogCosmetics(frogHosts.main, state.cosmetics.equippedSlots);
+  drawAccessoryFxLayer('main', false);
+  const shopOpen = document.getElementById('shopModal')?.classList.contains('show');
   updateShopPreview();
+  drawAccessoryFxLayer('shop', !shopOpen);
   requestAnimationFrame(loop);
 }
 
