@@ -158,7 +158,9 @@
     touch-action: manipulation;
   }
   canvas#frog{width:100%;height:100%;display:block;cursor:pointer;position:relative;z-index:2;}
-  .frogAccessoryLayer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+  .frog-cosmetics-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;overflow:visible}
+  .frog-cosmetics-item{position:absolute;left:0;top:0;transform-origin:center;will-change:transform;z-index:3}
+  .frog-cosmetics-item .frog-cosmetics-svg{width:240px;height:240px;display:block;overflow:visible}
   .frogAccessoryFx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;mix-blend-mode:screen}
   .hintChip{
     position:absolute; left:12px; bottom:12px;
@@ -225,6 +227,15 @@
   .eqBadge{margin-bottom:4px}
   .accDebugPoint{fill:#8cf6ff;stroke:#07253f;stroke-width:3}
   .accDebugBox{fill:none;stroke:#7bf3a6;stroke-width:2;stroke-dasharray:8 6}
+
+  .accDebugPanel{position:absolute;left:10px;top:10px;z-index:8;max-width:min(82%,320px);padding:8px 10px;border-radius:12px;background:#061325dd;border:1px solid #7bf3a65c;color:#d8f7ff;font-size:11px;line-height:1.35;display:none;backdrop-filter:blur(3px)}
+  .accDebugPanel.show{display:block}
+  .accDebugPanel .accDbgTitle{font-weight:900;margin-bottom:6px;color:#95ffd0}
+  .accDebugPanel .accDbgRow{display:flex;justify-content:space-between;gap:8px}
+  .accDebugPanel .ok{color:#8dffbf}
+  .accDebugPanel .bad{color:#ff9b9b}
+  .accAnchorDot{position:absolute;width:10px;height:10px;border-radius:50%;background:#8cf6ff;border:2px solid #07253f;transform:translate(-50%,-50%);z-index:7}
+  .accAnchorLabel{position:absolute;transform:translate(-50%,-150%);padding:2px 6px;border-radius:999px;border:1px solid #7bf3a6aa;background:#052138e8;color:#a5ffd2;font-size:10px;font-weight:800;white-space:nowrap;z-index:7}
 
   .shopCard.pop{animation:shopPop .35s ease;}
   @keyframes shopPop{0%{transform:scale(.96)}55%{transform:scale(1.03)}100%{transform:scale(1)}}
@@ -342,7 +353,7 @@
   #shopModalBody::-webkit-scrollbar-thumb{background:#ffffff30;border-radius:999px}
   #shopPreview{width:100%;height:auto;display:block;border-radius:12px;border:1px solid #ffffff22;background:linear-gradient(160deg,#0a1324,#071a1f)}
   .previewFrogWrap{position:relative;overflow:hidden;border-radius:12px}
-  .previewFrogWrap .frogAccessoryLayer,.previewFrogWrap .frogAccessoryFx{inset:0}
+  .previewFrogWrap .frog-cosmetics-layer,.previewFrogWrap .frogAccessoryFx{inset:0}
   @media (max-width:900px){.shopModalLayout{grid-template-columns:1fr}.shopPreview{position:static}}
   .shopGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;max-height:none;overflow:visible;padding-right:6px;align-content:start;align-items:stretch}
   .shopGrid>*{min-width:0}
@@ -574,6 +585,7 @@
     <div class="topActions">
       <button class="btn primary" id="openShopModalBtn">🛒 Магазин</button>
       <button class="btn" id="openGamesModalBtn">🎮 Мини-игры</button>
+      <button class="btn" id="testRenderBtn" title="Debug accessory render">🧪 Test Render</button>
     </div>
     <div class="top">
       <div class="brand">
@@ -586,8 +598,9 @@
     <div class="arena" id="arena">
       <div id="frogWrap">
         <div class="sceneFx" id="sceneFx"></div>
-        <svg class="frogAccessoryLayer" viewBox="0 0 900 900" preserveAspectRatio="none" aria-hidden="true"></svg>
         <canvas id="frog" width="900" height="900"></canvas>
+        <div class="frog-cosmetics-layer" aria-hidden="true"></div>
+        <div class="accDebugPanel" id="accDebugPanel" aria-live="polite"></div>
         <canvas class="frogAccessoryFx" width="900" height="900"></canvas>
       </div>
     </div>
@@ -861,7 +874,7 @@
   </div>
 </div>
 <div class="modalBack" id="caseOpenModal"><div class="modal caseModal"><div class="caseModalTop"><div class="caseModalHeading"><div class="caseModalTitle" id="caseModalTitle">Выберите кейс</div><button class="caseHeaderInfo" id="caseModalOddsBtn" title="Показать шансы" aria-label="Показать шансы" style="display:none">ⓘ</button></div><div class="caseOddsPopup" id="caseModalOddsPopup"></div><button class="btn caseSecondary caseModalCloseBtn" id="caseModalClose">Закрыть</button></div><div class="modalScroll"><div id="caseModalContent" class="caseAnimCard"></div></div><div class="caseActions" style="margin-top:10px"><button class="btn casePrimary" id="caseSpinBtn">Начать открытие</button><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn" id="caseInventoryBtn" style="display:none">В инвентарь</button><button class="btn caseSecondary" id="caseSellBtn" style="display:none">В пыль</button><button class="btn caseSecondary" id="caseCloseBtn" style="display:none">Ок</button></div></div></div>
-<div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout modalScroll" style="margin-top:10px"><div class="shopPreview"><div id="shopPreviewWrap" class="previewFrogWrap"><canvas id="shopPreview" width="420" height="420"></canvas><svg class="frogAccessoryLayer" viewBox="0 0 900 900" preserveAspectRatio="none" aria-hidden="true"></svg><canvas class="frogAccessoryFx" width="900" height="900"></canvas></div></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
+<div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout modalScroll" style="margin-top:10px"><div class="shopPreview"><div id="shopPreviewWrap" class="previewFrogWrap"><canvas id="shopPreview" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div><canvas class="frogAccessoryFx" width="900" height="900"></canvas></div></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
 <div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
 
 <div id="gameResultOverlay" class="resultOverlay"><div id="gameResultTitle" class="t"></div><div id="gameResultText" class="s" style="margin-top:6px"></div></div>
@@ -1631,7 +1644,7 @@ function accessorySvgMarkup(it){
     eclipseBack:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="156" fill="url(#ID_g)"/><circle cx="0" cy="0" r="126" fill="#11152b" opacity=".7"/></g>',
     sigilFront:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="118" fill="none" stroke="url(#ID_a)" stroke-width="18"/><path d="M0 -82L62 42L-62 42Z" fill="url(#ID_a)" opacity=".45"/></g>'
   };
-  return `<g class="accShape ${auraPulse}">${defs}${glow}${(S[it.motif]||S.cap).replaceAll('ID',it.id)}${shine}</g>`;
+  return `<svg class="frog-cosmetics-svg" viewBox="-220 -220 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g class="accShape ${auraPulse}">${defs}${glow}${(S[it.motif]||S.cap).replaceAll('ID',it.id)}${shine}</g></svg>`;
 }
 accessoryItems.forEach(it=>{ it.svgMarkup = accessorySvgMarkup(it); it.signature=it.signature||it.id;});
 validateAccessoryCatalog();
@@ -2650,14 +2663,75 @@ function accTransform(it){
   const off=it.offset||{dx:0,dy:0,s:1,r:0};
   return {x:slot.ax*900,y:slot.ay*900,s:(slot.baseScale||1)*(off.s||1),r:(slot.baseRotation||0)+(off.r||0),dx:off.dx||0,dy:off.dy||0,z:slot.zLayer||50};
 }
+function ensureCosmeticsLayer(targetElement){
+  if(!targetElement) return null;
+  let layer = targetElement.querySelector('.frog-cosmetics-layer');
+  if(!layer){
+    layer=document.createElement('div');
+    layer.className='frog-cosmetics-layer';
+    targetElement.appendChild(layer);
+  }
+  return layer;
+}
 function renderFrogCosmetics(targetElement, equippedState){
-  if(!targetElement) return;
-  const layer = targetElement.querySelector('.frogAccessoryLayer');
-  if(!layer) return;
+  if(!targetElement) return [];
+  const layer = ensureCosmeticsLayer(targetElement);
+  if(!layer) return [];
+  layer.innerHTML = '';
   const equipped = getEquippedAccessories(equippedState).sort((a,b)=>accTransform(a).z-accTransform(b).z);
-  const debugNodes=[];
-  const html = equipped.map(it=>{ const t=accTransform(it); if(accessoryDebug.enabled){debugNodes.push(`<g transform="translate(${t.x} ${t.y})"><circle class="accDebugPoint" r="7"/><rect class="accDebugBox" x="-120" y="-70" width="240" height="140"/></g>`);} return `<g class="accItem ${it.rarity==='legend'||it.rarity==='limited'?'premium':''} rarity-${it.rarity}" style="transform:translate(-50%,-50%) translate(${t.dx}px,${t.dy}px) scale(${t.s}) rotate(${t.r}deg);transform-box:fill-box;transform-origin:center" transform="translate(${t.x} ${t.y})">${it.svgMarkup}</g>`; }).join('');
-  layer.innerHTML = html + (accessoryDebug.enabled?debugNodes.join(''): '');
+  const results=[];
+  for(const it of equipped){
+    const t=accTransform(it);
+    const wrapper=document.createElement('div');
+    wrapper.className=`frog-cosmetics-item accItem ${it.rarity==='legend'||it.rarity==='limited'?'premium':''} rarity-${it.rarity}`;
+    wrapper.dataset.accId=it.id;
+    wrapper.dataset.slot=it.slot;
+    wrapper.style.left=`${t.x/9}%`;
+    wrapper.style.top=`${t.y/9}%`;
+    wrapper.style.zIndex=String(t.z||3);
+    wrapper.style.transform=`translate(-50%,-50%) translate(${t.dx}px,${t.dy}px) scale(${t.s}) rotate(${t.r}deg)`;
+    wrapper.innerHTML = it.svgMarkup;
+    layer.appendChild(wrapper);
+    const svgEl=wrapper.querySelector('svg');
+    let rendered=false;
+    if(svgEl){
+      try{
+        const box=svgEl.getBoundingClientRect();
+        rendered=box.width>0&&box.height>0;
+        if(!rendered && svgEl.getBBox){
+          const bb=svgEl.getBBox();
+          rendered=bb.width>0&&bb.height>0;
+        }
+      }catch(err){
+        try{ const bb=svgEl.getBBox?.(); rendered=!!bb && bb.width>0 && bb.height>0; }catch(_){ rendered=false; }
+      }
+    }
+    if(!rendered) console.error(`Accessory render failed: ${it.id}`);
+    if(accessoryDebug.enabled){
+      const dot=document.createElement('div');
+      dot.className='accAnchorDot';
+      dot.style.left=`${t.x/9}%`;
+      dot.style.top=`${t.y/9}%`;
+      layer.appendChild(dot);
+      const label=document.createElement('div');
+      label.className='accAnchorLabel';
+      label.style.left=`${t.x/9}%`;
+      label.style.top=`${t.y/9}%`;
+      label.textContent=`${it.slot}: ${it.id}`;
+      layer.appendChild(label);
+    }
+    results.push({id:it.id,slot:it.slot,rendered});
+  }
+  updateAccessoryDebugPanel(results, targetElement===frogHosts.main);
+  return results;
+}
+function updateAccessoryDebugPanel(results, isMain){
+  const panel=document.getElementById('accDebugPanel');
+  if(!panel||!isMain) return;
+  panel.classList.toggle('show',accessoryDebug.enabled);
+  if(!accessoryDebug.enabled) return;
+  const rows=results.map(r=>`<div class="accDbgRow"><span>${r.id}</span><b class="${r.rendered?'ok':'bad'}">${r.rendered?'rendered':'missing'}</b></div>`).join('') || '<div class="accDbgRow"><span>none</span><b>—</b></div>';
+  panel.innerHTML=`<div class="accDbgTitle">Accessory Debug (K)</div>${rows}`;
 }
 function drawAccessoryFxLayer(hostKey, pause){
   const host=frogHosts[hostKey]; if(!host) return;
@@ -2682,6 +2756,20 @@ function drawAccessoryFxLayer(hostKey, pause){
   ctx.globalAlpha=1;
 }
 window.addEventListener('keydown',(e)=>{ if(e.key.toLowerCase()==='k'){ accessoryDebug.enabled=!accessoryDebug.enabled; renderFrogCosmetics(frogHosts.main,state.cosmetics.equippedSlots); renderFrogCosmetics(frogHosts.shop,state.cosmetics.equippedSlots);} });
+document.getElementById('testRenderBtn')?.addEventListener('click',()=>{
+  const prev={...(state.cosmetics.equippedSlots||{})};
+  const testSlots=['HEAD_TOP','EYES','FACE','NECK','BODY','MOUTH','AURA_BEHIND','AURA_FRONT'];
+  state.cosmetics.equippedSlots ||= {};
+  for(const slot of testSlots){
+    const pick=accessoryItems.find(it=>it.slot===slot);
+    if(pick) state.cosmetics.equippedSlots[slot]=pick.id;
+  }
+  updateUI(false);
+  renderFrogCosmetics(frogHosts.main,state.cosmetics.equippedSlots);
+  renderFrogCosmetics(frogHosts.shop,state.cosmetics.equippedSlots);
+  toast('Debug','Test Render: временно экипированы аксессуары по слотам.','INFO');
+  setTimeout(()=>{ state.cosmetics.equippedSlots=prev; updateUI(false); renderFrogCosmetics(frogHosts.main,state.cosmetics.equippedSlots); renderFrogCosmetics(frogHosts.shop,state.cosmetics.equippedSlots); }, 3500);
+});
 
 const fx = { glows:[], particles:[], lastClick:0, squash:0 };
 const frogLife = { lookX:0, lookY:0, targetX:0, targetY:0, blink:0, nextBlink:performance.now()+rand(1200,3800), mood:"idle", happyUntil:0, angryUntil:0, lastUserAction:Date.now() };
