@@ -371,9 +371,11 @@
   .accLegendPulse{animation:accLegendPulse 2.6s ease-in-out infinite}
   .accLimitedPulse{animation:accLimitedPulse 2.2s ease-in-out infinite}
   .accAuraPulse{animation:accAuraPulse 3.1s ease-in-out infinite}
+  .accSigilRotate{transform-origin:center;animation:accSigilRotate 24s linear infinite}
   @keyframes accLegendPulse{0%,100%{filter:drop-shadow(0 0 6px #ffd16688)}50%{filter:drop-shadow(0 0 18px #ffd166dd)}}
   @keyframes accLimitedPulse{0%,100%{filter:drop-shadow(0 0 8px #ff9b6baa)}50%{filter:drop-shadow(0 0 22px #b68bff)}}
   @keyframes accAuraPulse{0%,100%{opacity:.82}50%{opacity:1}}
+  @keyframes accSigilRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
 
   .caseOpenFx{min-height:32px;font-weight:900;color:#d5f5ff}
@@ -1587,7 +1589,7 @@ const accessoryItems = [
 
   {id:'l_solar_diadem',signature:'solar-diadem',name:'Солярная диадема',desc:'Премиум металл и живой луч.',rarity:'legend',slot:'HEAD_TOP',price:1200000,offset:{dx:0,dy:-10,s:1.1,r:0},motif:'solarDiadem',effects:{particles:{type:'spark',color:'#ffd166',count:18,rate:1.1,radius:180}}},
   {id:'l_royal_vizor',signature:'royal-vizor',name:'Королевский визор',desc:'Шлифованное стекло с волной света.',rarity:'legend',slot:'EYES',price:1180000,offset:{dx:0,dy:0,s:1.1,r:0},motif:'royalVizor',effects:{particles:{type:'mote',color:'#91deff',count:18,rate:1.05,radius:170}}},
-  {id:'l_empress_mask',signature:'empress-mask',name:'Маска императрицы',desc:'Скульптурный фронт с сияющей гравировкой.',rarity:'legend',slot:'FACE',price:1240000,offset:{dx:0,dy:2,s:1.08,r:0},motif:'empressMask',effects:{particles:{type:'spark',color:'#ffd2a6',count:17,rate:1.0,radius:175}}},
+  {id:'l_empress_mask',signature:'empress-mask',name:'Маска императрицы',desc:'Полноразмерная позолоченная маска с резным орнаментом.',rarity:'legend',slot:'FACE',price:1240000,offset:{dx:0,dy:-4,s:1.24,r:0},motif:'empressMask',effects:{particles:{type:'spark',color:'#ffd2a6',count:14,rate:0.9,radius:170}}},
   {id:'l_relic_torque',signature:'relic-torque',name:'Реликтовый торк',desc:'Тяжёлый торк с мягкой аурой.',rarity:'legend',slot:'NECK',price:1160000,offset:{dx:0,dy:4,s:1.08,r:0},motif:'relicTorque',effects:{particles:{type:'ember',color:'#ffcb8d',count:16,rate:0.95,radius:165}}},
   {id:'l_photon_halo',signature:'photon-halo',name:'Фотонный нимб',desc:'Пульсирующее кольцо вокруг героя.',rarity:'legend',slot:'AURA_BEHIND',price:1260000,offset:{dx:0,dy:-10,s:1.13,r:0},motif:'photonHalo',effects:{particles:{type:'spark',color:'#ffe2a7',count:20,rate:1.1,radius:190}}},
   {id:'l_crest_seal',signature:'crest-seal',name:'Печать Ордена',desc:'Фронтальная печать с зеркальным блеском.',rarity:'legend',slot:'AURA_FRONT',price:1190000,offset:{dx:0,dy:8,s:1.1,r:0},motif:'crestSeal',effects:{particles:{type:'mote',color:'#ffdcb0',count:18,rate:1.05,radius:175}}},
@@ -1597,13 +1599,13 @@ const accessoryItems = [
   {id:'lm_ember_mask',signature:'ember-mask',name:'Пепельная маска',desc:'Лимит: раскалённые прожилки и эмберы.',rarity:'limited',limited:true,stock:6,slot:'FACE',price:4400000,offset:{dx:0,dy:4,s:1.13,r:0},motif:'emberMask',effects:{particles:{type:'ember',color:'#ff9f68',count:20,rate:1.25,radius:205}}},
   {id:'lm_rune_torque',signature:'rune-torque',name:'Торк Архонта',desc:'Лимит: рунный обруч с синим пламенем.',rarity:'limited',limited:true,stock:9,slot:'NECK',price:4150000,offset:{dx:0,dy:6,s:1.13,r:0},motif:'runeTorque',effects:{particles:{type:'rune',color:'#9cfadf',count:20,rate:1.2,radius:215}}},
   {id:'lm_eclipse_back',signature:'eclipse-back',name:'Затмение',desc:'Лимит: позадний астральный диск с пеплом.',rarity:'limited',limited:true,stock:5,slot:'AURA_BEHIND',price:4600000,offset:{dx:0,dy:-14,s:1.18,r:0},motif:'eclipseBack',effects:{particles:{type:'ember',color:'#ffc38d',count:20,rate:1.3,radius:225}}},
-  {id:'lm_sigil_front',signature:'sigil-front',name:'Сигил Предела',desc:'Лимит: фронтальный сигил с бегущими рунами.',rarity:'limited',limited:true,stock:4,slot:'AURA_FRONT',price:4700000,offset:{dx:0,dy:10,s:1.16,r:0},motif:'sigilFront',effects:{particles:{type:'rune',color:'#ffe9b4',count:20,rate:1.3,radius:230}}}
+  {id:'lm_sigil_front',signature:'sigil-front',name:'Сигил Предела',desc:'Лимит-аура: вращающийся сигил с руническими искрами.',rarity:'limited',limited:true,stock:4,slot:'AURA_FRONT',price:4700000,offset:{dx:0,dy:0,s:1.24,r:0},motif:'sigilFront',effects:{particles:{type:'spark',color:'#ffe9b4',count:10,rate:0.75,radius:250}}}
 ].map(it=>({...it,kind:'acc',currency:it.currency||'points'}));
 
 function accessorySvgMarkup(it){
   const c={common:['#8dc7a8','#5f9f83'],rare:['#7dc5ff','#3e86df'],epic:['#ca92ff','#7c55f2'],legend:['#ffe09b','#ffb14f'],limited:['#ffbb8f','#a46cff']}[it.rarity]||['#9dc0ad','#4f7f69'];
   const glow=(it.rarity==='legend'||it.rarity==='limited')?`<ellipse cx="0" cy="0" rx="118" ry="56" fill="url(#${it.id}_g)" opacity=".45"/>`:'';
-  const shine=(it.rarity==='legend'||it.rarity==='limited')?`<rect x="-110" y="-18" width="220" height="16" fill="url(#${it.id}_s)" opacity=".3" class="scanline"/>`:'';
+  const shine='';
   const auraPulse=(it.rarity==='legend'||it.rarity==='limited')?'accAuraPulse':'';
   const defs=`<defs><linearGradient id="${it.id}_a" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${c[0]}"/><stop offset="100%" stop-color="${c[1]}"/></linearGradient><radialGradient id="${it.id}_g"><stop offset="0%" stop-color="${c[0]}" stop-opacity=".85"/><stop offset="100%" stop-color="${c[1]}" stop-opacity="0"/></radialGradient><linearGradient id="${it.id}_s" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#fff0"/><stop offset="50%" stop-color="#ffffff"/><stop offset="100%" stop-color="#fff0"/></linearGradient></defs>`;
   const S={
@@ -1633,7 +1635,7 @@ function accessorySvgMarkup(it){
     prismFront:'<g><path d="M-84 48L0 -58L84 48Z" fill="url(#ID_a)" opacity=".7"/></g>',
     solarDiadem:'<g class="accLegendPulse"><path d="M-130 18L-90 -48L-40 18L0 -62L40 18L90 -48L130 18Z" fill="url(#ID_a)"/></g>',
     royalVizor:'<g class="accLegendPulse"><rect x="-130" y="-38" width="260" height="76" rx="38" fill="url(#ID_a)"/><path d="M-112 -8H112" stroke="#fff9" stroke-width="9"/></g>',
-    empressMask:'<g class="accLegendPulse"><path d="M-124 -40Q0 -70 124 -40L102 42Q0 78 -102 42Z" fill="url(#ID_a)"/></g>',
+    empressMask:'<g class="accLegendPulse"><path d="M-138 -78Q-96 -118 -36 -106Q0 -130 36 -106Q96 -118 138 -78Q128 -26 116 26Q78 90 0 112Q-78 90 -116 26Q-128 -26 -138 -78Z" fill="url(#ID_a)"/><path d="M-120 -68Q-84 -96 -36 -84Q0 -102 36 -84Q84 -96 120 -68Q112 -28 102 18Q72 70 0 90Q-72 70 -102 18Q-112 -28 -120 -68Z" fill="#3f2307" opacity=".28"/><path d="M-92 -28Q-64 -46 -34 -34Q-48 -10 -74 4Q-96 -6 -92 -28Z" fill="#120a02" opacity=".68"/><path d="M92 -28Q64 -46 34 -34Q48 -10 74 4Q96 -6 92 -28Z" fill="#120a02" opacity=".68"/><path d="M-26 -10Q0 14 26 -10Q18 26 0 46Q-18 26 -26 -10Z" fill="#261405" opacity=".62"/><path d="M-108 2Q0 64 108 2" stroke="#fff5cf" stroke-opacity=".42" stroke-width="7" fill="none"/><path d="M-86 -66Q0 -100 86 -66" stroke="#fff2bf" stroke-opacity=".38" stroke-width="6" fill="none"/><path d="M-58 54Q0 82 58 54" stroke="#ffe4a3" stroke-opacity=".4" stroke-width="6" fill="none"/><circle cx="0" cy="-56" r="12" fill="#8fd8ff"/><circle cx="0" cy="-56" r="5" fill="#f4ffff"/></g>',
     relicTorque:'<g class="accLegendPulse"><ellipse cx="0" cy="0" rx="144" ry="46" fill="none" stroke="url(#ID_a)" stroke-width="20"/></g>',
     photonHalo:'<g class="accLegendPulse"><ellipse cx="0" cy="0" rx="194" ry="110" fill="none" stroke="url(#ID_a)" stroke-width="20"/></g>',
     crestSeal:'<g class="accLegendPulse"><circle cx="0" cy="0" r="78" fill="url(#ID_a)" opacity=".62"/><path d="M-36 0H36M0 -36V36" stroke="#fff9" stroke-width="10"/></g>',
@@ -1642,7 +1644,7 @@ function accessorySvgMarkup(it){
     emberMask:'<g class="accLimitedPulse"><path d="M-130 -44Q0 -68 130 -44L108 42Q0 82 -108 42Z" fill="url(#ID_a)"/><path d="M-78 6Q0 42 78 6" stroke="#fff8" stroke-width="10"/></g>',
     runeTorque:'<g class="accLimitedPulse"><ellipse cx="0" cy="0" rx="150" ry="50" fill="none" stroke="url(#ID_a)" stroke-width="22"/><circle cx="0" cy="0" r="20" fill="#fff8"/></g>',
     eclipseBack:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="156" fill="url(#ID_g)"/><circle cx="0" cy="0" r="126" fill="#11152b" opacity=".7"/></g>',
-    sigilFront:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="154" fill="url(#ID_g)" opacity=".22"/><circle cx="0" cy="0" r="126" fill="none" stroke="url(#ID_a)" stroke-width="16"/><circle cx="0" cy="0" r="92" fill="none" stroke="#ffecc2" stroke-opacity=".55" stroke-width="5"/><path d="M0 -112L78 -16L44 88L-44 88L-78 -16Z" fill="url(#ID_a)" opacity=".82"/><path d="M0 -82L46 -20L24 48H-24L-46 -20Z" fill="#fff5d1" opacity=".45"/><g opacity=".88"><circle cx="0" cy="-130" r="7" fill="#fff4d9"/><circle cx="116" cy="0" r="6" fill="#ffdca2"/><circle cx="-116" cy="0" r="6" fill="#ffdca2"/><circle cx="0" cy="130" r="7" fill="#fff4d9"/></g><path d="M-106 -60Q0 -96 106 -60" stroke="#fff3d8" stroke-opacity=".52" stroke-width="4" fill="none"/></g>'
+    sigilFront:'<g class="accLimitedPulse"><circle cx="0" cy="0" r="184" fill="url(#ID_g)" opacity=".28"/><g class="accSigilRotate"><circle cx="0" cy="0" r="156" fill="none" stroke="url(#ID_a)" stroke-width="12" stroke-opacity=".86"/><circle cx="0" cy="0" r="130" fill="none" stroke="#ffeec9" stroke-opacity=".58" stroke-width="4" stroke-dasharray="14 10"/><path d="M0 -150L24 -112L68 -112L112 -68L112 -24L150 0L112 24L112 68L68 112L24 112L0 150L-24 112L-68 112L-112 68L-112 24L-150 0L-112 -24L-112 -68L-68 -112L-24 -112Z" fill="none" stroke="url(#ID_a)" stroke-width="8" stroke-opacity=".78"/></g><g opacity=".9"><circle cx="0" cy="-170" r="6" fill="#fff5d5"/><circle cx="156" cy="0" r="5" fill="#ffe0a4"/><circle cx="0" cy="170" r="6" fill="#fff5d5"/><circle cx="-156" cy="0" r="5" fill="#ffe0a4"/></g><circle cx="0" cy="0" r="72" fill="url(#ID_g)" opacity=".2"/></g>'
   };
   return `<svg class="frog-cosmetics-svg" viewBox="-220 -220 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g class="accShape ${auraPulse}">${defs}${glow}${(S[it.motif]||S.cap).replaceAll('ID',it.id)}${shine}</g></svg>`;
 }
