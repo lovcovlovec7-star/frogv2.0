@@ -240,11 +240,11 @@
   .shopCard.pop{animation:shopPop .35s ease;}
   @keyframes shopPop{0%{transform:scale(.96)}55%{transform:scale(1.03)}100%{transform:scale(1)}}
   .shopPrice{font-weight:900;font-size:13px}
-  .rarity-common{box-shadow:inset 0 0 0 1px #ffffff14}
-  .rarity-rare{box-shadow:0 0 22px #39a0ff33, inset 0 0 0 1px #5ea8ff4a}
-  .rarity-epic{box-shadow:0 0 24px #b06bff33, inset 0 0 0 1px #c58bff4d}
-  .rarity-legend{box-shadow:0 0 28px #ffcf5a42, inset 0 0 0 1px #ffd77f59}
-  .rarity-limited{box-shadow:0 0 30px #ff7c4d52, inset 0 0 0 1px #ff9d745e}
+  .shopCard.rarity-common{box-shadow:inset 0 0 0 1px #ffffff14}
+  .shopCard.rarity-rare{box-shadow:0 0 22px #39a0ff33, inset 0 0 0 1px #5ea8ff4a}
+  .shopCard.rarity-epic{box-shadow:0 0 24px #b06bff33, inset 0 0 0 1px #c58bff4d}
+  .shopCard.rarity-legend{box-shadow:0 0 28px #ffcf5a42, inset 0 0 0 1px #ffd77f59}
+  .shopCard.rarity-limited{box-shadow:0 0 30px #ff7c4d52, inset 0 0 0 1px #ff9d745e}
   .shopCardHeader{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;min-width:0}
   .shopCardHeader .t{min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.2;min-height:2.4em}
   .badgeStack{display:flex;flex-direction:column;gap:4px;flex-shrink:0;align-items:flex-end}
@@ -1548,16 +1548,18 @@ function upgradePrice(u){
 ========================= */
 
 const ACCESSORY_SLOTS = {
-  HEAD_TOP:{ax:0.5,ay:0.205,baseScale:1.02,baseRotation:0,zLayer:70},
-  EYES:{ax:0.5,ay:0.392,baseScale:0.98,baseRotation:0,zLayer:60},
-  FACE:{ax:0.5,ay:0.5,baseScale:1,baseRotation:0,zLayer:58},
-  MOUTH:{ax:0.5,ay:0.585,baseScale:0.97,baseRotation:0,zLayer:56},
-  NECK:{ax:0.5,ay:0.665,baseScale:1.02,baseRotation:0,zLayer:45},
-  BODY:{ax:0.5,ay:0.76,baseScale:1,baseRotation:0,zLayer:44},
-  AURA_BEHIND:{ax:0.5,ay:0.5,baseScale:1.05,baseRotation:0,zLayer:8},
-  AURA_FRONT:{ax:0.5,ay:0.5,baseScale:1.05,baseRotation:0,zLayer:82}
+  HEAD_TOP:{ax:0.5,ay:0.22,baseScale:1.02,baseRotation:0,zLayer:72},
+  EYES:{ax:0.5,ay:0.388,baseScale:0.96,baseRotation:0,zLayer:66},
+  FACE:{ax:0.5,ay:0.494,baseScale:0.94,baseRotation:0,zLayer:62},
+  MOUTH:{ax:0.5,ay:0.588,baseScale:0.9,baseRotation:0,zLayer:61},
+  NECK:{ax:0.5,ay:0.676,baseScale:0.92,baseRotation:0,zLayer:57},
+  BODY:{ax:0.5,ay:0.754,baseScale:0.94,baseRotation:0,zLayer:54},
+  AURA_BEHIND:{ax:0.5,ay:0.53,baseScale:1.12,baseRotation:0,zLayer:7},
+  AURA_FRONT:{ax:0.5,ay:0.53,baseScale:1.08,baseRotation:0,zLayer:84}
 };
-const SLOT_ANCHOR_RULES = { FACE:'FACE', EYES:'EYES', HEAD_TOP:'HEAD_TOP', NECK:'NECK' };
+const SLOT_ANCHOR_RULES = { FACE:'FACE', EYES:'EYES', HEAD_TOP:'HEAD_TOP', NECK:'NECK', MOUTH:'MOUTH', BODY:'BODY', AURA_BEHIND:'AURA_BEHIND', AURA_FRONT:'AURA_FRONT' };
+const ACCESSORY_SLOT_SCALE = {HEAD_TOP:1,EYES:0.9,FACE:0.88,MOUTH:0.82,NECK:0.9,BODY:0.95,AURA_BEHIND:1.24,AURA_FRONT:1.2};
+const ACCESSORY_SLOT_LIMITS = {HEAD_TOP:{dx:150,dy:120,s:[0.72,1.42]},EYES:{dx:92,dy:70,s:[0.72,1.3]},FACE:{dx:96,dy:88,s:[0.7,1.24]},MOUTH:{dx:120,dy:82,s:[0.72,1.22]},NECK:{dx:124,dy:90,s:[0.72,1.32]},BODY:{dx:130,dy:120,s:[0.72,1.36]},AURA_BEHIND:{dx:110,dy:120,s:[0.86,1.52]},AURA_FRONT:{dx:110,dy:110,s:[0.84,1.58]}};
 
 const accessoryItems = [
   {id:'c_moss_cap',signature:'moss-cap',name:'Мшистый колпак',desc:'Лесной колпак с мягкой кромкой.',rarity:'common',slot:'HEAD_TOP',price:220000,offset:{dx:0,dy:-4,s:1,r:0},motif:'cap'},
@@ -1663,6 +1665,21 @@ function validateAccessoryCatalog(){
     }
   }
 }
+function normalizeAccessoryCatalog(){
+  for(const it of accessoryItems){
+    const limits=ACCESSORY_SLOT_LIMITS[it.slot]||ACCESSORY_SLOT_LIMITS.BODY;
+    const off=it.offset||{};
+    const sRaw=Number.isFinite(off.s)?off.s:1;
+    it.offset={dx:clamp(Number.isFinite(off.dx)?off.dx:0,-limits.dx,limits.dx),dy:clamp(Number.isFinite(off.dy)?off.dy:0,-limits.dy,limits.dy),s:clamp(sRaw,limits.s[0],limits.s[1]),r:clamp(Number.isFinite(off.r)?off.r:0,-26,26)};
+    if(!it.anchor || !ACCESSORY_SLOTS[it.anchor]) it.anchor=it.slot;
+    if(!it.svgMarkup || !/(path|circle|ellipse|rect|polygon|line|polyline)\b/i.test(it.svgMarkup)){
+      console.warn(`[Accessories] fallback motif for empty svg ${it.id}`);
+      it.motif='cap';
+      it.svgMarkup=accessorySvgMarkup(it);
+    }
+  }
+}
+normalizeAccessoryCatalog();
 
 const cosmeticItems = [
   // Skins
@@ -2638,6 +2655,7 @@ function updateUI(full=true){
     renderShop();
     renderFrogCosmetics(frogHosts.main, getFrogRect(frogHosts.main), state.cosmetics.equippedSlots);
     renderFrogCosmetics(frogHosts.shop, getFrogRect(frogHosts.shop), state.cosmetics.equippedSlots);
+    validateAccessories();
     renderAchievements();
     renderRanks();
     renderTitles();
@@ -2692,12 +2710,12 @@ function accTransform(it,frogRect={width:900,height:900}){
   return {
     x:slot.ax*(frogRect.width||900),
     y:slot.ay*(frogRect.height||900),
-    s:(slot.baseScale||1)*(off.s||1),
+    s:(slot.baseScale||1)*(ACCESSORY_SLOT_SCALE[it.slot]||1)*(off.s||1),
     r:(slot.baseRotation||0)+(off.r||0),
     dx:(off.dx||0)*sx,
     dy:(off.dy||0)*sy,
     z:slot.zLayer||50,
-    size:Math.min(frogRect.width||900,frogRect.height||900)*0.2666
+    size:Math.min(frogRect.width||900,frogRect.height||900)*0.34
   };
 }
 function ensureCosmeticsLayer(targetElement){
@@ -2771,7 +2789,9 @@ function updateAccessoryDebugPanel(results, isMain){
   panel.classList.toggle('show',accessoryDebug.enabled);
   if(!accessoryDebug.enabled) return;
   const rows=results.map(r=>`<div class="accDbgRow"><span>${r.id}</span><b class="${r.rendered?'ok':'bad'}">${r.rendered?'rendered':'missing'}</b></div>`).join('') || '<div class="accDbgRow"><span>none</span><b>—</b></div>';
-  panel.innerHTML=`<div class="accDbgTitle">Accessory Debug (Shift+K)</div>${rows}`;
+  const failCount=accessoryValidationState.failures.length;
+  const total=accessoryValidationState.total||accessoryItems.length;
+  panel.innerHTML=`<div class="accDbgTitle">Accessory Debug (Shift+K)</div><div class="accDbgRow"><span>Validation</span><b class="${failCount?'bad':'ok'}">${total-failCount}/${total}</b></div><div class="accDbgRow"><span>Failures</span><b class="${failCount?'bad':'ok'}">${failCount}</b></div>${rows}`;
 }
 function drawAccessoryFxLayer(hostKey, pause){
   const host=frogHosts[hostKey]; if(!host) return;
@@ -2801,7 +2821,41 @@ function drawAccessoryFxLayer(hostKey, pause){
   }
   ctx.globalAlpha=1;
 }
-window.addEventListener('keydown',(e)=>{ if(e.shiftKey && e.key.toLowerCase()==='k'){ accessoryDebug.enabled=!accessoryDebug.enabled; renderFrogCosmetics(frogHosts.main,getFrogRect(frogHosts.main),state.cosmetics.equippedSlots); renderFrogCosmetics(frogHosts.shop,getFrogRect(frogHosts.shop),state.cosmetics.equippedSlots);} });
+const accessoryValidationState = { total:0, failures:[], passRate:1, lastRun:0 };
+function validateAccessories(){
+  const host=frogHosts.main;
+  if(!host) return accessoryValidationState;
+  const layer=ensureCosmeticsLayer(host);
+  if(!layer) return accessoryValidationState;
+  const previous=JSON.parse(JSON.stringify(state.cosmetics.equippedSlots||{}));
+  const hostRect=host.getBoundingClientRect();
+  const failures=[];
+  const fail=(it,reason)=> failures.push({id:it.id,name:it.name,slot:it.slot,reason});
+  for(const it of accessoryItems){
+    const eq={}; eq[it.slot]=it.id;
+    renderFrogCosmetics(host,getFrogRect(host),eq);
+    const el=layer.querySelector(`[data-acc-id="${it.id}"]`);
+    if(!el){ fail(it,'missing-wrapper'); continue; }
+    const rect=el.getBoundingClientRect();
+    const style=getComputedStyle(el);
+    if(rect.width<=8 || rect.height<=8){ fail(it,'zero-size'); continue; }
+    if(Number.parseFloat(style.opacity||'1')<=0.05){ fail(it,'invisible'); continue; }
+    const ix=Math.max(0,Math.min(rect.right,hostRect.right)-Math.max(rect.left,hostRect.left));
+    const iy=Math.max(0,Math.min(rect.bottom,hostRect.bottom)-Math.max(rect.top,hostRect.top));
+    const ir=(ix*iy)/Math.max(1,rect.width*rect.height);
+    if(ir<0.2) fail(it,'offscreen');
+  }
+  state.cosmetics.equippedSlots=previous;
+  renderFrogCosmetics(host,getFrogRect(host),state.cosmetics.equippedSlots);
+  renderFrogCosmetics(frogHosts.shop,getFrogRect(frogHosts.shop),state.cosmetics.equippedSlots);
+  accessoryValidationState.total=accessoryItems.length;
+  accessoryValidationState.failures=failures;
+  accessoryValidationState.passRate=accessoryItems.length?((accessoryItems.length-failures.length)/accessoryItems.length):1;
+  accessoryValidationState.lastRun=Date.now();
+  if(failures.length) console.table(failures); else console.info('[Accessories] validation passed for all accessories');
+  return accessoryValidationState;
+}
+window.addEventListener('keydown',(e)=>{ if(e.shiftKey && e.key.toLowerCase()==='k'){ accessoryDebug.enabled=!accessoryDebug.enabled; renderFrogCosmetics(frogHosts.main,getFrogRect(frogHosts.main),state.cosmetics.equippedSlots); renderFrogCosmetics(frogHosts.shop,getFrogRect(frogHosts.shop),state.cosmetics.equippedSlots); if(accessoryDebug.enabled) validateAccessories(); } });
 const fx = { glows:[], particles:[], lastClick:0, squash:0 };
 const frogLife = { lookX:0, lookY:0, targetX:0, targetY:0, blink:0, nextBlink:performance.now()+rand(1200,3800), mood:"idle", happyUntil:0, angryUntil:0, lastUserAction:Date.now() };
 function frogMoodNow(){
