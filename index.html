@@ -1601,7 +1601,48 @@ const ACCESSORY_SLOTS = {
 const SLOT_ANCHOR_RULES = { FACE:'FACE', EYES:'EYES', HEAD_TOP:'HEAD_TOP', NECK:'NECK', MOUTH:'MOUTH', BODY:'BODY', AURA_BEHIND:'AURA_BEHIND', AURA_FRONT:'AURA_FRONT' };
 const ACCESSORY_SLOT_SCALE = {HEAD_TOP:1,EYES:0.9,FACE:0.88,MOUTH:0.82,NECK:0.9,BODY:0.95,AURA_BEHIND:1.24,AURA_FRONT:1.2};
 const ACCESSORY_SLOT_LIMITS = {HEAD_TOP:{dx:260,dy:220,s:[0.1,4]},EYES:{dx:220,dy:180,s:[0.1,4]},FACE:{dx:240,dy:220,s:[0.1,4]},MOUTH:{dx:220,dy:190,s:[0.1,4]},NECK:{dx:240,dy:220,s:[0.1,4]},BODY:{dx:260,dy:240,s:[0.1,4]},AURA_BEHIND:{dx:260,dy:260,s:[0.1,4]},AURA_FRONT:{dx:260,dy:260,s:[0.1,4]}};
-const DEFAULT_OFFSETS = {};
+const DEFAULT_OFFSETS = {
+  "c_moss_cap": {"dxN": -0.006736223242740258, "dyN": 0.034390288531411614, "s": 1.73, "r": 1},
+  "c_glass_pebbles": {"dxN": -0.00005698231102461808, "dyN": 0.016278220423673887, "s": 1.15, "r": 0},
+  "c_reed_pipe": {"dxN": 0.15215683293944957, "dyN": -0.08188398944093722, "s": 2.56, "r": 8},
+  "c_lily_bow": {"dxN": 0, "dyN": 0.0022222222222222222, "s": 1, "r": 0},
+  "c_sticker_blush": {"dxN": -0.0078843048662578, "dyN": -0.220334182772708, "s": 3.51, "r": 0},
+  "c_seed_brooch": {"dxN": 0, "dyN": 0, "s": 1, "r": 0},
+  "c_leaf_band": {"dxN": 0, "dyN": -0.0022222222222222222, "s": 1, "r": 0},
+  "c_soft_lenses": {"dxN": -0.0018975042253019537, "dyN": -0.09500000000000006, "s": 2.12, "r": -90.5},
+  "c_foam_collar": {"dxN": 0.0037951532208965223, "dyN": -0.0007685594281185704, "s": 2.2, "r": 0},
+  "c_kiss_mark": {"dxN": -0.23611111111111124, "dyN": -0.13444444444444448, "s": 4, "r": 27},
+
+  "r_aurora_visors": {"dxN": 0, "dyN": -0.10500000000000002, "s": 3.46, "r": 0},
+  "r_gilded_tiara": {"dxN": 0, "dyN": -0.006666666666666667, "s": 1.03, "r": 0},
+  "r_reef_chain": {"dxN": 0, "dyN": 0.0011111111111111111, "s": 1.02, "r": 0},
+  "r_frost_mark": {"dxN": 0, "dyN": 0.16000000000000011, "s": 4, "r": -1.5},
+  "r_amber_pin": {"dxN": 0, "dyN": -0.5727777777777779, "s": 3.3, "r": 0},
+  "r_whisper_halo": {"dxN": -0.0049999999999999845, "dyN": -0.3933333333333336, "s": 0.82, "r": 0.1},
+  "r_smoke_vapor": {"dxN": -0.006859564274716246, "dyN": -0.32215548605444977, "s": 1.84, "r": 0.5},
+  "r_jet_mustache": {"dxN": 0.005, "dyN": -0.1583333333333334, "s": 2.43, "r": -1.5},
+
+  "e_plasma_crown": {"dxN": 0, "dyN": -0.008888888888888889, "s": 1.08, "r": 0},
+  "e_holo_lenses": {"dxN": 0, "dyN": -0.10500000000000002, "s": 3.52, "r": 0},
+  "e_rune_mask": {"dxN": 0, "dyN": 0.048333333333333325, "s": 3.86, "r": 0},
+  "e_flux_choker": {"dxN": 0, "dyN": -0.502777777777778, "s": 1.63, "r": 0},
+  "e_orbit_back": {"dxN": 0, "dyN": -0.38611111111111135, "s": 0.71, "r": 0},
+  "e_prism_front": {"dxN": -0.00569265744619846, "dyN": -0.2667418075971416, "s": 1.73, "r": 180},
+
+  "l_solar_diadem": {"dxN": 0, "dyN": -0.026111111111111113, "s": 1.39, "r": 0},
+  "l_royal_vizor": {"dxN": 0, "dyN": -0.10500000000000002, "s": 3.36, "r": 0},
+  "l_empress_mask": {"dxN": 0, "dyN": -0.07944444444444443, "s": 3.72, "r": 1},
+  "l_relic_torque": {"dxN": 0, "dyN": -0.5155555555555559, "s": 1.86, "r": 0},
+  "l_photon_halo": {"dxN": 0, "dyN": -0.38111111111111134, "s": 0.74, "r": -4},
+  "l_crest_seal": {"dxN": 0.0049999999999999845, "dyN": 0.07388888888888892, "s": 0.93, "r": 180},
+
+  "lm_void_crown": {"dxN": 0, "dyN": -0.03333333333333333, "s": 1.64, "r": 0},
+  "lm_rift_eyes": {"dxN": 0.001897504225301945, "dyN": -0.12218052108046856, "s": 4, "r": 1},
+  "lm_ember_mask": {"dxN": 0.0006925126759058558, "dyN": -0.14017959993625922, "s": 4, "r": 0},
+  "lm_rune_torque": {"dxN": 0, "dyN": -0.5283333333333337, "s": 2.07, "r": 0},
+  "lm_eclipse_back": {"dxN": -0.00500000000000021, "dyN": 0.2594444444444444, "s": 1.51, "r": -22},
+  "lm_sigil_front": {"dxN": 0, "dyN": -0.035, "s": 2.87, "r": 0}
+};
 let accessoryOffsets = {};
 
 const accessoryItems = [
