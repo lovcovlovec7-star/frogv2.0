@@ -236,6 +236,18 @@
   .accDebugPanel .bad{color:#ff9b9b}
   .accAnchorDot{position:absolute;width:10px;height:10px;border-radius:50%;background:#8cf6ff;border:2px solid #07253f;transform:translate(-50%,-50%);z-index:7;opacity:0;pointer-events:none}
   .accAnchorLabel{position:absolute;transform:translate(-50%,-150%);padding:2px 6px;border-radius:999px;border:1px solid #7bf3a6aa;background:#052138e8;color:#a5ffd2;font-size:10px;font-weight:800;white-space:nowrap;z-index:7;opacity:0;pointer-events:none}
+  .frog-cosmetics-item.editor-selected{outline:2px dashed #7bf3a6;outline-offset:4px;border-radius:10px}
+
+  .devEditorGrid{display:grid;grid-template-columns:1.2fr .9fr;gap:12px}
+  .devEditorPreview{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .devEditorPreview .previewFrogWrap{border:1px solid #ffffff25;background:linear-gradient(160deg,#0a1324,#071a1f)}
+  .devEditorPreview .caption{text-align:center;font-size:11px;color:var(--muted);margin-top:4px}
+  .devEditorControls{display:grid;gap:10px}
+  .devEditorControls textarea{width:100%;min-height:120px;padding:10px;border-radius:12px;border:1px solid #ffffff22;background:#00000028;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+  .devEditorRow{display:grid;grid-template-columns:82px 1fr auto;gap:8px;align-items:center}
+  .devEditorRow output{font-weight:900;min-width:66px;text-align:right;color:#aef7ff}
+  .devEditorHint{font-size:12px;color:var(--muted);line-height:1.35}
+  @media (max-width:980px){.devEditorGrid{grid-template-columns:1fr}.devEditorPreview{grid-template-columns:1fr}}
 
   .shopCard.pop{animation:shopPop .35s ease;}
   @keyframes shopPop{0%{transform:scale(.96)}55%{transform:scale(1.03)}100%{transform:scale(1)}}
@@ -860,6 +872,14 @@
           </select>
         </div>
       </div>
+
+      <div class="item" id="devAccessoryEditorItem" style="display:none">
+        <div class="t">Инструменты разработчика</div>
+        <div class="s">Редактор позиций аксессуаров (только для dev аккаунта).</div>
+        <div class="row">
+          <button class="btn warn" id="openAccessoryEditorBtn">Редактор аксессуаров (DEV)</button>
+        </div>
+      </div>
     </div>
     </div>
   </div>
@@ -877,6 +897,7 @@
 <div class="modalBack" id="caseOpenModal"><div class="modal caseModal"><div class="caseModalTop"><div class="caseModalHeading"><div class="caseModalTitle" id="caseModalTitle">Выберите кейс</div><button class="caseHeaderInfo" id="caseModalOddsBtn" title="Показать шансы" aria-label="Показать шансы" style="display:none">ⓘ</button></div><div class="caseOddsPopup" id="caseModalOddsPopup"></div><button class="btn caseSecondary caseModalCloseBtn" id="caseModalClose">Закрыть</button></div><div class="modalScroll"><div id="caseModalContent" class="caseAnimCard"></div></div><div class="caseActions" style="margin-top:10px"><button class="btn casePrimary" id="caseSpinBtn">Начать открытие</button><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn" id="caseInventoryBtn" style="display:none">В инвентарь</button><button class="btn caseSecondary" id="caseSellBtn" style="display:none">В пыль</button><button class="btn caseSecondary" id="caseCloseBtn" style="display:none">Ок</button></div></div></div>
 <div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout modalScroll" style="margin-top:10px"><div class="shopPreview"><div id="shopPreviewWrap" class="previewFrogWrap"><canvas id="shopPreview" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div><canvas class="frogAccessoryFx" width="900" height="900"></canvas></div></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
 <div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
+<div class="modalBack" id="accessoryEditorModal"><div class="modal" style="width:min(1160px,calc(100vw - 24px));max-height:92vh;overflow:auto"><div class="modalTop"><div><div class="t" style="font-weight:950">Редактор аксессуаров (DEV)</div><div class="small">Тяни аксессуар мышью, используй стрелки (Shift = крупный шаг), меняй scale/rotation и публикуй DEFAULT_OFFSETS.</div></div><button class="btn" id="accessoryEditorCloseBtn">Закрыть</button></div><div class="devEditorGrid"><div><div class="devEditorPreview"><div><div id="editorMainPreview" class="previewFrogWrap"><canvas id="editorMainCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div></div><div class="caption">Main frog</div></div><div><div id="editorShopPreview" class="previewFrogWrap"><canvas id="editorShopCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div></div><div class="caption">Shop preview frog</div></div></div></div><div class="devEditorControls"><label class="small">Accessory<select id="accEditorSelect"></select></label><div class="devEditorRow"><label class="small" for="accEditorScale">Scale</label><input id="accEditorScale" type="range" min="0.4" max="2.2" step="0.01"><output id="accEditorScaleVal">1.00</output></div><div class="devEditorRow"><label class="small" for="accEditorRotation">Rotation</label><input id="accEditorRotation" type="range" min="-180" max="180" step="0.5"><output id="accEditorRotationVal">0.0°</output></div><div class="item"><div class="small" id="accEditorValues">dxN: 0 · dyN: 0 · scale: 1 · rotation: 0</div><div class="devEditorHint">Сохранить — в localStorage: <code>frog_accessory_offsets_dev_v1</code>. Publish offsets генерирует код для вставки в константу по умолчанию.</div></div><div class="btnRow"><button class="btn primary" id="accEditorSaveBtn">Сохранить</button><button class="btn" id="accEditorResetBtn">Сброс</button><button class="btn" id="accEditorResetAllBtn">Сбросить всё</button><button class="btn" id="accEditorExportBtn">Экспорт (JSON)</button><button class="btn" id="accEditorImportBtn">Импорт (JSON)</button><button class="btn warn" id="accEditorPublishBtn">Publish offsets</button></div><textarea id="accEditorJson" placeholder="JSON / сгенерированный код для DEFAULT_OFFSETS"></textarea><div class="btnRow"><button class="btn" id="accEditorCopyBtn">Copy</button><button class="btn" id="accEditorCloseBtnBottom">Закрыть</button></div><div class="small">Paste this into code to make placements default for everyone.</div></div></div></div></div>
 
 <div id="gameResultOverlay" class="resultOverlay"><div id="gameResultTitle" class="t"></div><div id="gameResultText" class="s" style="margin-top:6px"></div></div>
 <div class="toasts" id="toasts"></div>
@@ -905,6 +926,8 @@ const KEY = "frog_clicker_pro_save_v5";
 const LEGACY_SAVE_KEYS = ["frog_clicker_pro_save_v4", "frog_clicker_pro_save_v3"];
 const LEADERBOARD_KEY = "frog_clicker_leaderboard_v1";
 const PROFILES_KEY = "frog_clicker_profiles_v2";
+const DEV_USERNAME = "ilya13";
+const DEV_OFFSETS_STORAGE_KEY = "frog_accessory_offsets_dev_v1";
 let profileStore = { accounts:{}, activeUser:null, legacyMigrated:false };
 let pendingCaseEquip = null;
 
@@ -1098,6 +1121,12 @@ function applyDevAccountBalances(){
   dev.saveData.dust = dev.currency.dust;
   dev.nickname ||= "ilya13";
 }
+function getCurrentUser(){
+  return profileStore.activeUser ? { username:String(profileStore.activeUser) } : null;
+}
+function isDevUser(){
+  return getCurrentUser()?.username === DEV_USERNAME;
+}
 function saveProfiles(){ applyDevAccountBalances(); localStorage.setItem(PROFILES_KEY, JSON.stringify(profileStore)); }
 function resetToFreshState(){
   const keep = JSON.parse(JSON.stringify(state.settings||{}));
@@ -1136,6 +1165,7 @@ function load(){
   state.bestPointsAllTime = Math.max(Number(state.bestPointsAllTime)||0, Number(state.points)||0);
   state.activeLocation ||= "swamp";
   state.activeTheme ||= "emerald";
+  loadAccessoryOffsets();
 }
 
 
@@ -1560,6 +1590,8 @@ const ACCESSORY_SLOTS = {
 const SLOT_ANCHOR_RULES = { FACE:'FACE', EYES:'EYES', HEAD_TOP:'HEAD_TOP', NECK:'NECK', MOUTH:'MOUTH', BODY:'BODY', AURA_BEHIND:'AURA_BEHIND', AURA_FRONT:'AURA_FRONT' };
 const ACCESSORY_SLOT_SCALE = {HEAD_TOP:1,EYES:0.9,FACE:0.88,MOUTH:0.82,NECK:0.9,BODY:0.95,AURA_BEHIND:1.24,AURA_FRONT:1.2};
 const ACCESSORY_SLOT_LIMITS = {HEAD_TOP:{dx:150,dy:120,s:[0.72,1.42]},EYES:{dx:92,dy:70,s:[0.72,1.3]},FACE:{dx:96,dy:88,s:[0.7,1.24]},MOUTH:{dx:120,dy:82,s:[0.72,1.22]},NECK:{dx:124,dy:90,s:[0.72,1.32]},BODY:{dx:130,dy:120,s:[0.72,1.36]},AURA_BEHIND:{dx:110,dy:120,s:[0.86,1.52]},AURA_FRONT:{dx:110,dy:110,s:[0.84,1.58]}};
+const DEFAULT_OFFSETS = {};
+let accessoryOffsets = {};
 
 const accessoryItems = [
   {id:'c_moss_cap',signature:'moss-cap',name:'Мшистый колпак',desc:'Лесной колпак с мягкой кромкой.',rarity:'common',slot:'HEAD_TOP',price:220000,offset:{dx:0,dy:-4,s:1,r:0},motif:'cap'},
@@ -1680,6 +1712,45 @@ function normalizeAccessoryCatalog(){
   }
 }
 normalizeAccessoryCatalog();
+
+function sanitizeOffsetEntry(raw={}){
+  return {
+    dxN: Number.isFinite(raw.dxN) ? raw.dxN : 0,
+    dyN: Number.isFinite(raw.dyN) ? raw.dyN : 0,
+    s: Number.isFinite(raw.s) ? raw.s : 1,
+    r: Number.isFinite(raw.r) ? raw.r : 0
+  };
+}
+function buildDefaultOffsets(){
+  const out={};
+  for(const it of accessoryItems){
+    const off=it.offset||{};
+    out[it.id]=sanitizeOffsetEntry({ dxN:(off.dx||0)/900, dyN:(off.dy||0)/900, s:off.s??1, r:off.r??0 });
+  }
+  for(const [id,entry] of Object.entries(DEFAULT_OFFSETS||{})) out[id]=sanitizeOffsetEntry(entry);
+  return out;
+}
+function loadAccessoryOffsets(){
+  accessoryOffsets = buildDefaultOffsets();
+  if(!isDevUser()) return;
+  try{
+    const raw=JSON.parse(localStorage.getItem(DEV_OFFSETS_STORAGE_KEY)||"{}");
+    for(const [id,entry] of Object.entries(raw||{})) accessoryOffsets[id]=sanitizeOffsetEntry(entry);
+  }catch{}
+}
+function saveAccessoryOffsetsLocal(){
+  if(!isDevUser()) return;
+  localStorage.setItem(DEV_OFFSETS_STORAGE_KEY, JSON.stringify(accessoryOffsets));
+}
+function getAccessoryOffsetById(id, fallback={dx:0,dy:0,s:1,r:0}){
+  const o=sanitizeOffsetEntry(accessoryOffsets[id]||{});
+  return { dx:o.dxN*900, dy:o.dyN*900, s:o.s, r:o.r };
+}
+function setAccessoryOffsetById(id,next={},persist=false){
+  const prev=accessoryOffsets[id] || { dxN:0, dyN:0, s:1, r:0 };
+  accessoryOffsets[id]=sanitizeOffsetEntry({ dxN:next.dxN??prev.dxN, dyN:next.dyN??prev.dyN, s:next.s??prev.s, r:next.r??prev.r });
+  if(persist) saveAccessoryOffsetsLocal();
+}
 
 const cosmeticItems = [
   // Skins
@@ -2395,6 +2466,124 @@ function initSettingsUI(){
   musicToggleBtn.addEventListener("click", ()=>{ state.settings.musicOn=!state.settings.musicOn; musicToggleBtn.textContent=`Музыка: ${state.settings.musicOn ? "ВКЛ" : "ВЫКЛ"}`; refreshMusic(); save(); });
 }
 
+function updateDevEditorVisibility(){
+  const item=document.getElementById('devAccessoryEditorItem');
+  if(!item) return;
+  const allowed=isDevUser();
+  item.style.display=allowed?'':'none';
+  if(!allowed) closeAccessoryEditorModal();
+}
+function getEditorSelectableAccessories(){
+  const equipped=getEquippedAccessories();
+  return equipped.length ? equipped : accessoryItems;
+}
+function syncEditorValues(){
+  const it=accessoryItems.find(x=>x.id===accessoryEditorState.selectedId); if(!it) return;
+  const o=sanitizeOffsetEntry(accessoryOffsets[it.id]||{});
+  const scale=document.getElementById('accEditorScale');
+  const rot=document.getElementById('accEditorRotation');
+  const scaleVal=document.getElementById('accEditorScaleVal');
+  const rotVal=document.getElementById('accEditorRotationVal');
+  if(scale) scale.value=String(o.s);
+  if(rot) rot.value=String(o.r);
+  if(scaleVal) scaleVal.textContent=o.s.toFixed(2);
+  if(rotVal) rotVal.textContent=`${o.r.toFixed(1)}°`;
+  const valEl=document.getElementById('accEditorValues');
+  if(valEl) valEl.textContent=`dxN: ${o.dxN.toFixed(4)} · dyN: ${o.dyN.toFixed(4)} · scale: ${o.s.toFixed(3)} · rotation: ${o.r.toFixed(2)}°`;
+}
+function renderAccessoryEditorSelect(){
+  const sel=document.getElementById('accEditorSelect'); if(!sel) return;
+  const list=getEditorSelectableAccessories();
+  const prev=accessoryEditorState.selectedId;
+  sel.innerHTML=list.map(it=>`<option value="${it.id}">${it.name} (${it.slot})</option>`).join('');
+  accessoryEditorState.selectedId=list.find(it=>it.id===prev)?.id || list[0]?.id || '';
+  sel.value=accessoryEditorState.selectedId;
+  syncEditorValues();
+}
+function renderAccessoryEditorPreview(){
+  if(!accessoryEditorState.open) return;
+  const equipped=state.cosmetics.equippedSlots;
+  renderFrogCosmetics(frogHosts.editorMain, getFrogRect(frogHosts.editorMain), equipped);
+  renderFrogCosmetics(frogHosts.editorShop, getFrogRect(frogHosts.editorShop), equipped);
+  renderFrogCosmetics(frogHosts.main, getFrogRect(frogHosts.main), equipped);
+  renderFrogCosmetics(frogHosts.shop, getFrogRect(frogHosts.shop), equipped);
+}
+function applyEditorDelta(dxN,dyN){
+  if(!accessoryEditorState.selectedId) return;
+  const id=accessoryEditorState.selectedId;
+  const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{});
+  setAccessoryOffsetById(id,{dxN:cur.dxN+dxN,dyN:cur.dyN+dyN,s:cur.s,r:cur.r},false);
+  syncEditorValues();
+  renderAccessoryEditorPreview();
+}
+function openAccessoryEditorModal(){
+  if(!isDevUser()) return;
+  accessoryEditorState.open=true;
+  document.getElementById('accessoryEditorModal')?.classList.add('show');
+  renderAccessoryEditorSelect();
+  renderAccessoryEditorPreview();
+  syncModalLock();
+}
+function closeAccessoryEditorModal(){
+  accessoryEditorState.open=false;
+  accessoryEditorState.dragging=false;
+  document.getElementById('accessoryEditorModal')?.classList.remove('show');
+  renderFrogCosmetics(frogHosts.main, getFrogRect(frogHosts.main), state.cosmetics.equippedSlots);
+  renderFrogCosmetics(frogHosts.shop, getFrogRect(frogHosts.shop), state.cosmetics.equippedSlots);
+  syncModalLock();
+}
+function initAccessoryEditor(){
+  document.getElementById('openAccessoryEditorBtn')?.addEventListener('click',openAccessoryEditorModal);
+  document.getElementById('accessoryEditorCloseBtn')?.addEventListener('click',closeAccessoryEditorModal);
+  document.getElementById('accEditorCloseBtnBottom')?.addEventListener('click',closeAccessoryEditorModal);
+  document.getElementById('accEditorSelect')?.addEventListener('change',(e)=>{ accessoryEditorState.selectedId=e.target.value; syncEditorValues(); renderAccessoryEditorPreview(); });
+  document.getElementById('accEditorScale')?.addEventListener('input',(e)=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:Number(e.target.value),r:cur.r},false); syncEditorValues(); renderAccessoryEditorPreview(); });
+  document.getElementById('accEditorRotation')?.addEventListener('input',(e)=>{ const id=accessoryEditorState.selectedId; if(!id) return; const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{}); setAccessoryOffsetById(id,{dxN:cur.dxN,dyN:cur.dyN,s:cur.s,r:Number(e.target.value)},false); syncEditorValues(); renderAccessoryEditorPreview(); });
+  document.getElementById('accEditorSaveBtn')?.addEventListener('click',()=>{ saveAccessoryOffsetsLocal(); toast('Editor','Локальные оффсеты сохранены','SETTINGS'); });
+  document.getElementById('accEditorResetBtn')?.addEventListener('click',()=>{ const id=accessoryEditorState.selectedId; if(!id) return; accessoryOffsets[id]=sanitizeOffsetEntry(buildDefaultOffsets()[id]||{}); syncEditorValues(); renderAccessoryEditorPreview(); });
+  document.getElementById('accEditorResetAllBtn')?.addEventListener('click',()=>{ accessoryOffsets=buildDefaultOffsets(); saveAccessoryOffsetsLocal(); syncEditorValues(); renderAccessoryEditorPreview(); });
+  document.getElementById('accEditorExportBtn')?.addEventListener('click',()=>{ document.getElementById('accEditorJson').value=JSON.stringify(accessoryOffsets,null,2); });
+  document.getElementById('accEditorImportBtn')?.addEventListener('click',()=>{ try{ const data=JSON.parse(document.getElementById('accEditorJson').value||'{}'); for(const [id,entry] of Object.entries(data||{})){ accessoryOffsets[id]=sanitizeOffsetEntry(entry); } renderAccessoryEditorSelect(); renderAccessoryEditorPreview(); }catch{ toast('Editor','Некорректный JSON','SETTINGS'); } });
+  document.getElementById('accEditorPublishBtn')?.addEventListener('click',()=>{ const code=`const DEFAULT_OFFSETS = ${JSON.stringify(accessoryOffsets,null,2)};`; document.getElementById('accEditorJson').value=code; });
+  document.getElementById('accEditorCopyBtn')?.addEventListener('click',async()=>{ const v=document.getElementById('accEditorJson').value||''; try{ await navigator.clipboard.writeText(v); toast('Editor','Скопировано','SETTINGS'); }catch{} });
+
+  const previews=[frogHosts.editorMain,frogHosts.editorShop].filter(Boolean);
+  for(const host of previews){
+    host.addEventListener('pointerdown',(e)=>{
+      if(!accessoryEditorState.open || !isDevUser()) return;
+      const target=e.target.closest('.frog-cosmetics-item'); if(!target) return;
+      const id=target.dataset.accId; if(!id) return;
+      accessoryEditorState.selectedId=id;
+      document.getElementById('accEditorSelect').value=id;
+      const cur=sanitizeOffsetEntry(accessoryOffsets[id]||{});
+      accessoryEditorState.dragging=true;
+      accessoryEditorState.dragHost=host;
+      accessoryEditorState.startX=e.clientX; accessoryEditorState.startY=e.clientY;
+      accessoryEditorState.startDxN=cur.dxN; accessoryEditorState.startDyN=cur.dyN;
+      host.setPointerCapture?.(e.pointerId);
+      syncEditorValues();
+    });
+    host.addEventListener('pointermove',(e)=>{
+      if(!accessoryEditorState.dragging || accessoryEditorState.dragHost!==host || !accessoryEditorState.selectedId) return;
+      const rect=getFrogRect(host);
+      setAccessoryOffsetById(accessoryEditorState.selectedId,{dxN:accessoryEditorState.startDxN + (e.clientX-accessoryEditorState.startX)/Math.max(1,rect.width),dyN:accessoryEditorState.startDyN + (e.clientY-accessoryEditorState.startY)/Math.max(1,rect.height)},false);
+      syncEditorValues();
+      renderAccessoryEditorPreview();
+    });
+    host.addEventListener('pointerup',()=>{ accessoryEditorState.dragging=false; accessoryEditorState.dragHost=null; });
+  }
+
+  window.addEventListener('keydown',(e)=>{
+    if(!accessoryEditorState.open || !isDevUser() || !accessoryEditorState.selectedId) return;
+    const t=e.target; if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable)) return;
+    const step=e.shiftKey?0.02:0.005;
+    if(e.key==='ArrowUp'){ applyEditorDelta(0,-step); e.preventDefault(); }
+    if(e.key==='ArrowDown'){ applyEditorDelta(0,step); e.preventDefault(); }
+    if(e.key==='ArrowLeft'){ applyEditorDelta(-step,0); e.preventDefault(); }
+    if(e.key==='ArrowRight'){ applyEditorDelta(step,0); e.preventDefault(); }
+  });
+}
+
 /* =========================
   TABS
 ========================= */
@@ -2677,10 +2866,13 @@ const frogCanvas = document.getElementById("frog");
 const fctx = frogCanvas.getContext("2d");
 const frogHosts = {
   main: document.getElementById('frogWrap'),
-  shop: document.getElementById('shopPreviewWrap')
+  shop: document.getElementById('shopPreviewWrap'),
+  editorMain: document.getElementById('editorMainPreview'),
+  editorShop: document.getElementById('editorShopPreview')
 };
 const accessoryFxState = { main:{particles:[],lastSpawn:0}, shop:{particles:[],lastSpawn:0} };
 const accessoryDebug = { enabled:false };
+const accessoryEditorState = { open:false, selectedId:"", dragging:false, dragHost:null, startX:0, startY:0, startDxN:0, startDyN:0 };
 function getFrogRect(targetRoot){
   if(!targetRoot) return {width:900,height:900};
   const rect = targetRoot.getBoundingClientRect();
@@ -2704,7 +2896,7 @@ function validateAccessoryAnchor(it){
 function accTransform(it,frogRect={width:900,height:900}){
   const anchorKey=validateAccessoryAnchor(it);
   const slot=ACCESSORY_SLOTS[anchorKey]||ACCESSORY_SLOTS.BODY;
-  const off=it.offset||{dx:0,dy:0,s:1,r:0};
+  const off=getAccessoryOffsetById(it.id, it.offset||{dx:0,dy:0,s:1,r:0});
   const sx=(frogRect.width||900)/900;
   const sy=(frogRect.height||900)/900;
   return {
@@ -2746,6 +2938,9 @@ function renderFrogCosmetics(targetRoot, frogRect=getFrogRect(targetRoot), equip
     wrapper.style.zIndex=String(t.z||3);
     wrapper.style.setProperty('--acc-size',`${t.size}px`);
     wrapper.style.transform=`translate(-50%,-50%) translate(${t.dx}px,${t.dy}px) scale(${t.s}) rotate(${t.r}deg)`;
+    if(accessoryEditorState.open && accessoryEditorState.selectedId===it.id){
+      wrapper.classList.add('editor-selected');
+    }
     wrapper.innerHTML = it.svgMarkup;
     layer.appendChild(wrapper);
     const svgEl=wrapper.querySelector('svg');
@@ -2763,21 +2958,6 @@ function renderFrogCosmetics(targetRoot, frogRect=getFrogRect(targetRoot), equip
       }
     }
     if(!rendered) console.error(`Accessory render failed: ${it.id}`);
-    if(accessoryDebug.enabled){
-      const dot=document.createElement('div');
-      dot.className='accAnchorDot';
-      dot.style.left=`${(t.x/frogRect.width)*100}%`;
-      dot.style.top=`${(t.y/frogRect.height)*100}%`;
-      dot.style.opacity='1';
-      layer.appendChild(dot);
-      const label=document.createElement('div');
-      label.className='accAnchorLabel';
-      label.style.left=`${(t.x/frogRect.width)*100}%`;
-      label.style.top=`${(t.y/frogRect.height)*100}%`;
-      label.style.opacity='1';
-      label.textContent=`${it.slot}: ${it.id}`;
-      layer.appendChild(label);
-    }
     results.push({id:it.id,slot:it.slot,rendered});
   }
   updateAccessoryDebugPanel(results, targetRoot===frogHosts.main);
@@ -2855,7 +3035,6 @@ function validateAccessories(){
   if(failures.length) console.table(failures); else console.info('[Accessories] validation passed for all accessories');
   return accessoryValidationState;
 }
-window.addEventListener('keydown',(e)=>{ if(e.shiftKey && e.key.toLowerCase()==='k'){ accessoryDebug.enabled=!accessoryDebug.enabled; renderFrogCosmetics(frogHosts.main,getFrogRect(frogHosts.main),state.cosmetics.equippedSlots); renderFrogCosmetics(frogHosts.shop,getFrogRect(frogHosts.shop),state.cosmetics.equippedSlots); if(accessoryDebug.enabled) validateAccessories(); } });
 const fx = { glows:[], particles:[], lastClick:0, squash:0 };
 const frogLife = { lookX:0, lookY:0, targetX:0, targetY:0, blink:0, nextBlink:performance.now()+rand(1200,3800), mood:"idle", happyUntil:0, angryUntil:0, lastUserAction:Date.now() };
 function frogMoodNow(){
@@ -3740,6 +3919,7 @@ document.getElementById('openShopModalBtn')?.addEventListener('click', openShopM
 document.getElementById('openGamesModalBtn')?.addEventListener('click', openGamesModal);
 document.getElementById('shopModalClose')?.addEventListener('click', closeShopModal);
 document.getElementById('gamesModalClose')?.addEventListener('click', closeGamesModal);
+document.getElementById('accessoryEditorModal')?.addEventListener('click',(e)=>{ if(e.target?.id==='accessoryEditorModal') closeAccessoryEditorModal(); });
 
 /* =========================
   MINI GAME LOOP
@@ -3765,13 +3945,22 @@ setInterval(()=>{
 
 
 function updateShopPreview(){
-  const pc = document.getElementById("shopPreview");
-  if(!pc) return;
-  const ctx = pc.getContext("2d");
-  if(!ctx) return;
-  ctx.clearRect(0,0,pc.width,pc.height);
-  ctx.drawImage(frogCanvas, 0, 0, pc.width, pc.height);
+  const paint=(canvasId)=>{
+    const pc=document.getElementById(canvasId); if(!pc) return;
+    const ctx=pc.getContext('2d'); if(!ctx) return;
+    ctx.clearRect(0,0,pc.width,pc.height);
+    ctx.drawImage(frogCanvas,0,0,pc.width,pc.height);
+  };
+  paint('shopPreview');
+  if(accessoryEditorState.open){
+    paint('editorMainCanvas');
+    paint('editorShopCanvas');
+  }
   renderFrogCosmetics(frogHosts.shop, getFrogRect(frogHosts.shop), state.cosmetics.equippedSlots);
+  if(accessoryEditorState.open){
+    renderFrogCosmetics(frogHosts.editorMain, getFrogRect(frogHosts.editorMain), state.cosmetics.equippedSlots);
+    renderFrogCosmetics(frogHosts.editorShop, getFrogRect(frogHosts.editorShop), state.cosmetics.equippedSlots);
+  }
 }
 /* =========================
   MAIN DRAW LOOP
@@ -3998,8 +4187,10 @@ async function registerAccount(name,pass,fromLegacy=false){
   window.__guestMode=false;
   saveProfiles();
   applyAccountToState(name);
+  loadAccessoryOffsets();
   nickInput.value = state.account.nick || "";
   bioInput.value = state.account.bio || "";
+  updateDevEditorVisibility();
   hideProfileGate();
   save(); updateUI(true); renderAvatar();
 }
@@ -4009,14 +4200,16 @@ async function loginAccount(name,pass){
   profileStore.activeUser=name;
   window.__guestMode=false;
   applyAccountToState(name);
+  loadAccessoryOffsets();
   saveProfiles();
   nickInput.value = state.account.nick || "";
   bioInput.value = state.account.bio || "";
+  updateDevEditorVisibility();
   hideProfileGate();
   save(); updateUI(true); renderAvatar();
 }
-function enterGuest(){ profileStore.activeUser=null; window.__guestMode=true; saveProfiles(); resetToFreshState(); nickInput.value=""; bioInput.value=""; hideProfileGate(); updateUI(true); renderAvatar(); }
-function logoutAccount(){ if(profileStore.activeUser){ syncAccountFromState(profileStore.activeUser); } profileStore.activeUser=null; window.__guestMode=true; saveProfiles(); resetToFreshState(); nickInput.value=""; bioInput.value=""; state.account.avatarDataUrl=""; state.account.builtInAvatar=""; state.account.frame=""; renderAvatar(); updateUI(true); }
+function enterGuest(){ profileStore.activeUser=null; window.__guestMode=true; saveProfiles(); resetToFreshState(); loadAccessoryOffsets(); updateDevEditorVisibility(); nickInput.value=""; bioInput.value=""; hideProfileGate(); updateUI(true); renderAvatar(); }
+function logoutAccount(){ if(profileStore.activeUser){ syncAccountFromState(profileStore.activeUser); } profileStore.activeUser=null; window.__guestMode=true; saveProfiles(); resetToFreshState(); loadAccessoryOffsets(); updateDevEditorVisibility(); nickInput.value=""; bioInput.value=""; state.account.avatarDataUrl=""; state.account.builtInAvatar=""; state.account.frame=""; renderAvatar(); updateUI(true); }
 function initModalPortals(){
   const shopBody=document.getElementById('shopModalBody'); const gamesBody=document.getElementById('gamesModalBody');
   const shopPane=document.getElementById('tab-shop'); const gamesPane=document.getElementById('tab-games');
@@ -4105,6 +4298,8 @@ updateEventUI();
 
 // settings init
 initSettingsUI();
+initAccessoryEditor();
+updateDevEditorVisibility();
 initModalPortals();
 restartAutosave();
 
