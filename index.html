@@ -43,6 +43,11 @@
   .brand{display:flex; flex-direction:column; gap:4px;}
   .brand h1{margin:0;font-size:16px;letter-spacing:.3px;}
   .brand p{margin:0;color:var(--muted);font-size:12px;line-height:1.3;}
+  .gameHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 8px;padding:10px 12px;border:1px solid #ffffff24;border-radius:16px;background:linear-gradient(135deg,#0c1d2e,#0b1828 65%,#0f2331);}
+  .gameBrand{display:flex;align-items:center;gap:10px}
+  .frogLogo{width:30px;height:30px;filter:drop-shadow(0 0 8px #35f0a366)}
+  .gameBrand h1{margin:0;font-size:17px;line-height:1.05}
+  .gameBrand p{margin:2px 0 0;color:#b7c6dd;font-size:11px;line-height:1.2}
   .pill{
     display:inline-flex; gap:8px; align-items:center;
     padding:10px 12px; border-radius:999px;
@@ -129,6 +134,9 @@
   .item .t{font-weight:950}
   .item .s{color:var(--muted); font-size:12px; line-height:1.3}
   .item .row{display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;}
+  .upgradeCard.maxed{opacity:.56;filter:grayscale(.55);border-color:#ffffff30}
+  .upgradeCard .maxBadge{display:none}
+  .upgradeCard.maxed .maxBadge{display:inline-flex;background:#ffffff18;color:#d9dfec;border:1px solid #ffffff35}
   .tag{
     display:inline-flex; align-items:center; gap:6px;
     padding:6px 10px; border-radius:999px;
@@ -186,7 +194,10 @@
   .hint{margin-top:10px; color:#b7c6dd; font-size:12px; line-height:1.35;}
 
   /* Right tabs */
-  .tabs{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; align-items:center;}
+  .tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px;align-items:start;}
+  .tabGroup{display:grid;gap:8px;padding:8px;border:1px solid #ffffff1f;border-radius:14px;background:#091426a6;}
+  .tabGroupTitle{font-size:10px;letter-spacing:.6px;text-transform:uppercase;color:#9ab3d4;font-weight:900;}
+  .tabGroup .tabBtn,.tabGroup .btn{width:100%;justify-content:center}
   .tabBtn{
     cursor:pointer; border:1px solid var(--stroke); background:#0a1220aa; color:var(--text);
     padding:10px 12px; border-radius:14px; font-weight:950; font-size:13px;
@@ -366,11 +377,11 @@
   .shopTabs{display:flex;gap:8px;flex-wrap:wrap}
   .shopPane{display:none}
   .shopPane.active{display:block}
-  .shopModalLayout{display:grid;grid-template-columns:minmax(240px,300px) minmax(0,1fr);gap:12px;align-items:start;max-height:72vh}
+  .shopModalLayout{display:grid;grid-template-columns:minmax(240px,300px) minmax(0,1fr);gap:12px;align-items:start;max-height:76vh;margin-top:2px}
   .shopPreview{border:1px solid var(--stroke);border-radius:16px;padding:12px;background:#0a1220aa;position:sticky;top:0;overflow:hidden;box-shadow:0 0 0 1px #ffffff17 inset}
   .shopPreview::before{content:"";position:absolute;inset:0;border-radius:16px;padding:2px;background:linear-gradient(135deg,#9afaff,#95a6ff,#b2ffdf,#ffe09a);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.9;pointer-events:none}
   .shopPreview::after{content:"";position:absolute;inset:6px;border-radius:12px;background:linear-gradient(130deg,#ffffff14,#8cd7ff10,#ffffff08);box-shadow:0 0 35px #6ecaff38;pointer-events:none}
-  #shopModalBody{max-height:70vh;overflow:auto;padding-right:6px}
+  #shopModalBody{max-height:74vh;overflow:auto;padding-right:6px;padding-top:2px}
   #shopModalBody::-webkit-scrollbar{width:8px}
   #shopModalBody::-webkit-scrollbar-thumb{background:#ffffff30;border-radius:999px}
   #shopPreview{width:100%;height:auto;display:block;border-radius:12px;border:1px solid #ffffff22;background:linear-gradient(160deg,#0a1324,#071a1f)}
@@ -506,6 +517,7 @@
   @keyframes dustPop{from{transform:translateY(0);opacity:.5}to{transform:translateY(-3px);opacity:1}}
 
   #tab-news.tabPane{gap:10px;max-width:100%;max-height:calc(100vh - 150px);overflow:auto;padding-right:4px;overflow-x:hidden}
+  #tab-games.tabPane{padding-top:0;margin-top:-4px}
   #tab-news.tabPane.active{display:grid}
   #newsList{display:grid;gap:10px;max-width:100%;max-height:100%;overflow:auto;white-space:normal;word-break:break-word}
   .newsEntry{max-height:220px;overflow:auto;border:1px solid #ffffff24;border-radius:14px;padding:10px;background:#0a1220aa}
@@ -610,10 +622,13 @@
       <button class="btn primary" id="openShopModalBtn">🛒 Магазин</button>
       <button class="btn" id="openGamesModalBtn">🎮 Мини-игры</button>
           </div>
-    <div class="top">
-      <div class="brand">
-        <h1>🐸 Frog Clicker — PRO</h1>
-        <p>Клик по лягушке = очки. Обновлённый 2D-рендер с глубиной, мягким светом и текстурой.</p>
+    <div class="gameHeader">
+      <div class="gameBrand">
+        <svg class="frogLogo" viewBox="0 0 64 64" fill="none" aria-hidden="true"><defs><linearGradient id="frogLogoGrad" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#35f0a3"/><stop offset="1" stop-color="#1ac8ff"/></linearGradient></defs><circle cx="20" cy="20" r="8" fill="#dfffee"/><circle cx="44" cy="20" r="8" fill="#dfffee"/><path d="M12 38c0-12 9-22 20-22s20 10 20 22v5c0 9-8 17-20 17s-20-8-20-17z" fill="url(#frogLogoGrad)"/><circle cx="20" cy="20" r="3" fill="#102b2f"/><circle cx="44" cy="20" r="3" fill="#102b2f"/><path d="M24 42c2 4 6 6 8 6s6-2 8-6" stroke="#0b2e32" stroke-width="3" stroke-linecap="round"/></svg>
+        <div>
+          <h1>Frog Clicker — PRO</h1>
+          <p>Премиальная аркада о болоте, стиле и прогрессе.</p>
+        </div>
       </div>
       <div class="pill"><span class="dot"></span> OFFLINE OK</div>
     </div>
@@ -656,15 +671,25 @@
   <!-- RIGHT: TABS -->
   <div class="card panel">
     <div class="tabs">
-      <button class="tabBtn active" data-tab="upg">Прокачка</button>
-            <button class="tabBtn" data-tab="ach">Достижения</button>
-      <button class="tabBtn" data-tab="ranks">Ранги</button>
-      <button class="tabBtn" data-tab="leaders">Лидеры</button>
-      <button class="tabBtn" data-tab="locations">Локации</button>
-      <button class="tabBtn" data-tab="news">Новости <span id="newsBadge" class="newsNew" style="display:none">new</span></button>
-      <button class="tabBtn" data-tab="set">Настройки</button>
-      <div style="flex:1"></div>
-      <button class="tabBtn primary" id="saveBtn">Сохранить игру</button>
+      <div class="tabGroup">
+        <div class="tabGroupTitle">Прогресс</div>
+        <button class="tabBtn active" data-tab="upg">Прокачка</button>
+        <button class="tabBtn" data-tab="ach">Достижения</button>
+        <button class="tabBtn" data-tab="ranks">Ранги</button>
+        <button class="tabBtn" data-tab="locations">Локации</button>
+      </div>
+      <div class="tabGroup">
+        <div class="tabGroupTitle">Экономика</div>
+        <button class="tabBtn" data-tab="shop">Магазин</button>
+        <button class="tabBtn" data-tab="games">Кейсы / Мини-игры</button>
+      </div>
+      <div class="tabGroup">
+        <div class="tabGroupTitle">Мета</div>
+        <button class="tabBtn" data-tab="leaders">Лидеры</button>
+        <button class="tabBtn" data-tab="news">Новости <span id="newsBadge" class="newsNew" style="display:none">new</span></button>
+        <button class="tabBtn" data-tab="set">Настройки</button>
+        <button class="btn primary" id="saveBtn">Сохранить игру</button>
+      </div>
     </div>
 
     <div class="panelContent">
@@ -701,14 +726,14 @@
 
 
     <div class="tabPane" id="tab-games">
-      <h2>Мини-игры</h2>
-      <p>Выберите мини-игру и получайте награды.</p>
+      <p style="margin-top:0">Выберите мини-игру и получайте награды.</p>
 
       <div class="subTabs">
         <button class="tabBtn active" data-subgame="flies">🪰 Охота</button>
         <button class="tabBtn" data-subgame="pads">🌿 Память</button>
         <button class="tabBtn" data-subgame="raid">⚡ Рейд</button>
         <button class="tabBtn" data-subgame="blackjack">🂡 Blackjack</button>
+        <button class="tabBtn" data-subgame="rush">🎯 Цветовой рывок</button>
       </div>
 
 <div class="subPane active" id="subgame-flies">
@@ -765,6 +790,31 @@
           <div class="gameCanvasWrap">
             <div class="gameHUD" id="raidHud">—</div>
             <canvas class="game" id="raid" width="960" height="540"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="subPane" id="subgame-rush">
+        <div class="gameBox">
+          <div class="gameTop">
+            <div>
+              <div style="font-weight:950">🎯 Цветовой рывок</div>
+              <div class="small">Не таппер: жми только кнопку нужного цвета до таймера.</div>
+            </div>
+            <div class="btnRow">
+              <button class="btn primary" id="rushStart">Старт</button>
+              <button class="btn" id="rushStop">Стоп</button>
+            </div>
+          </div>
+          <div class="item" style="display:grid;gap:10px">
+            <div class="gameHUD" id="rushHud">Нажми «Старт»</div>
+            <div class="btnRow" id="rushButtons">
+              <button class="btn" data-rush-color="red">Красный</button>
+              <button class="btn" data-rush-color="blue">Синий</button>
+              <button class="btn" data-rush-color="green">Зелёный</button>
+              <button class="btn" data-rush-color="yellow">Жёлтый</button>
+            </div>
           </div>
         </div>
       </div>
@@ -906,8 +956,8 @@
   </div>
 </div>
 <div class="modalBack" id="caseOpenModal"><div class="modal caseModal"><div class="caseModalTop"><div class="caseModalHeading"><div class="caseModalTitle" id="caseModalTitle">Выберите кейс</div><button class="caseHeaderInfo" id="caseModalOddsBtn" title="Показать шансы" aria-label="Показать шансы" style="display:none">ⓘ</button></div><div class="caseOddsPopup" id="caseModalOddsPopup"></div><button class="btn caseSecondary caseModalCloseBtn" id="caseModalClose">Закрыть</button></div><div class="modalScroll"><div id="caseModalContent" class="caseAnimCard"></div></div><div class="caseActions" style="margin-top:10px"><button class="btn casePrimary" id="caseSpinBtn">Начать открытие</button><button class="btn" id="caseEquipBtn" style="display:none">Надеть</button><button class="btn" id="caseInventoryBtn" style="display:none">В инвентарь</button><button class="btn caseSecondary" id="caseSellBtn" style="display:none">В пыль</button><button class="btn caseSecondary" id="caseCloseBtn" style="display:none">Ок</button></div></div></div>
-<div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:90vh;overflow:hidden"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout modalScroll" style="margin-top:10px"><div class="shopPreview"><div id="shopPreviewWrap" class="previewFrogWrap"><canvas id="shopPreview" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div><div class="frog-editor-preview-layer" aria-hidden="true"></div><canvas class="frogAccessoryFx" width="900" height="900"></canvas></div></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
-<div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:90vh;overflow:auto"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
+<div class="modalBack" id="shopModal"><div class="modal" style="width:min(1100px,calc(100vw - 24px));max-height:92vh;overflow:hidden;padding-top:10px"><div class="modalTop"><div class="t" style="font-weight:950">Магазин</div><button class="btn" id="shopModalClose">X</button></div><div class="row"><span class="tag currencyGlow" id="shopBal"></span><span class="tag currencyGlow" id="shopBalDiam"></span><span class="tag currencyGlow" id="shopBalDust"></span></div><div class="shopModalLayout modalScroll" style="margin-top:4px"><div class="shopPreview"><div id="shopPreviewWrap" class="previewFrogWrap"><canvas id="shopPreview" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div><div class="frog-editor-preview-layer" aria-hidden="true"></div><canvas class="frogAccessoryFx" width="900" height="900"></canvas></div></div><div id="shopModalBody" style="min-width:0"></div></div></div></div>
+<div class="modalBack" id="gamesModal"><div class="modal" style="width:min(980px,calc(100vw - 24px));max-height:92vh;overflow:auto;padding-top:8px"><div class="modalTop"><div class="t" style="font-weight:950">Мини-игры</div><button class="btn" id="gamesModalClose">X</button></div><div id="gamesModalBody"></div></div></div>
 <div class="modalBack" id="accessoryEditorModal"><div class="modal" style="width:min(1160px,calc(100vw - 24px));max-height:92vh;overflow:auto"><div class="modalTop"><div><div class="t" style="font-weight:950">Редактор аксессуаров (DEV)</div><div class="small">Тяни аксессуар мышью, используй стрелки (Shift = крупный шаг), меняй scale/rotation и публикуй DEFAULT_OFFSETS.</div></div><button class="btn" id="accessoryEditorCloseBtn">Закрыть</button></div><div class="devEditorGrid"><div><div class="devEditorPreview"><div><div id="editorMainPreview" class="previewFrogWrap"><canvas id="editorMainCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div><div class="frog-editor-preview-layer" aria-hidden="true"></div></div><div class="caption">Main frog</div></div><div><div id="editorShopPreview" class="previewFrogWrap"><canvas id="editorShopCanvas" width="420" height="420"></canvas><div class="frog-cosmetics-layer" aria-hidden="true"></div><div class="frog-editor-preview-layer" aria-hidden="true"></div></div><div class="caption">Shop preview frog</div></div></div></div><div class="devEditorControls"><label class="small">Accessory<select id="accEditorSelect"></select></label><div class="devEditorFilters"><input id="accEditorSearch" placeholder="Поиск по имени / id"/><select id="accEditorRarity"><option value="">Все редкости</option><option value="common">common</option><option value="rare">rare</option><option value="epic">epic</option><option value="legend">legend</option><option value="limited">limited</option></select><select id="accEditorSlot"><option value="">Все слоты</option></select><label class="devEditorToggle"><input type="checkbox" id="accEditorPreviewOnly" checked/> Preview only</label></div><div class="devEditorRow"><label class="small" for="accEditorScale">Scale</label><input id="accEditorScale" type="range" min="0.1" max="4" step="0.01"><input id="accEditorScaleNum" type="number" min="0.1" max="4" step="0.01" value="1"><output id="accEditorScaleVal">1.00</output></div><div class="devEditorRow"><label class="small" for="accEditorRotation">Rotation</label><input id="accEditorRotation" type="range" min="-180" max="180" step="0.5"><input id="accEditorRotationNum" type="number" min="-180" max="180" step="0.1" value="0"><output id="accEditorRotationVal">0.0°</output></div><div class="item"><div class="small" id="accEditorValues">dxN: 0 · dyN: 0 · scale: 1 · rotation: 0</div><div class="devEditorHint">Сохранить — в localStorage: <code>frog_accessory_offsets_dev_v1</code>. Publish offsets генерирует код для вставки в константу по умолчанию.</div></div><div class="btnRow"><button class="btn primary" id="accEditorSaveBtn">Сохранить</button><button class="btn" id="accEditorResetBtn">Сброс</button><button class="btn" id="accEditorResetAllBtn">Сбросить всё</button><button class="btn" id="accEditorExportBtn">Экспорт (JSON)</button><button class="btn" id="accEditorImportBtn">Импорт (JSON)</button><button class="btn" id="accEditorSaveFileBtn">Save offsets to file</button><button class="btn warn" id="accEditorPublishChangedBtn">Publish (changed only)</button><button class="btn warn" id="accEditorPublishFullBtn">Publish (full defaults)</button></div><textarea id="accEditorJson" placeholder="JSON / сгенерированный код для DEFAULT_OFFSETS"></textarea><div class="btnRow"><button class="btn" id="accEditorCopyBtn">Copy</button><button class="btn" id="accEditorCloseBtnBottom">Закрыть</button></div><div class="small" id="accEditorChangedInfo">Changed count: 0</div><div class="small">Paste this into code to make placements default for everyone.</div></div></div></div></div>
 
 <div id="gameResultOverlay" class="resultOverlay"><div id="gameResultTitle" class="t"></div><div id="gameResultText" class="s" style="margin-top:6px"></div></div>
@@ -1176,6 +1226,8 @@ function load(){
   state.bestPointsAllTime = Math.max(Number(state.bestPointsAllTime)||0, Number(state.points)||0);
   state.activeLocation ||= "swamp";
   state.activeTheme ||= "emerald";
+  state.cosmetics ||= {};
+  state.cosmetics.skin = normalizeSkinId(state.cosmetics.skin);
   loadAccessoryOffsets();
 }
 
@@ -1545,36 +1597,36 @@ const upgrades = [
     level:()=>state.up_ppc20||0, buy(){ state.ppc += 20; state.up_ppc20=(state.up_ppc20||0)+1; } },
 
   { id:"critChance", name:"+2% крит", desc:"Шанс крита (до 55%)", base: 180, scale: 1.30,
-    level:()=>state.up_critChance||0, buy(){ state.critChance = Math.min(0.55, state.critChance + 0.02); state.up_critChance=(state.up_critChance||0)+1; } },
+    level:()=>state.up_critChance||0, maxLevel:23, buy(){ state.critChance = Math.min(0.55, state.critChance + 0.02); state.up_critChance=(state.up_critChance||0)+1; } },
   { id:"critMult", name:"+0.15 множитель", desc:"Криты жирнее (до 4.5x)", base: 260, scale: 1.34,
-    level:()=>state.up_critMult||0, buy(){ state.critMult = Math.min(4.5, state.critMult + 0.15); state.up_critMult=(state.up_critMult||0)+1; } },
+    level:()=>state.up_critMult||0, maxLevel:16, buy(){ state.critMult = Math.min(4.5, state.critMult + 0.15); state.up_critMult=(state.up_critMult||0)+1; } },
 
   { id:"comboTime", name:"+0.15с комбо", desc:"Комбо дольше не спадает", base: 220, scale: 1.28,
-    level:()=>state.up_comboTime||0, buy(){ state.comboDecayMs = Math.min(3500, state.comboDecayMs + 150); state.up_comboTime=(state.up_comboTime||0)+1; } },
+    level:()=>state.up_comboTime||0, maxLevel:15, buy(){ state.comboDecayMs = Math.min(3500, state.comboDecayMs + 150); state.up_comboTime=(state.up_comboTime||0)+1; } },
 
   { id:"autoclick", name:"Автокликер +1/сек", desc:"Пассивный доход", base: 3200, scale: 1.48,
     level:()=>state.up_autoclick||0, buy(){ state.autoClickers += 1; state.up_autoclick=(state.up_autoclick||0)+1; } },
 
   { id:"xpBoost", name:"+10% XP", desc:"Уровень растёт быстрее (до x3)", base: 340, scale: 1.35,
-    level:()=>state.up_xpBoost||0, buy(){ state.xpBoost = Math.min(3, state.xpBoost + 0.10); state.up_xpBoost=(state.up_xpBoost||0)+1; } },
+    level:()=>state.up_xpBoost||0, maxLevel:20, buy(){ state.xpBoost = Math.min(3, state.xpBoost + 0.10); state.up_xpBoost=(state.up_xpBoost||0)+1; } },
 
   { id:"bonusDrop", name:"+1% бонус-дроп", desc:"Шанс доп. очков за клик (до 20%)", base: 300, scale: 1.33,
-    level:()=>state.up_bonusDrop||0, buy(){ state.bonusDropChance = Math.min(0.20, state.bonusDropChance + 0.01); state.up_bonusDrop=(state.up_bonusDrop||0)+1; } },
+    level:()=>state.up_bonusDrop||0, maxLevel:20, buy(){ state.bonusDropChance = Math.min(0.20, state.bonusDropChance + 0.01); state.up_bonusDrop=(state.up_bonusDrop||0)+1; } },
 
   { id:"shopDiscount", name:"Скидка 1%", desc:"Удешевляет покупки (до 35%)", base: 900, scale: 1.55,
-    level:()=>state.up_shopDiscount||0, buy(){ state.shopDiscount = Math.min(0.35, state.shopDiscount + 0.01); state.up_shopDiscount=(state.up_shopDiscount||0)+1; } },
+    level:()=>state.up_shopDiscount||0, maxLevel:35, buy(){ state.shopDiscount = Math.min(0.35, state.shopDiscount + 0.01); state.up_shopDiscount=(state.up_shopDiscount||0)+1; } },
 
 
   { id:"energyMax", name:"+15 макс. энергия", desc:"Длиннее активная серия кликов", base: 900, scale: 1.36,
-    level:()=>state.up_energyMax||0, buy(){ state.energyMax = Math.min(420, state.energyMax + 15); state.energy = Math.min(state.energyMax, state.energy + 12); state.up_energyMax=(state.up_energyMax||0)+1; } },
+    level:()=>state.up_energyMax||0, maxLevel:22, buy(){ state.energyMax = Math.min(420, state.energyMax + 15); state.energy = Math.min(state.energyMax, state.energy + 12); state.up_energyMax=(state.up_energyMax||0)+1; } },
 
   { id:"energyRegen", name:"+0.7 реген/сек", desc:"Энергия быстрее восстанавливается", base: 1300, scale: 1.44,
-    level:()=>state.up_energyRegen||0, buy(){ state.energyRegen = Math.min(28, state.energyRegen + 0.7); state.up_energyRegen=(state.up_energyRegen||0)+1; } },
+    level:()=>state.up_energyRegen||0, maxLevel:32, buy(){ state.energyRegen = Math.min(28, state.energyRegen + 0.7); state.up_energyRegen=(state.up_energyRegen||0)+1; } },
 
   { id:"energyClickCost", name:"-0.08 расход/клик", desc:"Клики тратят меньше энергии", base: 1700, scale: 1.42,
-    level:()=>state.up_energyClickCost||0, buy(){ state.clickEnergyCost = Math.max(0.3, state.clickEnergyCost - 0.08); state.up_energyClickCost=(state.up_energyClickCost||0)+1; } },
+    level:()=>state.up_energyClickCost||0, maxLevel:9, buy(){ state.clickEnergyCost = Math.max(0.3, state.clickEnergyCost - 0.08); state.up_energyClickCost=(state.up_energyClickCost||0)+1; } },
   { id:"miniBonus", name:"+5% мини-игры", desc:"Награда мини-игр выше (до x2.5)", base: 520, scale: 1.38,
-    level:()=>state.up_miniBonus||0, buy(){ state.minigameBonus = Math.min(2.5, state.minigameBonus + 0.05); state.up_miniBonus=(state.up_miniBonus||0)+1; } }
+    level:()=>state.up_miniBonus||0, maxLevel:30, buy(){ state.minigameBonus = Math.min(2.5, state.minigameBonus + 0.05); state.up_miniBonus=(state.up_miniBonus||0)+1; } }
 ];
 
 function upgradePrice(u){
@@ -1673,19 +1725,19 @@ const accessoryItems = [
   {id:'e_orbit_back',signature:'orbit-back',name:'Орбитальный круг',desc:'Световой круг за спиной.',rarity:'epic',slot:'AURA_BEHIND',price:810000,offset:{dx:0,dy:-10,s:1.08,r:0},motif:'orbitAura',effects:{particles:{type:'spark',color:'#9dd2ff',count:16,rate:0.9,radius:170}}},
   {id:'e_prism_front',signature:'prism-front',name:'Призма фронта',desc:'Передний призмовый отблеск.',rarity:'epic',slot:'AURA_FRONT',price:790000,offset:{dx:0,dy:12,s:1.06,r:0},motif:'prismFront',effects:{particles:{type:'mote',color:'#ffd9ff',count:15,rate:0.85,radius:150}}},
 
-  {id:'l_solar_diadem',signature:'solar-diadem',name:'Солярная диадема',desc:'Премиум металл и живой луч.',rarity:'legend',slot:'HEAD_TOP',price:1200000,offset:{dx:0,dy:-10,s:1.1,r:0},motif:'solarDiadem',effects:{particles:{type:'spark',color:'#ffd166',count:18,rate:1.1,radius:180}}},
-  {id:'l_royal_vizor',signature:'royal-vizor',name:'Королевский визор',desc:'Шлифованное стекло с волной света.',rarity:'legend',slot:'EYES',price:1180000,offset:{dx:0,dy:0,s:1.1,r:0},motif:'royalVizor',effects:{particles:{type:'mote',color:'#91deff',count:18,rate:1.05,radius:170}}},
-  {id:'l_empress_mask',signature:'empress-mask',name:'Маска императрицы',desc:'Полноразмерная позолоченная маска с резным орнаментом.',rarity:'legend',slot:'FACE',price:1240000,offset:{dx:0,dy:-4,s:1.24,r:0},motif:'empressMask',effects:{particles:{type:'spark',color:'#ffd2a6',count:14,rate:0.9,radius:170}}},
-  {id:'l_relic_torque',signature:'relic-torque',name:'Реликтовый торк',desc:'Тяжёлый торк с мягкой аурой.',rarity:'legend',slot:'NECK',price:1160000,offset:{dx:0,dy:4,s:1.08,r:0},motif:'relicTorque',effects:{particles:{type:'ember',color:'#ffcb8d',count:16,rate:0.95,radius:165}}},
-  {id:'l_photon_halo',signature:'photon-halo',name:'Фотонный нимб',desc:'Пульсирующее кольцо вокруг героя.',rarity:'legend',slot:'AURA_BEHIND',price:1260000,offset:{dx:0,dy:-10,s:1.13,r:0},motif:'photonHalo',effects:{particles:{type:'spark',color:'#ffe2a7',count:20,rate:1.1,radius:190}}},
-  {id:'l_crest_seal',signature:'crest-seal',name:'Печать Ордена',desc:'Фронтальная печать с зеркальным блеском.',rarity:'legend',slot:'AURA_FRONT',price:1190000,offset:{dx:0,dy:8,s:1.1,r:0},motif:'crestSeal',effects:{particles:{type:'mote',color:'#ffdcb0',count:18,rate:1.05,radius:175}}},
+  {id:'l_solar_diadem',signature:'solar-diadem',name:'Солярная диадема',desc:'Премиум металл и живой луч.',rarity:'legend',slot:'HEAD_TOP',price:3000000,offset:{dx:0,dy:-10,s:1.1,r:0},motif:'solarDiadem',effects:{particles:{type:'spark',color:'#ffd166',count:18,rate:1.1,radius:180}}},
+  {id:'l_royal_vizor',signature:'royal-vizor',name:'Королевский визор',desc:'Шлифованное стекло с волной света.',rarity:'legend',slot:'EYES',price:2980000,offset:{dx:0,dy:0,s:1.1,r:0},motif:'royalVizor',effects:{particles:{type:'mote',color:'#91deff',count:18,rate:1.05,radius:170}}},
+  {id:'l_empress_mask',signature:'empress-mask',name:'Маска императрицы',desc:'Полноразмерная позолоченная маска с резным орнаментом.',rarity:'legend',slot:'FACE',price:3040000,offset:{dx:0,dy:-4,s:1.24,r:0},motif:'empressMask',effects:{particles:{type:'spark',color:'#ffd2a6',count:14,rate:0.9,radius:170}}},
+  {id:'l_relic_torque',signature:'relic-torque',name:'Реликтовый торк',desc:'Тяжёлый торк с мягкой аурой.',rarity:'legend',slot:'NECK',price:2960000,offset:{dx:0,dy:4,s:1.08,r:0},motif:'relicTorque',effects:{particles:{type:'ember',color:'#ffcb8d',count:16,rate:0.95,radius:165}}},
+  {id:'l_photon_halo',signature:'photon-halo',name:'Фотонный нимб',desc:'Пульсирующее кольцо вокруг героя.',rarity:'legend',slot:'AURA_BEHIND',price:3060000,offset:{dx:0,dy:-10,s:1.13,r:0},motif:'photonHalo',effects:{particles:{type:'spark',color:'#ffe2a7',count:20,rate:1.1,radius:190}}},
+  {id:'l_crest_seal',signature:'crest-seal',name:'Печать Ордена',desc:'Фронтальная печать с зеркальным блеском.',rarity:'legend',slot:'AURA_FRONT',price:2990000,offset:{dx:0,dy:8,s:1.1,r:0},motif:'crestSeal',effects:{particles:{type:'mote',color:'#ffdcb0',count:18,rate:1.05,radius:175}}},
 
-  {id:'lm_void_crown',signature:'void-crown',name:'Корона Бездны',desc:'Лимит: руны и глубинный градиент.',rarity:'limited',limited:true,stock:7,slot:'HEAD_TOP',price:4200000,offset:{dx:0,dy:-12,s:1.16,r:0},motif:'voidCrown',effects:{particles:{type:'rune',color:'#b99dff',count:20,rate:1.25,radius:220}}},
-  {id:'lm_rift_eyes',signature:'rift-eyes',name:'Слэшерская маска',desc:'Лимит: оригинальная слэшер-маска с вентиляцией и потёртостями.',rarity:'limited',limited:true,stock:8,slot:'FACE',price:4300000,offset:{dx:0,dy:8,s:1.52,r:0},motif:'slasherMask',effects:{particles:{type:'spark',color:'#dfe8ff',count:12,rate:0.7,radius:210}}},
-  {id:'lm_ember_mask',signature:'ember-mask',name:'Пепельная маска',desc:'Лимит: раскалённые прожилки и эмберы.',rarity:'limited',limited:true,stock:6,slot:'FACE',price:4400000,offset:{dx:0,dy:4,s:1.13,r:0},motif:'emberMask',effects:{particles:{type:'ember',color:'#ff9f68',count:20,rate:1.25,radius:205}}},
-  {id:'lm_rune_torque',signature:'rune-torque',name:'Торк Архонта',desc:'Лимит: рунный обруч с синим пламенем.',rarity:'limited',limited:true,stock:9,slot:'NECK',price:4150000,offset:{dx:0,dy:6,s:1.13,r:0},motif:'runeTorque',effects:{particles:{type:'rune',color:'#9cfadf',count:20,rate:1.2,radius:215}}},
-  {id:'lm_eclipse_back',signature:'eclipse-back',name:'Затмение',desc:'Лимит: позадний астральный диск с пеплом.',rarity:'limited',limited:true,stock:5,slot:'AURA_BEHIND',price:4600000,offset:{dx:0,dy:-14,s:1.18,r:0},motif:'eclipseBack',effects:{particles:{type:'ember',color:'#ffc38d',count:20,rate:1.3,radius:225}}},
-  {id:'lm_sigil_front',signature:'sigil-front',name:'Сигил Предела',desc:'Лимит-аура: вращающийся сигил с руническими искрами.',rarity:'limited',limited:true,stock:4,slot:'AURA_FRONT',price:4700000,offset:{dx:0,dy:0,s:1.24,r:0},motif:'sigilFront',effects:{particles:{type:'spark',color:'#ffe9b4',count:10,rate:0.75,radius:250}}}
+  {id:'lm_void_crown',signature:'void-crown',name:'Корона Бездны',desc:'Лимит: руны и глубинный градиент.',rarity:'limited',limited:true,stock:7,slot:'HEAD_TOP',price:33600000,offset:{dx:0,dy:-12,s:1.16,r:0},motif:'voidCrown',effects:{particles:{type:'rune',color:'#b99dff',count:20,rate:1.25,radius:220}}},
+  {id:'lm_rift_eyes',signature:'rift-eyes',name:'Слэшерская маска',desc:'Лимит: оригинальная слэшер-маска с вентиляцией и потёртостями.',rarity:'limited',limited:true,stock:8,slot:'FACE',price:34400000,offset:{dx:0,dy:8,s:1.52,r:0},motif:'slasherMask',effects:{particles:{type:'spark',color:'#dfe8ff',count:12,rate:0.7,radius:210}}},
+  {id:'lm_ember_mask',signature:'ember-mask',name:'Пепельная маска',desc:'Лимит: раскалённые прожилки и эмберы.',rarity:'limited',limited:true,stock:6,slot:'FACE',price:35200000,offset:{dx:0,dy:4,s:1.13,r:0},motif:'emberMask',effects:{particles:{type:'ember',color:'#ff9f68',count:20,rate:1.25,radius:205}}},
+  {id:'lm_rune_torque',signature:'rune-torque',name:'Торк Архонта',desc:'Лимит: рунный обруч с синим пламенем.',rarity:'limited',limited:true,stock:9,slot:'NECK',price:33200000,offset:{dx:0,dy:6,s:1.13,r:0},motif:'runeTorque',effects:{particles:{type:'rune',color:'#9cfadf',count:20,rate:1.2,radius:215}}},
+  {id:'lm_eclipse_back',signature:'eclipse-back',name:'Затмение',desc:'Лимит: позадний астральный диск с пеплом.',rarity:'limited',limited:true,stock:5,slot:'AURA_BEHIND',price:36800000,offset:{dx:0,dy:-14,s:1.18,r:0},motif:'eclipseBack',effects:{particles:{type:'ember',color:'#ffc38d',count:20,rate:1.3,radius:225}}},
+  {id:'lm_sigil_front',signature:'sigil-front',name:'Сигил Предела',desc:'Лимит-аура: вращающийся сигил с руническими искрами.',rarity:'limited',limited:true,stock:4,slot:'AURA_FRONT',price:37600000,offset:{dx:0,dy:0,s:1.24,r:0},motif:'sigilFront',effects:{particles:{type:'spark',color:'#ffe9b4',count:10,rate:0.75,radius:250}}}
 ].map(it=>({...it,kind:'acc',currency:it.currency||'points'}));
 
 function accessorySvgMarkup(it){
@@ -1821,23 +1873,37 @@ const cosmeticItems = [
   { id:"skin_ruby", kind:"skin", rarity:"epic", name:"Рубиновая", desc:"Красные переливы и лак", price:350000, apply:()=> state.cosmetics.skin="ruby" },
   { id:"skin_sand", kind:"skin", rarity:"common", name:"Песчаная", desc:"Тёплый матовый камуфляж", price:330, apply:()=> state.cosmetics.skin="sand" },
   { id:"skin_celestial", kind:"skin", rarity:"legend", name:"Небесный поток", desc:"Градиент с точками-звёздами", price:920000, apply:()=> state.cosmetics.skin="celestial" },
+  { id:"skin_reed", kind:"skin", rarity:"common", name:"Тростниковая дымка", desc:"Нежный зелёно-бежевый градиент", price:42000, apply:()=> state.cosmetics.skin="reed" },
+  { id:"skin_mint", kind:"skin", rarity:"rare", name:"Мятная", desc:"Свежий мятный перелив", price:120000, apply:()=> state.cosmetics.skin="mint" },
+  { id:"skin_twilight", kind:"skin", rarity:"rare", name:"Сумеречная", desc:"Пурпурно-синий мягкий блеск", price:165000, apply:()=> state.cosmetics.skin="twilight" },
+  { id:"skin_carbon", kind:"skin", rarity:"epic", name:"Карбоновая", desc:"Тонкий карбоновый узор", price:420000, apply:()=> state.cosmetics.skin="carbon" },
+  { id:"skin_limited_aurora", kind:"skin", rarity:"limited", limited:true, stock:12, name:"Полярный разлом", desc:"Лимит: люминесцентная аврора и glow-кромка", price:34000000, apply:()=> state.cosmetics.skin="limited_aurora" },
+  { id:"skin_limited_void", kind:"skin", rarity:"limited", limited:true, stock:10, name:"Пульс Бездны", desc:"Лимит: чёрно-фиолетовый градиент и энергетические вены", price:42000000, apply:()=> state.cosmetics.skin="limited_void" },
+  { id:"skin_limited_crown", kind:"skin", rarity:"limited", limited:true, stock:8, name:"Золото Архонта", desc:"Лимит: богатая позолота и коронный отблеск", price:52000000, apply:()=> state.cosmetics.skin="limited_crown" },
+  { id:"skin_limited_prism", kind:"skin", rarity:"limited", limited:true, stock:6, name:"Призма Времени", desc:"Лимит: перламутровый хром с тонкой текстурой", price:60000000, apply:()=> state.cosmetics.skin="limited_prism" },
 
   // Accessories
   ...accessoryItems
 ];
 
 const frameItems = [
-  { id:"frame_common_moss", kind:"frame", rarity:"common", name:"Моховая рамка", desc:"Простая рамка профиля", price:80000, frameClass:"" },
-  { id:"frame_rare_wave", kind:"frame", rarity:"rare", name:"Волна болота", desc:"Редкая рамка с бликом", price:220000, frameClass:"" },
-  { id:"frame_epic_runes", kind:"frame", rarity:"epic", name:"Руническая рамка", desc:"Эпическая руническая окантовка", price:620000, frameClass:"" },
-  { id:"frame_legend_glow", kind:"frame", rarity:"legend", name:"Легендарное сияние", desc:"Пульсирующая рамка с glow", price:1100, currency:"diamonds", frameClass:"frame-legendary" }
+  { id:"frame_common_moss", kind:"frame", rarity:"common", name:"Моховая рамка", desc:"Простая рамка профиля", price:80000, frameClass:"frame-common" },
+  { id:"frame_rare_wave", kind:"frame", rarity:"rare", name:"Волна болота", desc:"Редкая рамка с бликом", price:220000, frameClass:"frame-rare" },
+  { id:"frame_epic_runes", kind:"frame", rarity:"epic", name:"Руническая рамка", desc:"Эпическая руническая окантовка", price:620000, frameClass:"frame-epic" },
+  { id:"frame_legend_glow", kind:"frame", rarity:"legend", name:"Легендарное сияние", desc:"Пульсирующая рамка с glow", price:1100, currency:"diamonds", frameClass:"frame-legendary" },
+  { id:"frame_common_reed", kind:"frame", rarity:"common", name:"Тростниковый кант", desc:"Лёгкая рамка с фактурой тростника", price:125000, frameClass:"frame-common" },
+  { id:"frame_rare_tide", kind:"frame", rarity:"rare", name:"Прилив", desc:"Холодный водный перелив", price:290000, frameClass:"frame-rare" },
+  { id:"frame_rare_glass", kind:"frame", rarity:"rare", name:"Стеклянная грань", desc:"Полупрозрачные края", price:340000, frameClass:"frame-rare" },
+  { id:"frame_epic_neon", kind:"frame", rarity:"epic", name:"Неоновые руны", desc:"Рунный неон по периметру", price:760000, frameClass:"frame-epic" },
+  { id:"frame_epic_aurora", kind:"frame", rarity:"epic", name:"Аврора", desc:"Глубокая фиолетово-бирюзовая рамка", price:840000, frameClass:"frame-epic" },
+  { id:"frame_legend_orbit", kind:"frame", rarity:"legend", name:"Орбита владыки", desc:"Плотное золотое свечение", price:1700, currency:"diamonds", frameClass:"frame-legendary" }
 ];
 
 const caseTypes = [
-  { id:"case_common", tier:"common", name:"Тростниковый ящик", price:220000, currency:"points", art:"Базовый", dropTable:[{r:"common",w:75},{r:"rare",w:22},{r:"epic",w:2.8},{r:"legend",w:0.2}], chest:"reed" },
-  { id:"case_rare", tier:"rare", name:"Лунный контейнер", price:260, currency:"diamonds", art:"Усиленный", dropTable:[{r:"common",w:45},{r:"rare",w:45},{r:"epic",w:9},{r:"legend",w:1}], chest:"moon" },
-  { id:"case_epic", tier:"epic", name:"Арканум-кейс", price:560, currency:"diamonds", art:"Продвинутый", dropTable:[{r:"rare",w:30},{r:"epic",w:60},{r:"legend",w:9},{r:"limited",w:1}], chest:"arcane" },
-  { id:"case_legend", tier:"legend", name:"Реликварий Легенд", price:140, currency:"dust", art:"Премиум", dropTable:[{r:"rare",w:9},{r:"epic",w:35},{r:"legend",w:55},{r:"limited",w:1}], chest:"relic" }
+  { id:"case_common", tier:"common", name:"Тростниковый ящик", price:220000, currency:"points", art:"", dropTable:[{r:"common",w:75},{r:"rare",w:22},{r:"epic",w:2.8},{r:"legend",w:0.2}], chest:"reed" },
+  { id:"case_rare", tier:"rare", name:"Лунный контейнер", price:260, currency:"diamonds", art:"", dropTable:[{r:"common",w:45},{r:"rare",w:45},{r:"epic",w:9},{r:"legend",w:1}], chest:"moon" },
+  { id:"case_epic", tier:"epic", name:"Арканум-кейс", price:560, currency:"diamonds", art:"", dropTable:[{r:"rare",w:30},{r:"epic",w:60},{r:"legend",w:9},{r:"limited",w:1}], chest:"arcane" },
+  { id:"case_legend", tier:"legend", name:"Реликварий Легенд", price:140, currency:"dust", art:"", dropTable:[{r:"rare",w:9},{r:"epic",w:35},{r:"legend",w:55},{r:"limited",w:1}], chest:"relic" }
 ];
 
 function rarityLabel(r){
@@ -1848,9 +1914,14 @@ function rarityLabel(r){
   return "Обычный";
 }
 function isLimitedItem(it){ return it.kind==="acc" && (it.rarity==="limited" || !!it.limited); }
+
+function normalizeSkinId(v){
+  const raw = String(v||'default').trim();
+  return raw.startsWith('skin_') ? raw.slice(5) : raw;
+}
 function own(id){ return !!state.owned[id] || id==="skin_default"; }
 function isCosmeticActive(it){
-  if (it.kind==="skin") return state.cosmetics.skin === it.id.replace("skin_","");
+  if (it.kind==="skin") return normalizeSkinId(state.cosmetics.skin) === it.id.replace("skin_","");
   if (it.kind==="frame") return state.account.frame===it.id;
   if (it.kind==="acc") return state.cosmetics.equippedSlots?.[it.slot]===it.id;
   return false;
@@ -2099,7 +2170,7 @@ function autoUpdateLeaderboard(){
   if(!nick) return;
   const rows = loadLeaderboard();
   state.bestPointsAllTime = Math.max(state.bestPointsAllTime||0, state.points||0);
-  const row = { nick, best: Math.floor(state.bestPointsAllTime||0), current: Math.floor(state.points||0), level: state.level, rank: currentRank().name, title: state.meta.title||"", updated: Date.now(), avatarDataUrl: state.account.avatarDataUrl||"", builtInAvatar: state.account.builtInAvatar||"" };
+  const row = { nick, best: Math.floor(state.bestPointsAllTime||0), current: Math.floor(state.points||0), level: state.level, rank: currentRank().name, title: state.meta.title||"", updated: Date.now(), avatarDataUrl: state.account.avatarDataUrl||"", builtInAvatar: state.account.builtInAvatar||"", frame: state.account.frame||"" };
   const i = rows.findIndex(r=>r.nick===nick);
   if(i>=0) rows[i]=row; else rows.push(row);
   rows.sort((a,b)=> (Number(b.best||b.points||0)-Number(a.best||a.points||0)) || (Number(b.current||0)-Number(a.current||0)));
@@ -2116,7 +2187,7 @@ function renderLeaders(){
     const cur = Number(r.current||r.points||0);
     const div = document.createElement("div");
     div.className = "item leaderRow";
-    div.innerHTML = `<div class="t">${idx+1}</div><div class="avatar" style="width:42px;height:42px;border-radius:12px"><img src="${r.avatarDataUrl || builtInAvatarSvg(r.builtInAvatar||'frog1')}" alt="av"></div><div><div class="t">${r.nick}</div><div class="s">Рекорд: ${best.toLocaleString("ru-RU")} · Сейчас: ${cur.toLocaleString("ru-RU")} · ${r.rank} · ур. ${r.level}${r.title?` · «${r.title}»`:""}</div></div><div class="tag">${best.toLocaleString("ru-RU")}</div>`;
+    div.innerHTML = `<div class="t">${idx+1}</div><div class="avatar ${frameClassForId(r.frame||"")}" style="width:42px;height:42px;border-radius:12px"><img src="${r.avatarDataUrl || builtInAvatarSvg(r.builtInAvatar||'frog1')}" alt="av"></div><div><div class="t">${r.nick}</div><div class="s">Рекорд: ${best.toLocaleString("ru-RU")} · Сейчас: ${cur.toLocaleString("ru-RU")} · ${r.rank} · ур. ${r.level}${r.title?` · «${r.title}»`:""}</div></div><div class="tag">${best.toLocaleString("ru-RU")}</div>`;
     box.appendChild(div);
   });
 }
@@ -2173,17 +2244,19 @@ function renderUpgrades(){
   for(const u of upgrades){
     const price = upgradePrice(u);
     const lvl = u.level();
+    const isMax = Number.isFinite(u.maxLevel) && lvl >= u.maxLevel;
     const div = document.createElement("div");
-    div.className="item";
+    div.className=`item upgradeCard ${isMax?"maxed":""}`;
     div.innerHTML = `
-      <div class="t">${u.name}</div>
+      <div class="t">${u.name} <span class="tag maxBadge">MAX</span></div>
       <div class="s">${u.desc}</div>
       <div class="row">
-        <span class="tag">Уровень: ${lvl}</span>
-        <span class="tag">Цена: ${price}</span>
-        <button class="btn ${state.points>=price ? "primary":""}">Купить</button>
+        <span class="tag">Уровень: ${lvl}${Number.isFinite(u.maxLevel)?`/${u.maxLevel}`:""}</span>
+        <span class="tag">${isMax?"Лимит достигнут":"Цена: "+price}</span>
+        <button class="btn ${!isMax && state.points>=price ? "primary":""}" ${isMax?"disabled":""}>${isMax?"MAX":"Купить"}</button>
       </div>`;
     div.querySelector("button").addEventListener("click", ()=>{
+      if(isMax) return;
       uiBeep();
       const p = upgradePrice(u);
       if(state.points < p){
@@ -3268,9 +3341,17 @@ function skinPalette(){
     moon:{a:"#96acd9", b:"#36405f", belly:"#dae6ff", accent:"rgba(210,224,255,0.23)", style:"neon"},
     ruby:{a:"#db5f5f", b:"#6e1f30", belly:"#ffc2c8", accent:"rgba(255,188,188,0.2)", style:"gloss"},
     sand:{a:"#c1ad77", b:"#7f6a43", belly:"#eadfb8", accent:"rgba(255,244,199,0.13)", style:"matte"},
-    celestial:{a:"#76b6ff", b:"#463594", belly:"#d8f2ff", accent:"rgba(174,238,255,0.24)", style:"stars"}
+    celestial:{a:"#76b6ff", b:"#463594", belly:"#d8f2ff", accent:"rgba(174,238,255,0.24)", style:"stars"},
+    reed:{a:"#8fb874", b:"#5e7f49", belly:"#dceec6", accent:"rgba(231,255,198,0.2)", style:"matte"},
+    mint:{a:"#88f0c8", b:"#2f9f8a", belly:"#ddfff0", accent:"rgba(190,255,230,0.24)", style:"gloss"},
+    twilight:{a:"#8f80dd", b:"#3a336d", belly:"#ddd7ff", accent:"rgba(208,200,255,0.2)", style:"spots"},
+    carbon:{a:"#7d8b93", b:"#2f353a", belly:"#dbe3ea", accent:"rgba(228,239,245,0.16)", style:"stripes"},
+    limited_aurora:{a:"#6af5dd", b:"#395cff", belly:"#e5ffff", accent:"rgba(154,255,245,0.32)", style:"neon"},
+    limited_void:{a:"#4d3b7d", b:"#090c19", belly:"#b9abff", accent:"rgba(195,166,255,0.3)", style:"stars"},
+    limited_crown:{a:"#ffd86f", b:"#8c5a1c", belly:"#fff2cc", accent:"rgba(255,235,170,0.34)", style:"gloss"},
+    limited_prism:{a:"#8fe7ff", b:"#9b63ff", belly:"#eefbff", accent:"rgba(212,245,255,0.34)", style:"neon"}
   };
-  let base = skins[state.cosmetics.skin] || skins.default;
+  let base = skins[normalizeSkinId(state.cosmetics.skin)] || skins.default;
   if(state.cosmetics.angel) base = {a:"#8af7b5", b:"#46c8a6", belly:"#d9ffe6", accent:"rgba(230,255,245,0.2)", style:"neon"};
   if(state.cosmetics.demon) base = {a:"#376a55", b:"#142d26", belly:"#3b7860", accent:"rgba(255,122,140,0.18)", style:"stripes"};
   return base;
@@ -4017,9 +4098,49 @@ window.addEventListener("keydown",(e)=>{
 });
 
 
+
 /* =========================
-  MINI GAME 4: BLACKJACK
+  MINI GAME 4: COLOR RUSH
 ========================= */
+const rushHud = document.getElementById('rushHud');
+const rushButtonsWrap = document.getElementById('rushButtons');
+let rushRun=false, rushScore=0, rushMiss=0, rushNeed='red', rushUntil=0;
+const rushPalette={red:'#ff6b6b',blue:'#6bc2ff',green:'#6bffad',yellow:'#ffe26b'};
+function rushPick(){
+  const keys=Object.keys(rushPalette); rushNeed=keys[Math.floor(Math.random()*keys.length)];
+  rushUntil=Date.now()+26000;
+  if(rushHud) rushHud.innerHTML=`Цель: <b style="color:${rushPalette[rushNeed]}">${rushNeed.toUpperCase()}</b> · Очки: ${rushScore} · Ошибки: ${rushMiss} · ${Math.max(0,Math.ceil((rushUntil-Date.now())/1000))}с`;
+}
+function rushEnd(){
+  rushRun=false;
+  const mul=(1+(state.minigameBonus||0))*eventMiniMultiplier();
+  const payout=Math.max(0,Math.round((rushScore*42-rushMiss*28)*mul));
+  state.points += payout;
+  if(payout>1200) state.diamonds += Math.min(4,Math.floor(payout/2400));
+  toast('Цветовой рывок',`+${payout.toLocaleString('ru-RU')} очков`, 'MINI GAME');
+  showGameResult(payout>0,payout,'Цветовой рывок');
+  save(); updateUI(false);
+}
+function rushTick(){
+  if(!rushRun) return;
+  if(Date.now()>rushUntil){ rushEnd(); return; }
+  if(rushHud) rushHud.innerHTML=`Цель: <b style="color:${rushPalette[rushNeed]}">${rushNeed.toUpperCase()}</b> · Очки: ${rushScore} · Ошибки: ${rushMiss} · ${Math.max(0,Math.ceil((rushUntil-Date.now())/1000))}с`;
+  requestAnimationFrame(rushTick);
+}
+document.getElementById('rushStart')?.addEventListener('click', ()=>{ uiBeep(); rushRun=true; rushScore=0; rushMiss=0; rushPick(); rushTick(); });
+document.getElementById('rushStop')?.addEventListener('click', ()=>{ uiBeep(); rushRun=false; });
+rushButtonsWrap?.querySelectorAll('button').forEach(btn=>btn.addEventListener('click', ()=>{
+  if(!rushRun) return;
+  const color=btn.dataset.rushColor;
+  if(color===rushNeed){ rushScore++; frogCroak(0.62); }
+  else rushMiss++;
+  rushNeed = Object.keys(rushPalette)[Math.floor(Math.random()*4)];
+}));
+
+/* =========================
+  MINI GAME 5: BLACKJACK
+========================= */
+
 let bjDeck=[], bjPlayer=[], bjDealer=[], bjRound=false, bjBetVal=0;
 function bjNewDeck(){
   const suits=['♠','♥','♦','♣'];
